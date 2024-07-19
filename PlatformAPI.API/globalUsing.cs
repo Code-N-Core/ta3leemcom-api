@@ -1,0 +1,9 @@
+﻿global using AutoMapper;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using PlatformAPI.Core.DTOs;
+global using PlatformAPI.Core.Interfaces;
+global using System.Text.RegularExpressions;
+global using PlatformAPI.Core.Models;
+global using PlatformAPI.Core.Services;
+global using PlatformAPI.Core.Const;

@@ -1,0 +1,17 @@
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.csproj.AssemblyReference.cache
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.GeneratedMSBuildEditorConfig.editorconfig
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.AssemblyInfoInputs.cache
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.AssemblyInfo.cs
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.csproj.CoreCompileInputs.cache
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.deps.json
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.runtimeconfig.json
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.dll
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.pdb
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.Core.dll
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.Core.pdb
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.csproj.CopyComplete
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.dll
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\refint\PlatformAPI.EF.dll
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.pdb
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.genruntimeconfig.cache
+D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.EF\obj\Debug\net8.0\ref\PlatformAPI.EF.dll

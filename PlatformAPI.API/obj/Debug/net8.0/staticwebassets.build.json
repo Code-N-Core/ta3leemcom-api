@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "mBTazacvZASQqwnQTLV+6DaF8dioVvWYLbWHDZWY+lU=",
+  "Source": "PlatformAPI.API",
+  "BasePath": "_content/PlatformAPI.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

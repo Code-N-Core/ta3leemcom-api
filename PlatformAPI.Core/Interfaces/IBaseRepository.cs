@@ -1,4 +1,6 @@
-﻿namespace PlatformAPI.Core.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace PlatformAPI.Core.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
@@ -6,6 +8,8 @@
         Task<T> AddAsync(T entity);
         Task<T> GetByIdAsync(int id);
         T Update(T entity);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(T entity);
+
+        Task<T> FindTWithIncludes<T>(int id, params Expression<Func<T, object>>[] includeProperties) where T : class;
     }
 }

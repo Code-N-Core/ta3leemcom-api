@@ -1,4 +1,7 @@
-﻿namespace PlatformAPI.EF.Repositories
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
+namespace PlatformAPI.EF.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
@@ -15,10 +18,11 @@
             return entity;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            _context.Set<T>().Remove(await GetByIdAsync(id));
+            _context.Set<T>().Remove(entity);
         }
+
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
 
@@ -29,5 +33,17 @@
             _context.Set<T>().Update(entity);
             return entity;
         }
+        public async Task<T> FindTWithIncludes<T>(int id, params Expression<Func<T, object>>[] includeProperties) where T : class
+        {
+            IQueryable<T> query =  _context.Set<T>();
+
+            query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+
+          var Entity=await query.FirstOrDefaultAsync(e=> Microsoft.EntityFrameworkCore.EF.Property<object>(e,"Id").Equals(id));
+            return Entity;
+
+
+        }
+
     }
 }

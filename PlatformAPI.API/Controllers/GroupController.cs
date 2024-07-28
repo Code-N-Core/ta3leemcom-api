@@ -1,4 +1,7 @@
-﻿namespace PlatformAPI.API.Controllers
+﻿using PlatformAPI.Core.Models;
+using System.Security.Claims;
+using Group = PlatformAPI.Core.Models.Group;
+namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -10,6 +13,51 @@
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+        [HttpGet("GetAllGroups")]
+        public async Task<IActionResult> GetAllAsync(int id) 
+        {
+           
+            var Groups =await _unitOfWork.Group.GetAllGroupsOfTechId(id);
+            if(Groups is null)
+                return  NotFound($"there is no Group With Id {id}");
+
+            return  Ok(Groups);
+        }
+
+        [HttpGet("GetGroup")]
+        public async Task<IActionResult> GetById(int id)
+        {
+          
+           var group=await _unitOfWork.Group.FindTWithIncludes<Group>(id,
+               g=>g.Teacher,
+               g=>g.Students,
+               g=>g.GroupQuizzes,
+               g=>g.LevelYear,
+               g=>g.LevelYear.Level,
+               g=>g.Months
+            );
+            if(group is null)
+                return NotFound($"there is no Group With Id {id}");
+            var listStudents=new List<StudentDTO>();
+            foreach(var student in group.Students)
+            {
+                var s=_mapper.Map<StudentDTO>(student);
+                s.LevelYearName=group.LevelYear.Name;
+               /* var Level=await _unitOfWork.Level.GetByIdAsync(group.LevelYear.LevelId);
+                s.LevelName=Level.Name;*/
+               s.LevelName=group.LevelYear.Level.Name;
+                listStudents.Add(s);
+            }
+            var data = new GroupDTO()
+            {
+                Id = id,
+                LevelYearId = group.LevelYear.LevelId,
+                Name = group.Name,
+                TeacherId = group.TeacherId,
+                Students = listStudents
+            };
+            return Ok(data);
         }
 
         [HttpPost("Add")]
@@ -37,6 +85,39 @@
             }
             else
                 return BadRequest(ModelState);
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(int id) 
+        {
+            var group = await _unitOfWork.Group.GetByIdAsync(id);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+            var students = await _unitOfWork.Student.GetAllAsync();
+            foreach (var student in students)
+            {
+                if (student.GroupId == id)
+                {
+                  await  _unitOfWork.Student.DeleteAsync(student);
+                }
+            }
+
+            await _unitOfWork.Group.DeleteAsync(group);
+            _unitOfWork.Complete();
+            return Ok();
+        }
+        [HttpPut("Edit")]
+        public async Task<IActionResult> Update([FromForm] GroupDTO group)
+        {
+            var g = await _unitOfWork.Group.GetByIdAsync(group.Id);
+            if (g == null) return NotFound($"No Group was found with ID {group.Id}");
+            g.Name = group.Name;
+           g=_unitOfWork.Group.Update(g);
+            _unitOfWork.Complete();
+            return Ok(g);
         }
     }
 }

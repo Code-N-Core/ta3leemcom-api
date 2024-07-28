@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PlatformAPI.API.MiddleWares;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.Core.Interfaces;
 using PlatformAPI.Core.Models;
@@ -113,7 +114,7 @@ namespace PlatformAPI.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseMiddleware<TeacherIsSubsMiddleware>();
 
             app.MapControllers();
 

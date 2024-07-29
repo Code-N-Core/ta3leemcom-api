@@ -32,6 +32,7 @@ namespace PlatformAPI.API.MiddleWares
                         if (roles.Contains(Roles.Teacher.ToString()))
                         {
                             var teacher = await _unitOfWork.Teacher.GetByAppUserIdAsync(user.Id);
+        
                             if (teacher != null && teacher.IsActive && teacher.IsSubscribed)
                             {
                                 await _next(context);

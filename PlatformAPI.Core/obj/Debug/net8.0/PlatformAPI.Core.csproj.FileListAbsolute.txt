@@ -10,3 +10,16 @@ D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.Core\obj\Debug\net8.0\PlatformAP
 D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.Core\obj\Debug\net8.0\refint\PlatformAPI.Core.dll
 D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.pdb
 D:\CODE N CORE\Projects\PlatformAPI\PlatformAPI.Core\obj\Debug\net8.0\ref\PlatformAPI.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\bin\Debug\net8.0\PlatformAPI.Core.deps.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\bin\Debug\net8.0\PlatformAPI.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\bin\Debug\net8.0\PlatformAPI.Core.pdb
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.csproj.AssemblyReference.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.AssemblyInfoInputs.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.AssemblyInfo.cs
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.csproj.CoreCompileInputs.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.sourcelink.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\refint\PlatformAPI.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\PlatformAPI.Core.pdb
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.Core\obj\Debug\net8.0\ref\PlatformAPI.Core.dll

@@ -8,6 +8,7 @@ namespace PlatformAPI.API.Helpers
         {
             CreateMap<AddGroupDTO, PlatformAPI.Core.Models.Group>();
             CreateMap<CreateStudentDTO, Student>();
+            CreateMap<Student, StudentDTO>();
             CreateMap<Group,GroupDTO>();
         }
     }

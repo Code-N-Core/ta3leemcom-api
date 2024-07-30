@@ -17,6 +17,45 @@ namespace PlatformAPI.API.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet("GetAllStudent")]
+        public async Task<IActionResult> GetAll(int id)
+        {
+            var students = await _unitOfWork.Student.FindAllAsync(s=>s.GroupId==id||id==0);
+            if (students is null)
+                return NotFound($"there is no Group With Id {id}");
+
+            return Ok(students);
+
+        }
+
+        [HttpGet("GetStudent")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var student =await _unitOfWork.Student.FindTWithIncludes<Student>(id,
+                 s=>s.Group,
+                 s=>s.Group.LevelYear,
+                 s=>s.Group.LevelYear.Level,
+                 s=>s.Parent,
+                 s=>s.Parent.ApplicationUser
+                );
+            if (student is null)
+                return NotFound($"there is no student with id {id}");
+            var s = new StudentDTO()
+            {
+                Code=student.Code,
+                GroupId=student.GroupId,
+                GroupName=student.Group.Name,
+                Name=student.Code,
+                LevelName= student.Group.LevelYear.Level.Name,
+                LevelYearName= student.Group.LevelYear.Name,
+
+                StudentParentId=student.Parent!=null?student.Parent.Id:null,
+                StudentParentName= student.Parent != null?student.Parent.ApplicationUser.Name:null,
+                StudentParentPhone= student.Parent != null?student.Parent.ApplicationUser.PhoneNumber:null,
+            };
+            return Ok(s);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(CreateStudentDTO model)
         {
@@ -72,6 +111,34 @@ namespace PlatformAPI.API.Controllers
             }
             else
                 return BadRequest(ModelState);
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var student = await _unitOfWork.Student.GetByIdAsync(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+            await _unitOfWork.Student.DeleteAsync(student);
+            _unitOfWork.Complete();
+            return Ok();
+        }
+        [HttpPut("Edit")]
+        public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
+        {
+            if (ModelState.IsValid)
+            {
+                var s = await _unitOfWork.Student.GetByIdAsync(student.Id);
+                if (s == null) return NotFound($"No Group was found with ID {student.Id}");
+
+                s.GroupId = student.GroupId;
+                s = _unitOfWork.Student.Update(s);
+                _unitOfWork.Complete();
+                return Ok(s);
+            }
+            return BadRequest(ModelState);
         }
 
     }

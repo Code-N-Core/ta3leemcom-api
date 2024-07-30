@@ -4,8 +4,8 @@ namespace PlatformAPI.Core.Models
 {
     public class StudentQuiz
     {
-        public string StudentCode { get; set; }
-        [ForeignKey(nameof(StudentCode))]
+        public int StudentId { get; set; }
+        [ForeignKey(nameof(StudentId))]
         public virtual Student Student { get; set; }
         public int QuizId { get; set; }
         public virtual Quiz Quiz { get; set; }

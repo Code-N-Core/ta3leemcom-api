@@ -1,4 +1,5 @@
 ﻿using PlatformAPI.Core.Models;
+using System.Linq.Expressions;
 
 namespace PlatformAPI.Core.Interfaces
 {

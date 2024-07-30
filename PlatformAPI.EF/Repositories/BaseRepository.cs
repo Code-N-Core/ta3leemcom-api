@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PlatformAPI.EF.Repositories
 {
@@ -41,8 +42,12 @@ namespace PlatformAPI.EF.Repositories
 
           var Entity=await query.FirstOrDefaultAsync(e=> Microsoft.EntityFrameworkCore.EF.Property<object>(e,"Id").Equals(id));
             return Entity;
-
-
+        }
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
+        {
+            if (criteria == null)
+                return await GetAllAsync();
+            return  await _context.Set<T>().Where(criteria).ToListAsync();
         }
 
     }

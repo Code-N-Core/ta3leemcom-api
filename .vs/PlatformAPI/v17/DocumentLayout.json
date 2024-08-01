@@ -11,6 +11,7 @@
       "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\groupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+<<<<<<< Updated upstream
       "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom-api\\platformapi.api\\helpers\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\helpers\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -25,6 +26,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom-api\\platformapi.ef\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom-api\\platformapi.api\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> Stashed changes
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +39,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,6 +51,7 @@
             },
             {
               "$type": "Document",
+<<<<<<< Updated upstream
               "DocumentIndex": 2,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Helpers\\MappingProfile.cs",
@@ -81,11 +87,23 @@
               "ViewState": "AQIAAG0AAAAAAAAAAAAQwHQAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-30T19:26:29.309Z",
+=======
+              "DocumentIndex": 0,
+              "Title": "GroupController.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\GroupController.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\GroupController.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\GroupController.cs",
+              "RelativeToolTip": "PlatformAPI.API\\Controllers\\GroupController.cs",
+              "ViewState": "AQIAAGcAAAAAAAAAAAAwwHcAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-01T00:11:55.816Z",
+>>>>>>> Stashed changes
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< Updated upstream
               "Title": "GroupController.cs",
               "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\GroupController.cs",
               "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\GroupController.cs",
@@ -121,6 +139,16 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-30T18:07:09.18Z",
               "EditorCaption": ""
+=======
+              "Title": "StudentController.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\StudentController.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\StudentController.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\StudentController.cs",
+              "RelativeToolTip": "PlatformAPI.API\\Controllers\\StudentController.cs",
+              "ViewState": "AQIAAC0AAAAAAAAAAAAYwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-01T00:11:44.083Z"
+>>>>>>> Stashed changes
             }
           ]
         }

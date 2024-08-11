@@ -17,6 +17,7 @@
         ILevelRepository Level { get; }
         ILevelYearRepository LevelYear { get; }
         IGroupQuizRepository GroupQuiz { get; }
+        IFeedbackRepository Feedback { get; }
         int Complete();
     }
 }

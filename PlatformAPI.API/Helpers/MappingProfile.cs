@@ -10,6 +10,7 @@ namespace PlatformAPI.API.Helpers
             CreateMap<CreateStudentDTO, Student>();
             CreateMap<Student, StudentDTO>();
             CreateMap<Group,GroupDTO>();
+            CreateMap<AddFeedbackDTO, Feedback>();
         }
     }
 }

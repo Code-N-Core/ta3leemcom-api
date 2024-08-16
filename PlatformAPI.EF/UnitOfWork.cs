@@ -33,6 +33,7 @@ namespace PlatformAPI.EF
         public ILevelYearRepository LevelYear {  get; private set; }
 
         public IGroupQuizRepository GroupQuiz {  get; private set; }
+        public IFeedbackRepository Feedback { get; private set; }
 
         private readonly ApplicationDbContext _context;
         public UnitOfWork(ApplicationDbContext context)
@@ -53,6 +54,7 @@ namespace PlatformAPI.EF
             Level=new LevelRepository(context);
             LevelYear=new LevelYearRepository(context);
             GroupQuiz=new GroupQuizRepository(context);
+            Feedback=new FeedbackRepository(context);
         }
 
         public int Complete()

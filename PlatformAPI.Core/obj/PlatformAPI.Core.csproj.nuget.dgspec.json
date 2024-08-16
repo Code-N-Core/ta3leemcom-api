@@ -46,7 +46,7 @@
             },
             "MailKit": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.7.1.1, )"
             },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",
@@ -54,7 +54,7 @@
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.6, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.AspNetCore.Mvc.Core": {
               "target": "Package",
@@ -62,11 +62,11 @@
             },
             "MimeKit": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.7.1, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[7.6.2, )"
+              "version": "[8.0.1, )"
             }
           },
           "imports": [

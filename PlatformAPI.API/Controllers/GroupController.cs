@@ -86,6 +86,10 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest(ModelState);
         }
+        /*
+         * 
+         * there are more entitese need to delete
+         * */
 
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id) 

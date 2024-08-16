@@ -8,7 +8,7 @@
             {
                 return new ValidationResult("null value");
             }
-            if (value.ToString() == "online" || value.ToString() == "ofline") 
+            if (value.ToString() == "اونلاين" || value.ToString() == "اوفلاين") 
                 return ValidationResult.Success;
             return new ValidationResult("should only online or offline!");
         }

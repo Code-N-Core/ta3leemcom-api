@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using PlatformAPI.Core.DTOs;
+using PlatformAPI.Core.DTOs.Auth;
+using PlatformAPI.Core.DTOs.Questions;
 using PlatformAPI.Core.Models;
 
 namespace PlatformAPI.Core.Helpers
@@ -21,6 +22,10 @@ namespace PlatformAPI.Core.Helpers
                 .ForMember(dst => dst.SecurityStamp, opt => opt.Ignore())
                 .ForMember(dst => dst.TwoFactorEnabled, opt => opt.Ignore())
                 .ForSourceMember(src => src.Role, opt => opt.DoNotValidate());
+            CreateMap<QDTO, Question>()
+                .ForMember(dst => dst.Chooses, opt => opt.Ignore());
+            CreateMap<UQDTO, Question>();
+
         }
     }
 }

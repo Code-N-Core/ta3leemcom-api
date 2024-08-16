@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using PlatformAPI.Core.Models;
-using System.Security.Claims;
+﻿using PlatformAPI.Core.DTOs.Groub;
+using PlatformAPI.Core.DTOs.Quiz;
+using PlatformAPI.Core.DTOs.Student;
 using Group = PlatformAPI.Core.Models.Group;
 namespace PlatformAPI.API.Controllers
 {
@@ -28,7 +28,7 @@ namespace PlatformAPI.API.Controllers
             return  Ok(Groups);
         }
 
-        [HttpGet("GetGroup")]
+        [HttpGet("GetGroup/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
           
@@ -61,6 +61,26 @@ namespace PlatformAPI.API.Controllers
                 Students = listStudents
             };
             return Ok(data);
+        }
+        [HttpGet("GetResultsOfStudnetsInGruopID")]
+        public async Task<IActionResult> GetResultInGruop(int groupid)
+        {
+            if (groupid == 0) return BadRequest($"There is No Group With Id: {groupid}");
+            var quizids = await _unitOfWork.Group.Getquizsresults(groupid);
+            List<StudentQuizResult> quizsResults = new List<StudentQuizResult>();
+            foreach (var sq in quizids)
+            {
+                var sqr = new StudentQuizResult
+                {
+                    StudentId = sq.StudentId,
+                    QuizId = sq.QuizId,
+                    StudentMark = sq.StudentMark,
+                    IsAttend = sq.IsAttend,
+                };
+                quizsResults.Add(sqr);
+            }
+            return Ok(quizsResults);
+
         }
 
         [HttpPost("Add")]
@@ -130,5 +150,7 @@ namespace PlatformAPI.API.Controllers
             }
             return BadRequest(ModelState);
         }
+
+      
     }
 }

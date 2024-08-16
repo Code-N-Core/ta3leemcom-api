@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PlatformAPI.Core.DTOs.Auth;
+using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.Models;
 
 namespace PlatformAPI.API.Controllers

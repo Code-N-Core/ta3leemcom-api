@@ -1,4 +1,5 @@
 ﻿using PlatformAPI.Core.CustomValidation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlatformAPI.Core.Models
 {
@@ -13,15 +14,22 @@ namespace PlatformAPI.Core.Models
         [Required,Deticated]
         public string Type { get; set; }
         [Required]
-        public DateTime Date { get; set; }
-        [Required]
-        public bool TimeExist { get; set; }
-        /*
-        * TODO : BasedOnTimeExist
-        */
-        public int? Time { get; set; }
+        public DateTime StartDate { get; set; }
+        //online
+        public int? Duration { get; set; }
+        [NotMapped]
+        public DateTime? EndDate 
+        { 
+            get {return StartDate.AddMinutes((double)Duration); }
+        }
+
+        //offline
+        public string? QuestionForm { get; set; }
+        public string? AnswerForm { get; set; }
+
         [Required]
         public int TeacherId { get; set; }
+
         public virtual Teacher Teacher { get; set; }
         public virtual List<StudentQuiz> StudentsQuizzes { get; set; }
         public virtual List<GroupQuiz> GroupsQuizzes { get; set; }

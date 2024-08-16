@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlatformAPI.Core.DTOs
+namespace PlatformAPI.Core.DTOs.Questions
 {
-    public class UpdateStudentDTO
+    public class UQDTO :QDTO
     {
         public int Id { get; set; }
-        public int GroupId { get; set; }
     }
 }

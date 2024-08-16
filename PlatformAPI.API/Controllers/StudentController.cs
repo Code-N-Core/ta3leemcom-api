@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PlatformAPI.Core.DTOs.Quiz;
+using PlatformAPI.Core.DTOs.Student;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -17,7 +19,7 @@ namespace PlatformAPI.API.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("GetAllStudent")]
+        [HttpGet("GetAllStudentWithId")]
         public async Task<IActionResult> GetAll(int id)
         {
             var students = await _unitOfWork.Student.FindAllAsync(s=>s.GroupId==id||id==0);
@@ -139,6 +141,29 @@ namespace PlatformAPI.API.Controllers
                 return Ok(s);
             }
             return BadRequest(ModelState);
+        }
+
+        [HttpGet("GetAllResultsOfStudentId")]
+        public async Task<IActionResult> GetResults(int id)
+        {
+            if (id == 0) return BadRequest($"There is no Student With ID: {id}");
+            var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(s => s.StudentId == id,
+                Sq => Sq.Quiz
+                );
+            List<StudentQuizResult> quizsResults = new List<StudentQuizResult>();
+            foreach (var sq in studentQuizzes)
+            {
+                var sqr = new StudentQuizResult
+                {
+                    StudentId = sq.StudentId,
+                    QuizId = sq.QuizId,
+                    StudentMark = sq.StudentMark,
+                    IsAttend = sq.IsAttend,
+                    QuizMark = sq.Quiz.Mark,
+                };
+                quizsResults.Add(sqr);
+            }
+            return Ok(quizsResults);
         }
 
     }

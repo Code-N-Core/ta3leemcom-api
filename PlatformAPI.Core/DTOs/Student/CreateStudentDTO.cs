@@ -1,6 +1,6 @@
 ﻿using PlatformAPI.Core.CustomValidation;
 
-namespace PlatformAPI.Core.DTOs
+namespace PlatformAPI.Core.DTOs.Student
 {
     public class CreateStudentDTO
     {

@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 using PlatformAPI.Core.Const;
-using PlatformAPI.Core.DTOs;
+using PlatformAPI.Core.DTOs.Auth;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.Core.Interfaces;
 using PlatformAPI.Core.Models;

@@ -3,5 +3,7 @@ namespace PlatformAPI.Core.Interfaces
 {
     public interface IGroupRepository:IBaseRepository<Group>
     {
+        public  Task<IEnumerable<StudentQuiz>> Getquizsresults(int id);
+
     }
 }

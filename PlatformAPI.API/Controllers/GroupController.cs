@@ -1,4 +1,5 @@
-﻿using PlatformAPI.Core.Models;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PlatformAPI.Core.Models;
 using System.Security.Claims;
 using Group = PlatformAPI.Core.Models.Group;
 namespace PlatformAPI.API.Controllers
@@ -17,8 +18,10 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetAllGroups")]
         public async Task<IActionResult> GetAllAsync(int id) 
         {
+            //if id==0 return all the groups int the system
            
-            var Groups =await _unitOfWork.Group.GetAllGroupsOfTechId(id);
+               var Groups = await _unitOfWork.Group.FindAllAsync(g => g.TeacherId == id||id==0);
+            
             if(Groups is null)
                 return  NotFound($"there is no Group With Id {id}");
 
@@ -116,12 +119,16 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] GroupDTO group)
         {
-            var g = await _unitOfWork.Group.GetByIdAsync(group.Id);
-            if (g == null) return NotFound($"No Group was found with ID {group.Id}");
-            g.Name = group.Name;
-           g=_unitOfWork.Group.Update(g);
-            _unitOfWork.Complete();
-            return Ok(g);
+            if (ModelState.IsValid)
+            {
+                var g = await _unitOfWork.Group.GetByIdAsync(group.Id);
+                if (g == null) return NotFound($"No Group was found with ID {group.Id}");
+                g.Name = group.Name;
+                g = _unitOfWork.Group.Update(g);
+                _unitOfWork.Complete();
+                return Ok(g);
+            }
+            return BadRequest(ModelState);
         }
     }
 }

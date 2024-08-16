@@ -14,10 +14,10 @@ namespace PlatformAPI.EF.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<StudentQuiz>().HasKey(x => new {x.StudentCode,x.QuizId});
+            builder.Entity<StudentQuiz>().HasKey(x => new {x.StudentId,x.QuizId});
             builder.Entity<GroupQuiz>().HasKey(x => new {x.QuizId,x.GroupId});
-            builder.Entity<StudentMonth>().HasKey(x => new { x.StudentCode, x.MonthId });
-            builder.Entity<StudentAbsence>().HasKey(x => new { x.StudentCode, x.DayId });
+            builder.Entity<StudentMonth>().HasKey(x => new { x.StudentId, x.MonthId });
+            builder.Entity<StudentAbsence>().HasKey(x => new { x.StudentId, x.DayId });
             builder.Entity<TeacherNotification>().HasKey(x => new { x.TeacherId, x.NotificationId });
         }
         public DbSet<Parent> Parents { get; set; }

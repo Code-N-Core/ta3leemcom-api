@@ -1,4 +1,6 @@
 ﻿
+using System.Linq.Expressions;
+
 namespace PlatformAPI.EF.Repositories
 {
     public class StudentRepository:BaseRepository<Student>,IStudentRepository

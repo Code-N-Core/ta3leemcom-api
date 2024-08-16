@@ -9,8 +9,8 @@ namespace PlatformAPI.Core.Models
 {
     public class StudentMonth
     {
-        public string StudentCode { get; set; }
-        [ForeignKey(nameof(StudentCode))]
+        public int StudentId { get; set; }
+        [ForeignKey(nameof(StudentId))]
         public virtual Student Student { get; set; }
         public int MonthId { get; set; }
         public virtual Month Month { get; set; }

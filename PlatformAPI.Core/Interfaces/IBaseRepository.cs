@@ -11,5 +11,6 @@ namespace PlatformAPI.Core.Interfaces
         Task DeleteAsync(T entity);
 
         Task<T> FindTWithIncludes<T>(int id, params Expression<Func<T, object>>[] includeProperties) where T : class;
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
     }
 }

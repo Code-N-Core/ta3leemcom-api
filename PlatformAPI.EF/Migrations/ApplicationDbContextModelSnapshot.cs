@@ -238,6 +238,9 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -427,11 +430,6 @@ namespace PlatformAPI.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -448,6 +446,16 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("attachmentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("attachmentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuizId");
@@ -463,20 +471,23 @@ namespace PlatformAPI.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("AnswerForm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<int>("Mark")
                         .HasColumnType("int");
 
+                    b.Property<string>("QuestionForm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
-
-                    b.Property<int?>("Time")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("TimeExist")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -571,6 +582,9 @@ namespace PlatformAPI.EF.Migrations
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsAttend")
+                        .HasColumnType("bit");
 
                     b.Property<int>("StudentMark")
                         .HasColumnType("int");

@@ -12,6 +12,8 @@ namespace PlatformAPI.Core.Models
         public int Id { get; set; }
         [Required,MinLength(1),MaxLength(1000)]
         public string Content { get; set; }
+        public bool IsCorrect { get; set; }
+
         [Required]
         public int QuestionId { get; set; }
         public virtual Question Question { get; set; }

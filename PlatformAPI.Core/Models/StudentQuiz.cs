@@ -11,5 +11,6 @@ namespace PlatformAPI.Core.Models
         public virtual Quiz Quiz { get; set; }
         [Required]
         public int StudentMark { get; set; }
+        public bool IsAttend { get; set; }
     }
 }

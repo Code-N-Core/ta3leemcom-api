@@ -24,15 +24,25 @@ namespace PlatformAPI.API
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
+            var apiBaseUrl = builder.Configuration.GetValue<string>("AppSettings:ApiBaseUrl");
+
+            // Configure HttpClient with the retrieved base URL
+            builder.Services.AddHttpClient("QuizApiClient", client =>
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+            });
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddTransient<HttpClient, HttpClient>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<AttachmentService, AttachmentService>();
             builder.Services.AddControllers();
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<AppSetteings>(builder.Configuration.GetSection("AppSetteings"));
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddTransient<IMailingService,MailingService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,4 @@
-﻿using PlatformAPI.Core.DTOs;
+﻿using PlatformAPI.Core.DTOs.Auth;
 
 namespace PlatformAPI.Core.Interfaces
 {

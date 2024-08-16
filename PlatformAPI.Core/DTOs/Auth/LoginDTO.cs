@@ -1,4 +1,4 @@
-﻿namespace PlatformAPI.Core.DTOs
+﻿namespace PlatformAPI.Core.DTOs.Auth
 {
     public class LoginDTO
     {

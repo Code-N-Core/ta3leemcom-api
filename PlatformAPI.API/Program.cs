@@ -37,6 +37,10 @@ namespace PlatformAPI.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddTransient<HttpClient, HttpClient>();
+            builder.Services.AddTransient<QuestionService, QuestionService>();
+            builder.Services.AddTransient<ChooseService, ChooseService>();
+            builder.Services.AddTransient<QuizService, QuizService>();
+            builder.Services.AddTransient<StudentService, StudentService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<AttachmentService, AttachmentService>();

@@ -37,18 +37,18 @@ namespace PlatformAPI.API.Controllers
             return Ok(choose);
         }
 
-        [HttpPost("CreateChose")]
+       /* [HttpPost("CreateChose")]
         public async Task<IActionResult> Create(ChooseDTO model)
         {
             if (ModelState.IsValid) 
             {
                 var choice = _mapper.Map<Choose>(model);
               await  _unitOfWork.Choose.AddAsync(choice);
-                _unitOfWork.Complete();
+               await _unitOfWork.CompleteAsync();
                 return Ok(choice);
             }
             return BadRequest();
-        }
+        }*/
 
         [HttpDelete]
         public async Task<IActionResult>Delete(int id)
@@ -58,7 +58,7 @@ namespace PlatformAPI.API.Controllers
                 return NotFound();
            
                 await _unitOfWork.Choose.DeleteAsync(choose);
-            _unitOfWork.Complete();
+           await _unitOfWork.CompleteAsync();
             return Ok();
         }
 
@@ -88,7 +88,7 @@ namespace PlatformAPI.API.Controllers
                 }
                 if(f == 0)
                     return BadRequest("يجب عليك اختيار اجابه صحيحه");
-                _unitOfWork.Complete();
+               await _unitOfWork.CompleteAsync();
                 return Ok();
 
             }

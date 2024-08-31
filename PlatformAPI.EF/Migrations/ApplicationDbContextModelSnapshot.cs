@@ -503,8 +503,11 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<string>("AnswerForm")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Duration")
+                    b.Property<int?>("Bounce")
                         .HasColumnType("int");
+
+                    b.Property<long>("Duration")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Mark")
                         .HasColumnType("int");
@@ -586,6 +589,37 @@ namespace PlatformAPI.EF.Migrations
                     b.ToTable("StudentsAbsences");
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChosenOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentQuizId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChosenOptionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("StudentQuizId");
+
+                    b.ToTable("StudentAnswers");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentMonth", b =>
                 {
                     b.Property<int>("StudentId")
@@ -606,21 +640,35 @@ namespace PlatformAPI.EF.Migrations
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentQuiz", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsAttend")
                         .HasColumnType("bit");
 
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentBounce")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StudentMark")
                         .HasColumnType("int");
 
-                    b.HasKey("StudentId", "QuizId");
+                    b.Property<DateTime>("SubmitAnswerDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("QuizId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("StudentsQuizzes");
                 });
@@ -879,6 +927,33 @@ namespace PlatformAPI.EF.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentAnswer", b =>
+                {
+                    b.HasOne("PlatformAPI.Core.Models.Choose", "ChosenOption")
+                        .WithMany()
+                        .HasForeignKey("ChosenOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlatformAPI.Core.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlatformAPI.Core.Models.StudentQuiz", "StudentQuiz")
+                        .WithMany("StudentAnswers")
+                        .HasForeignKey("StudentQuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChosenOption");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("StudentQuiz");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentMonth", b =>
                 {
                     b.HasOne("PlatformAPI.Core.Models.Month", "Month")
@@ -1016,6 +1091,11 @@ namespace PlatformAPI.EF.Migrations
                     b.Navigation("StudentMonths");
 
                     b.Navigation("StudentQuizs");
+                });
+
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentQuiz", b =>
+                {
+                    b.Navigation("StudentAnswers");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Teacher", b =>

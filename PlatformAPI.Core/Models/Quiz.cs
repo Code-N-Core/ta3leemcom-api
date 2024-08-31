@@ -11,16 +11,17 @@ namespace PlatformAPI.Core.Models
         public string Title { get; set; }
         [Required]
         public int Mark { get; set; }
+        public int? Bounce { get; set; }
         [Required,Deticated]
         public string Type { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         //online
-        public int? Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         [NotMapped]
         public DateTime? EndDate 
         { 
-            get {return StartDate.AddMinutes((double)Duration); }
+            get {return StartDate.Add(Duration); }
         }
 
         //offline

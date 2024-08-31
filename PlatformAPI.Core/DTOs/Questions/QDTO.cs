@@ -22,7 +22,8 @@ namespace PlatformAPI.Core.DTOs.Questions
            , MaxFileSize(FileSettings.MaxFileSizeInBytes)]
          public IFormFile? AttachFile { get; set; }
         public string Type { get; set; }
-        public int QuizId { get; set; }
+        public int? QuizId { get; set; }
+        public List<ChooseDTO> Choices { get; set; }
         
 
     }

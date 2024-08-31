@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlatformAPI.Core.DTOs.Quiz
+namespace PlatformAPI.Core.DTOs.Questions
 {
     public class QuestionForm
     {

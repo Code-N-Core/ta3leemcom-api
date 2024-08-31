@@ -44,7 +44,7 @@ namespace PlatformAPI.API.Controllers
                 try
                 {
                     await _unitOfWork.Teacher.AddAsync(teacher);
-                    _unitOfWork.Complete();
+                   await _unitOfWork.CompleteAsync();
                 }
                 catch(Exception ex)
                 {
@@ -61,7 +61,7 @@ namespace PlatformAPI.API.Controllers
                 try
                 {
                     await _unitOfWork.Parent.AddAsync(parent);
-                    _unitOfWork.Complete();
+                   await _unitOfWork.CompleteAsync();
                 }
                 catch(Exception ex)
                 {

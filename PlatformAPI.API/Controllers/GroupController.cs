@@ -88,8 +88,8 @@ namespace PlatformAPI.API.Controllers
                 try
                 {
                     await _unitOfWork.Group.AddAsync(group);
-                    await _unitOfWork.CompleteAsync();
-                    var groupDto =_mapper.Map<GroupDTO>(group);
+                   await _unitOfWork.CompleteAsync();
+                    var groupDto=_mapper.Map<GroupDTO>(group);
                     return Ok(groupDto);
                 }
                 catch(Exception ex)

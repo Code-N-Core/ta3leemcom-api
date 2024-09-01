@@ -257,6 +257,7 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest(ModelState);
         }
+
         #region Update Offline Quiz
         /* [HttpPut("UpdateOfflineQuiz")]
          public async Task<IActionResult> UpdateOff([FromForm]UpdateOfflineQuizDto model)

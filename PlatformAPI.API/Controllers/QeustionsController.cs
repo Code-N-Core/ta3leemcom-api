@@ -78,6 +78,7 @@ namespace PlatformAPI.API.Controllers
              Type=attachmentType
              });
          }*/
+
         
 
         [HttpDelete("DeleteQuestion")]
@@ -93,6 +94,7 @@ namespace PlatformAPI.API.Controllers
                     foreach (var choice in choices)
                         await _unitOfWork.Choose.DeleteAsync(choice);
                     await _unitOfWork.Question.DeleteAsync(q);
+
                 }
                 catch (Exception ex)
                 {

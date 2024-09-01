@@ -1,9 +1,11 @@
-﻿using PlatformAPI.EF.Repositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using PlatformAPI.EF.Repositories;
 
 namespace PlatformAPI.EF
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private IDbContextTransaction _transaction;
         public ITeacherRepository Teacher {  get; private set; }
 
         public IStudentRepository Student {  get; private set; }
@@ -56,10 +58,34 @@ namespace PlatformAPI.EF
             GroupQuiz=new GroupQuizRepository(context);
             Feedback=new FeedbackRepository(context);
         }
-
-        public int Complete()
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
-            return _context.SaveChanges();
+            _transaction = await _context.Database.BeginTransactionAsync();
+            return _transaction;
+        }
+        public async Task<int> CompleteAsync()
+        {
+             return await _context.SaveChangesAsync();
+        }
+
+        public async Task RollbackAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public async Task CommitAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
         }
     }
 }

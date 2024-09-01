@@ -91,9 +91,10 @@ namespace PlatformAPI.API.Controllers
                     }
                     student.ApplicationUserId = user.Id;
                     await _unitOfWork.Student.AddAsync(student);
-                    _unitOfWork.Complete();
+                    await _unitOfWork.CompleteAsync();
                     var studentDto = new StudentDTO
                     {
+                        Id=student.Id,   
                         Code = student.Code,
                         Name = _userManager.FindByEmailAsync(student.Code +StudentConst.EmailComplete).Result.Name,
                         GroupId = student.GroupId,
@@ -124,7 +125,7 @@ namespace PlatformAPI.API.Controllers
                 return NotFound();
             }
             await _unitOfWork.Student.DeleteAsync(student);
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return Ok();
         }
         [HttpPut("Edit")]
@@ -137,7 +138,7 @@ namespace PlatformAPI.API.Controllers
 
                 s.GroupId = student.GroupId;
                 s = _unitOfWork.Student.Update(s);
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 return Ok(s);
             }
             return BadRequest(ModelState);

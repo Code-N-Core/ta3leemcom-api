@@ -95,8 +95,8 @@ namespace PlatformAPI.API.Controllers
                     
                 }
                await _unitOfWork.Question.AddAsync(question);
-                 _unitOfWork.Complete();
-                
+               await _unitOfWork.CompleteAsync();
+
 
                 return Ok(question);
 
@@ -118,7 +118,7 @@ namespace PlatformAPI.API.Controllers
                     foreach (var choice in choices)
                         await _unitOfWork.Choose.DeleteAsync(choice);
                     await _unitOfWork.Question.DeleteAsync(q);
-                    _unitOfWork.Complete();
+                    await _unitOfWork.CompleteAsync();
                     return Ok();
 
                 }
@@ -161,7 +161,7 @@ namespace PlatformAPI.API.Controllers
                     q.attachmentType = attachmentType;
                 }
                 _unitOfWork.Question.Update(q);
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 return Ok(q);
 
             }

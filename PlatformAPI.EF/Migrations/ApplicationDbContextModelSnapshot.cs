@@ -265,11 +265,6 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<int>("MonthId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MonthId");
@@ -405,6 +400,9 @@ namespace PlatformAPI.EF.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

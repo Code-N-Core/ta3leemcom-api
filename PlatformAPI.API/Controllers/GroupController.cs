@@ -97,8 +97,8 @@ namespace PlatformAPI.API.Controllers
                 try
                 {
                     await _unitOfWork.Group.AddAsync(group);
-                    _unitOfWork.Complete();
-                    var groupDto=_mapper.Map<GroupDTO>(group);
+                    await _unitOfWork.CompleteAsync();
+                    var groupDto =_mapper.Map<GroupDTO>(group);
                     return Ok(groupDto);
                 }
                 catch(Exception ex)
@@ -133,7 +133,7 @@ namespace PlatformAPI.API.Controllers
             }
 
             await _unitOfWork.Group.DeleteAsync(group);
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return Ok();
         }
         [HttpPut("Edit")]
@@ -145,7 +145,7 @@ namespace PlatformAPI.API.Controllers
                 if (g == null) return NotFound($"No Group was found with ID {group.Id}");
                 g.Name = group.Name;
                 g = _unitOfWork.Group.Update(g);
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 return Ok(g);
             }
             return BadRequest(ModelState);

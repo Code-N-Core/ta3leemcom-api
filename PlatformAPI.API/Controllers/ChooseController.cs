@@ -43,8 +43,8 @@ namespace PlatformAPI.API.Controllers
             if (ModelState.IsValid) 
             {
                 var choice = _mapper.Map<Choose>(model);
-              await  _unitOfWork.Choose.AddAsync(choice);
-                _unitOfWork.Complete();
+                await  _unitOfWork.Choose.AddAsync(choice);
+                await _unitOfWork.CompleteAsync();
                 return Ok(choice);
             }
             return BadRequest();
@@ -58,7 +58,7 @@ namespace PlatformAPI.API.Controllers
                 return NotFound();
            
                 await _unitOfWork.Choose.DeleteAsync(choose);
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return Ok();
         }
 
@@ -88,7 +88,7 @@ namespace PlatformAPI.API.Controllers
                 }
                 if(f == 0)
                     return BadRequest("يجب عليك اختيار اجابه صحيحه");
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 return Ok();
 
             }

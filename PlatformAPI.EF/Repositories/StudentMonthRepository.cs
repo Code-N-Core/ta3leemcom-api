@@ -1,4 +1,8 @@
-﻿namespace PlatformAPI.EF.Repositories
+﻿
+using Microsoft.EntityFrameworkCore;
+using PlatformAPI.Core.Models;
+
+namespace PlatformAPI.EF.Repositories
 {
     public class StudentMonthRepository:BaseRepository<StudentMonth>,IStudentMonthRepository
     {
@@ -8,5 +12,9 @@
         {
             _context = context;
         }
+
+        public async Task<StudentMonth> FindStudentMonthAsync(int studentId, int monthId)
+            => await _context.StudentsMonths.FirstOrDefaultAsync(x=>x.StudentId==studentId&&x.MonthId==monthId);
+
     }
 }

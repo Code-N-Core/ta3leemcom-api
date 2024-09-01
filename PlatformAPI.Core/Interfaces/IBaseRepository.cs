@@ -13,6 +13,7 @@ namespace PlatformAPI.Core.Interfaces
         Task<T> FindTWithIncludes<T>(int id, params Expression<Func<T, object>>[] includeProperties) where T : class;
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
         public  Task<IEnumerable<T>> FindAllWithIncludes<T>(Expression<Func<T, bool>>? criteria, params Expression<Func<T, object>>[]? includeProperties) where T : class;
+        public Task<T> FindTWithExpression<T>(params Expression<Func<T, bool>>[] expressions) where T : class;
 
     }
 }

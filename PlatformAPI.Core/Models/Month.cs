@@ -11,5 +11,7 @@
         [Required]
         public int GroupId { get; set; }
         public virtual Group Group { get; set; }
+        [Required]
+        public int Year { get; set; }
     }
 }

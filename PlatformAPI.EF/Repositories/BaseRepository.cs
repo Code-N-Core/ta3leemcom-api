@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace PlatformAPI.EF.Repositories
 {
@@ -61,6 +63,17 @@ namespace PlatformAPI.EF.Repositories
 
 
             return await query.ToListAsync();
+        }
+        public async Task<T> FindTWithExpression<T>(params Expression<Func<T, bool>>[] expressions) where T : class
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            foreach (var expression in expressions)
+            {
+                query = query.Where(expression);
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
     }

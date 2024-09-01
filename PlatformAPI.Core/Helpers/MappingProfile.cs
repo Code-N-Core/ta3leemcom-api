@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using PlatformAPI.Core.DTOs.Auth;
+using PlatformAPI.Core.DTOs.Day;
+using PlatformAPI.Core.DTOs.Month;
 using PlatformAPI.Core.DTOs.Questions;
 using PlatformAPI.Core.Models;
 
@@ -25,7 +27,10 @@ namespace PlatformAPI.Core.Helpers
             CreateMap<QDTO, Question>()
                 .ForMember(dst => dst.Chooses, opt => opt.Ignore());
             CreateMap<UQDTO, Question>();
-
+            CreateMap<AddMonthDTO, Month>();
+            CreateMap<Month, ViewMonthDTO>();
+            CreateMap<DayDTO,Day>().ReverseMap();
+            CreateMap<Day,ViewDayDTO>().ReverseMap();
         }
     }
 }

@@ -38,6 +38,9 @@ namespace PlatformAPI.API
             });
             builder.Services.AddTransient<HttpClient, HttpClient>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IDayServices, DayServices>();
+            builder.Services.AddTransient<IStudentMonthService, StudentMonthService>();
+            builder.Services.AddTransient<IStudentAbsenceService, StudentAbsenceService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<AttachmentService, AttachmentService>();
             builder.Services.AddControllers();

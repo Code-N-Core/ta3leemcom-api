@@ -139,7 +139,7 @@ namespace PlatformAPI.API.Controllers
                 {
                     var quiz = _mapper.Map<Quiz>(model);
                     _unitOfWork.Quiz.Update(quiz);
-                    _unitOfWork.Complete();
+                    await _unitOfWork.CompleteAsync();
                     return Ok(quiz);
 
                 }
@@ -163,7 +163,7 @@ namespace PlatformAPI.API.Controllers
                 {
                     var quiz = _mapper.Map<Quiz>(model);
                     _unitOfWork.Quiz.Update(quiz);
-                    _unitOfWork.Complete();
+                    await _unitOfWork.CompleteAsync();
                     return Ok(quiz);
 
                 }
@@ -201,7 +201,7 @@ namespace PlatformAPI.API.Controllers
                     StudentMark=totalmark,
                 };
               await  _unitOfWork.StudentQuiz.AddAsync(sq);
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 StudentQuizResult quizResult = new StudentQuizResult
                 {
                     StudentId = sq.StudentId,
@@ -225,7 +225,7 @@ namespace PlatformAPI.API.Controllers
                 if (id == 0) return BadRequest($"There is No Quiz With Id: {id}");
                 var quiz = await _unitOfWork.Quiz.GetByIdAsync(id);
                 await _unitOfWork.Quiz.DeleteAsync(quiz);
-                _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
                 return Ok();
             }
             catch (Exception ex)
@@ -239,7 +239,7 @@ namespace PlatformAPI.API.Controllers
         private async Task<ShowQuiz> ShowQuizBinding(Quiz quiz,CreateQuizDTO model)
         {
             await _unitOfWork.Quiz.AddAsync(quiz);
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             ShowQuiz shq = _mapper.Map<ShowQuiz>(quiz);
             shq.GroupsIds = new List<int>();
             foreach (var group in model.GroupsIds)
@@ -252,7 +252,7 @@ namespace PlatformAPI.API.Controllers
                 await _unitOfWork.GroupQuiz.AddAsync(gq);
                 shq.GroupsIds.Add(gq.GroupId);
             }
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return shq;
         }
     }

@@ -50,7 +50,7 @@ namespace PlatformAPI.API.Controllers
                 {
                     var feedback = _mapper.Map<Feedback>(model);
                     await _unitOfWork.Feedback.AddAsync(feedback);
-                    _unitOfWork.Complete();
+                    await _unitOfWork.CompleteAsync();
                     return Ok(feedback);
                 }
                 catch (Exception ex)
@@ -67,7 +67,7 @@ namespace PlatformAPI.API.Controllers
             if (feedback == null)
                 return BadRequest($"no feedback with id {id}");
             await _unitOfWork.Feedback.DeleteAsync(feedback);
-            _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return Ok(feedback);
         }
     }

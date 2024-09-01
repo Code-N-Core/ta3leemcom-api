@@ -39,7 +39,6 @@ namespace PlatformAPI.EF
         public IFeedbackRepository Feedback { get; private set; }
 
         private readonly ApplicationDbContext _context;
-        private IDbContextTransaction _transaction;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -62,15 +61,6 @@ namespace PlatformAPI.EF
             Feedback = new FeedbackRepository(context);
         }
         public async Task<IDbContextTransaction> BeginTransactionAsync()
-        {
-            _transaction = await _context.Database.BeginTransactionAsync();
-            return _transaction;
-        }
-<<<<<<< HEAD
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
-=======
-        public int Complete()
->>>>>>> allUpdates
         {
             _transaction = await _context.Database.BeginTransactionAsync();
             return _transaction;
@@ -99,28 +89,6 @@ namespace PlatformAPI.EF
                 _transaction = null;
             }
         }
-        public async Task<int> CompleteAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-        public async Task RollbackAsync()
-        {
-            if (_transaction != null)
-            {
-                await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
 
-        public async Task CommitAsync()
-        {
-            if (_transaction != null)
-            {
-                await _transaction.CommitAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
     }
 }

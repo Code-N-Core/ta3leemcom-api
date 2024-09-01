@@ -9,38 +9,50 @@ namespace PlatformAPI.API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly AttachmentService _attachmentService;
+        private readonly QuestionService _questionService;
 
-        public QeustionsController(IUnitOfWork unitOfWork, IMapper mapper, AttachmentService attachmentService)
+        public QeustionsController(IUnitOfWork unitOfWork, IMapper mapper,
+            AttachmentService attachmentService, QuestionService questionService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _attachmentService = attachmentService;
+            _questionService = questionService;
         }
-        //return all questions of quiz with (id)
-        [HttpGet("GetAllQuestionOfQuizID")]
-        public async Task<IActionResult> GetAll(int id) 
-        {
-            var Q = await _unitOfWork.Question.FindAllWithIncludes<Question>(q => q.QuizId == id,
-                q=>q.Chooses,
-                q=>q.Quiz
-                );
-            if (Q == null) return NotFound($"There is No Questions With Quiz id: {id}");
-            List<ShowQuestionsOfQuiz> show= new List<ShowQuestionsOfQuiz>();
-            foreach (var q in Q)
-            {
-                var s = QuestionServ.GetQuestionMap(q);
-                show.Add(s);
-            }
-            return Ok(show);
-        }
+        #region all questions of quizid
+        /*  [HttpGet("GetAllQuestionOfQuizID")]
+          public async Task<IActionResult> GetAll(int id)
+          {
+              var Q = await _unitOfWork.Question.FindAllWithIncludes<Question>(q => q.QuizId == id,
+                  q => q.Chooses,
+                  q => q.Quiz
+                  );
+              if (Q == null) return NotFound($"There is No Questions With Quiz id: {id}");
+              List<ShowQuestionsOfQuiz> show = new List<ShowQuestionsOfQuiz>();
+              foreach (var q in Q)
+              {
+                  var s = QuestionService.GetQuestionMap(q);
+                  show.Add(s);
+              }
+              return Ok(show);
+          }*/
+        #endregion
         [HttpGet("GetQuestion")]
         public async Task<IActionResult> GetById(int id) 
         {
             var q = await _unitOfWork.Question.FindTWithIncludes<Question>(id,q=>q.Chooses,q=>q.Quiz);
             if (q == null)
                 return NotFound($"There is No Question with id: {id}");
-            var s=QuestionServ.GetQuestionMap(q);
+            var s=QuestionService.GetQuestionMap(q);
             return Ok(s);
+        }
+        [HttpGet("GetQuestionsResultOfStudentQuizId")]
+        public async Task<IActionResult> GetResults(int StudentQuizId)
+        {
+            if (StudentQuizId == 0) return BadRequest($"There is No Solution! ");
+            var questionresults =await _questionService.GetStudentAnswers(StudentQuizId);
+            if (questionresults == null) return NotFound();
+            return Ok(questionresults);
         }
 
         /* [HttpPost("upload-file")]
@@ -66,44 +78,7 @@ namespace PlatformAPI.API.Controllers
              Type=attachmentType
              });
          }*/
-
-        [HttpPost("Add")]
-        public async Task<IActionResult> Create([FromForm] QDTO q)
-        {
-            if (ModelState.IsValid)
-            {
-               
-                var question=_mapper.Map<Question>(q);
-                  
-                question.Type = q.Type == "اجباري" ? QuestionType.Mandatory : QuestionType.Optional;
-
-                if(q.AttachFile != null)
-                {
-                    // Example: Save the file to the server or cloud storage
-
-
-                    // Return the file path or a URL that can be used later
-                    var fileUrl = $"/uploads/{q.AttachFile.FileName}";
-
-                    //return the type of the attachment
-                    var attachmentType = _attachmentService.GetAttachmentType(q.AttachFile.FileName);
-                    if (attachmentType == "unknown")
-                        return BadRequest("Unsupported file type.");
-
-                    question.attachmentPath = fileUrl;
-                    question.attachmentType = attachmentType;
-                    
-                }
-               await _unitOfWork.Question.AddAsync(question);
-               await _unitOfWork.CompleteAsync();
-
-
-                return Ok(question);
-
-            }
-            else
-                return BadRequest(ModelState);
-        }
+        
 
         [HttpDelete("DeleteQuestion")]
         public async Task<IActionResult> Delete( int id)
@@ -118,16 +93,16 @@ namespace PlatformAPI.API.Controllers
                     foreach (var choice in choices)
                         await _unitOfWork.Choose.DeleteAsync(choice);
                     await _unitOfWork.Question.DeleteAsync(q);
-                    await _unitOfWork.CompleteAsync();
-                    return Ok();
-
                 }
                 catch (Exception ex)
                 {
 
                     return BadRequest(ex.Message);
                 }
-                
+                   await _unitOfWork.CompleteAsync();
+                return Ok();
+
+
             }
             else
                 return NotFound(ModelState);
@@ -139,28 +114,38 @@ namespace PlatformAPI.API.Controllers
             if (ModelState.IsValid)
             {
                 var q = _mapper.Map<Question>(model);
-                if (q == null) return BadRequest();
 
-                if (model.AttachFile != null)
+                try
                 {
-                    var attachmentType = _attachmentService.GetAttachmentType(model.AttachFile.FileName);
-                    if (attachmentType == "unknown")
-                        return BadRequest("Unsupported file type.");
+                    if (q == null) return BadRequest();
 
-                    // Return the file path or a URL that can be used later
-                    var fileUrl = $"/uploads/{model.AttachFile.FileName}";
+                    /* if (model.AttachFile != null)
+                     {
+                         var attachmentType = _attachmentService.GetAttachmentType(model.AttachFile.FileName);
+                         if (attachmentType == "unknown")
+                             return BadRequest("Unsupported file type.");
+
+                         // Return the file path or a URL that can be used later
+                         var fileUrl = $"/uploads/{model.AttachFile.FileName}";
+
+                         //if its upload new file 
+                         if (q.attachmentPath != null && fileUrl!=q.attachmentPath)
+                         {
+                             //Delete the old url from the server
+                             //save the new fileurl in the sever
+                         }
+                         // 
+                         q.attachmentPath = fileUrl;
+                         q.attachmentType = attachmentType;
+                     }*/
+                    _unitOfWork.Question.Update(q);
                     
-                    //if its upload new file 
-                    if (q.attachmentPath != null && fileUrl!=q.attachmentPath)
-                    {
-                        //Delete the old url from the server
-                        //save the new fileurl in the sever
-                    }
-                    // 
-                    q.attachmentPath = fileUrl;
-                    q.attachmentType = attachmentType;
                 }
-                _unitOfWork.Question.Update(q);
+                catch (Exception ex)
+                {
+
+                    return BadRequest(ex.Message);
+                }
                 await _unitOfWork.CompleteAsync();
                 return Ok(q);
 

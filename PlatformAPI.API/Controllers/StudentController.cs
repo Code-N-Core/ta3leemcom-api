@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
 
@@ -11,22 +12,33 @@ namespace PlatformAPI.API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly QuizService _studentQuizService;
+        private readonly StudentService _studentService;
 
-        public StudentController(IUnitOfWork unitOfWork,IMapper mapper, UserManager<ApplicationUser> userManager)
+        public StudentController(IUnitOfWork unitOfWork, IMapper mapper,
+            UserManager<ApplicationUser> userManager, QuizService studentQuizService, StudentService studentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
+            _studentQuizService = studentQuizService;
+            _studentService = studentService;
         }
 
-        [HttpGet("GetAllStudentWithId")]
-        public async Task<IActionResult> GetAll(int id)
+        [HttpGet("GetAllStudentOfGroupsIds")]
+        public async Task<IActionResult> GetAll([FromQuery]List<int> ids)
         {
-            var students = await _unitOfWork.Student.FindAllAsync(s=>s.GroupId==id||id==0);
+           if(ids is null) return BadRequest("The IDs Of Groups is Null");
+            var students = await _unitOfWork.Student.FindAllAsync(s=>ids.Contains(s.GroupId));
             if (students is null)
-                return NotFound($"there is no Group With Id {id}");
-
-            return Ok(students);
+                return NotFound($"There Is No Students");
+            List<StudentMapDTO> result = new List<StudentMapDTO>();
+            foreach (var student in students)
+            {
+                var st =await _studentService.GetMapStudntSimple(student);
+                result.Add(st);
+            }
+            return Ok(result);
 
         }
 
@@ -42,20 +54,51 @@ namespace PlatformAPI.API.Controllers
                 );
             if (student is null)
                 return NotFound($"there is no student with id {id}");
-            var s = new StudentDTO()
-            {
-                Code=student.Code,
-                GroupId=student.GroupId,
-                GroupName=student.Group.Name,
-                Name=student.Code,
-                LevelName= student.Group.LevelYear.Level.Name,
-                LevelYearName= student.Group.LevelYear.Name,
-
-                StudentParentId=student.Parent!=null?student.Parent.Id:null,
-                StudentParentName= student.Parent != null?student.Parent.ApplicationUser.Name:null,
-                StudentParentPhone= student.Parent != null?student.Parent.ApplicationUser.PhoneNumber:null,
-            };
+            var s =await _studentService.GetMapStudnt(student);
             return Ok(s);
+        }
+        [HttpGet("GetAllResultsOfStudentId")]
+        public async Task<IActionResult> GetResults(int id)
+        {
+            if (id == 0) return BadRequest($"There is no Student With ID: {id}");
+            var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(s => s.StudentId == id,
+                Sq => Sq.Quiz
+                );
+            var res = await _studentQuizService.GetAllStudentQuizResults(studentQuizzes);
+
+
+            return Ok(res.OrderByDescending(s=>s.Id));
+        }
+        [HttpGet("GetAllStudnetDidntEnterQuizId")]
+        public async Task<IActionResult> GetStudents(int quizid)
+        {
+            if (quizid == 0) return NotFound();
+            var students = await _unitOfWork.Student.GetStudentNotEnter(quizid);
+            List<StudentMapDTO> result = new List<StudentMapDTO>();
+            foreach (var student in students)
+            {
+                var st = await _studentService.GetMapStudntSimple(student);
+                result.Add(st);
+            }
+            return Ok(result);
+
+
+        }
+        [HttpGet("GetAllTopStudentOfGroupsIds")]
+        public async Task<IActionResult> GetTopStudent([FromQuery]List<int> ids)
+        {
+            if (ids is null) return BadRequest("The IDs Of Groups is Null");
+            var students = await _unitOfWork.Student.GetTopStudents(ids);
+            if (students is null)
+                return NotFound($"There Is No Students");
+
+            List<StudentMapDTO> result = new List<StudentMapDTO>();
+            foreach (var student in students)
+            {
+                var st = await _studentService.GetMapStudntSimple(student);
+                result.Add(st);
+            }
+            return Ok(result);
         }
 
         [HttpPost("create")]
@@ -91,10 +134,10 @@ namespace PlatformAPI.API.Controllers
                     }
                     student.ApplicationUserId = user.Id;
                     await _unitOfWork.Student.AddAsync(student);
-                    await _unitOfWork.CompleteAsync();
+                   await _unitOfWork.CompleteAsync();
                     var studentDto = new StudentDTO
                     {
-                        Id=student.Id,   
+                        Id=student.Id,
                         Code = student.Code,
                         Name = _userManager.FindByEmailAsync(student.Code +StudentConst.EmailComplete).Result.Name,
                         GroupId = student.GroupId,
@@ -119,14 +162,23 @@ namespace PlatformAPI.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var student = await _unitOfWork.Student.GetByIdAsync(id);
-
             if (student == null)
             {
                 return NotFound();
+
             }
-            await _unitOfWork.Student.DeleteAsync(student);
-            await _unitOfWork.CompleteAsync();
-            return Ok();
+            try
+            {
+                await _unitOfWork.Student.DeleteAsync(student);
+                await _unitOfWork.CompleteAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+           
         }
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
@@ -134,38 +186,31 @@ namespace PlatformAPI.API.Controllers
             if (ModelState.IsValid)
             {
                 var s = await _unitOfWork.Student.GetByIdAsync(student.Id);
-                if (s == null) return NotFound($"No Group was found with ID {student.Id}");
-
-                s.GroupId = student.GroupId;
-                s = _unitOfWork.Student.Update(s);
-                await _unitOfWork.CompleteAsync();
-                return Ok(s);
-            }
-            return BadRequest(ModelState);
-        }
-
-        [HttpGet("GetAllResultsOfStudentId")]
-        public async Task<IActionResult> GetResults(int id)
-        {
-            if (id == 0) return BadRequest($"There is no Student With ID: {id}");
-            var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(s => s.StudentId == id,
-                Sq => Sq.Quiz
-                );
-            List<StudentQuizResult> quizsResults = new List<StudentQuizResult>();
-            foreach (var sq in studentQuizzes)
-            {
-                var sqr = new StudentQuizResult
+                var User =await _userManager.FindByEmailAsync(s.Code + StudentConst.EmailComplete);
+                if (s == null|| User==null)
+                    return NotFound($"No Group was found with ID {student.Id} OR There Is No Application User of This Student");
+                try
                 {
-                    StudentId = sq.StudentId,
-                    QuizId = sq.QuizId,
-                    StudentMark = sq.StudentMark,
-                    IsAttend = sq.IsAttend,
-                    QuizMark = sq.Quiz.Mark,
-                };
-                quizsResults.Add(sqr);
+                    s.GroupId = student.GroupId;
+                    User.Name = student.Name;
+                    var result = await _userManager.UpdateAsync(User);
+
+                    s = _unitOfWork.Student.Update(s);
+                    await _unitOfWork.CompleteAsync();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest(ex.Message);
+                }
+               
             }
-            return Ok(quizsResults);
+            else
+                return BadRequest(ModelState);
         }
+
+       
 
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PlatformAPI.Core.DTOs.Quiz
+﻿using PlatformAPI.Core.DTOs.Questions;
+
+namespace PlatformAPI.Core.DTOs.Quiz
 {
     public class StudentSolutionDTO
     {

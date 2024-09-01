@@ -13,6 +13,7 @@ namespace PlatformAPI.Core.Interfaces
         IGroupRepository Group { get; }
         IMonthRepository Month { get; }
         IStudentQuizRepository StudentQuiz { get; }
+        IStudentAnswerRepository StudentAnswer { get; }
         IStudentAbsenceRepository StudentAbsence { get; }
         IStudentMonthRepository StudentMonth { get; }
         IDayRepository Day { get; }

@@ -11,14 +11,34 @@ namespace PlatformAPI.Core.DTOs.Quiz
 {
     public class CreateOnlineQuizDTO:CreateQuizDTO
     {
-     
-        //online
-        public int Duration { get; set; }
-        public DateTime EndDate
-        {
-            get { return StartDate.AddMinutes(Duration); }
-        }
 
+        public int Bounce { get; set; }
+        public List<QDTO>? Questions { get; set; }
+        public timeStart timeStart { get; set; }
+        public timeDuration timeDuration { get; set; }
+
+
+    }
+    public class timeStart
+    {
+        [Range(1,12)]
+        public int Hours { get; set; }
+        [Range(0,55)]
+        public int Minute { get; set; }
+        [ModeDeticated]
+        public String Mode { get; set; }
+
+    }
+    public class timeDuration
+    {
+        [Range(1, 12)]
+        public int Hours { get; set; }
+        [Range(0, 55)]
+        public int Minute { get; set; }
+        [ModeDeticated]
+        public String Mode { get; set; }
+        [Range(0,7)]
+        public int Days {  get; set; }
 
     }
 }

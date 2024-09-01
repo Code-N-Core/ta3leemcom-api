@@ -1,4 +1,5 @@
 ﻿using PlatformAPI.Core.CustomValidation;
+using PlatformAPI.Core.DTOs.Questions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,11 +16,11 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int Mark { get; set; }
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
-        public int? Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         [NotMapped]
         public DateTime? EndDate
         {
-            get { return Duration != null ? StartDate.AddMinutes((double)Duration) : null; }
+            get { return Duration != null ? StartDate.Add(Duration) : null; }
         }
 
         public string? QuestionForm { get; set; }
@@ -28,6 +29,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
         [Required]
         public int TeacherId { get; set; }
         public List<int> GroupsIds { get; set; }
+        public List<ShowQuestionsOfQuiz> questionsOfQuizzes { get; set; }
 
     }
 }

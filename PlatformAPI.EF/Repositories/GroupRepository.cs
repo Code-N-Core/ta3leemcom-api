@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace PlatformAPI.EF.Repositories
 {
     public class GroupRepository:BaseRepository<Group>,IGroupRepository
@@ -9,15 +11,15 @@ namespace PlatformAPI.EF.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<StudentQuiz>> Getquizsresults(int id)
+        public async Task<IEnumerable<StudentQuiz>> Getquizsresults(List<int> ids)
         {
-            if (id == 0) return null;
-            var lsq = await _context.StudentsQuizzes
-                .Where(sq=>sq.Quiz.GroupsQuizzes.Any(gq=>gq.GroupId==id))
-                .ToListAsync();
-                
-            return lsq;
+            if (ids == null || !ids.Any()) return null;
 
+            var lsq = await _context.StudentsQuizzes
+                .Where(sq=> ids.Contains(sq.Student.GroupId ))
+                .Include(s=>s.Quiz)
+                .ToListAsync();
+            return lsq;
         }
 
     }

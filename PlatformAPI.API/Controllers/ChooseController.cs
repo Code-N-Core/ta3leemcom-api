@@ -37,7 +37,7 @@ namespace PlatformAPI.API.Controllers
             return Ok(choose);
         }
 
-        [HttpPost("CreateChose")]
+       /* [HttpPost("CreateChose")]
         public async Task<IActionResult> Create(ChooseDTO model)
         {
             if (ModelState.IsValid) 
@@ -45,10 +45,11 @@ namespace PlatformAPI.API.Controllers
                 var choice = _mapper.Map<Choose>(model);
                 await  _unitOfWork.Choose.AddAsync(choice);
                 await _unitOfWork.CompleteAsync();
+
                 return Ok(choice);
             }
             return BadRequest();
-        }
+        }*/
 
         [HttpDelete]
         public async Task<IActionResult>Delete(int id)

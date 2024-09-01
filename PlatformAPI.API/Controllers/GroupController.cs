@@ -10,25 +10,27 @@ namespace PlatformAPI.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GroupController(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly QuizService _studentQuizService;
+        public GroupController(IUnitOfWork unitOfWork, IMapper mapper, QuizService studentQuizService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _studentQuizService = studentQuizService;
         }
-        [HttpGet("GetAllGroups")]
-        public async Task<IActionResult> GetAllAsync(int id) 
+        [HttpGet("GetAllGroupsOfTeacherId")]
+        public async Task<IActionResult> GetAllAsync(int teacherId,int levelYearId) 
         {
             //if id==0 return all the groups int the system
            
-               var Groups = await _unitOfWork.Group.FindAllAsync(g => g.TeacherId == id||id==0);
+               var Groups = await _unitOfWork.Group.FindAllAsync(g => (g.TeacherId == teacherId || teacherId == 0)&&g.LevelYearId==levelYearId);
             
             if(Groups is null)
-                return  NotFound($"there is no Group With Id {id}");
+                return  NotFound($"there is no Group With Teacher Id: {teacherId}");
 
             return  Ok(Groups);
         }
 
-        [HttpGet("GetGroup/{id}")]
+        [HttpGet("GetGroup")]
         public async Task<IActionResult> GetById(int id)
         {
           
@@ -63,23 +65,12 @@ namespace PlatformAPI.API.Controllers
             return Ok(data);
         }
         [HttpGet("GetResultsOfStudnetsInGruopID")]
-        public async Task<IActionResult> GetResultInGruop(int groupid)
+        public async Task<IActionResult> GetResultInListOfGruops([FromQuery]List<int> groupids)
         {
-            if (groupid == 0) return BadRequest($"There is No Group With Id: {groupid}");
-            var quizids = await _unitOfWork.Group.Getquizsresults(groupid);
-            List<StudentQuizResult> quizsResults = new List<StudentQuizResult>();
-            foreach (var sq in quizids)
-            {
-                var sqr = new StudentQuizResult
-                {
-                    StudentId = sq.StudentId,
-                    QuizId = sq.QuizId,
-                    StudentMark = sq.StudentMark,
-                    IsAttend = sq.IsAttend,
-                };
-                quizsResults.Add(sqr);
-            }
-            return Ok(quizsResults);
+            if (groupids is null) return BadRequest($"There Groups is Null");
+            var quizids = await _unitOfWork.Group.Getquizsresults(groupids);
+            var res = await _studentQuizService.GetAllStudentQuizResults(quizids);
+            return Ok(res.OrderByDescending(s=>s.StudentMark));
 
         }
 
@@ -117,24 +108,33 @@ namespace PlatformAPI.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id) 
         {
+            if (id == 0) return BadRequest($"there is no id with {id}");
+           
             var group = await _unitOfWork.Group.GetByIdAsync(id);
 
-            if (group == null)
-            {
-                return NotFound();
-            }
-            var students = await _unitOfWork.Student.GetAllAsync();
-            foreach (var student in students)
-            {
-                if (student.GroupId == id)
-                {
-                  await  _unitOfWork.Student.DeleteAsync(student);
-                }
-            }
+            if (group == null) return NotFound();
 
-            await _unitOfWork.Group.DeleteAsync(group);
-            await _unitOfWork.CompleteAsync();
-            return Ok();
+            try
+            {
+                var students = await _unitOfWork.Student.GetAllAsync();
+                foreach (var student in students)
+                {
+                    if (student.GroupId == id)
+                    {
+                        await _unitOfWork.Student.DeleteAsync(student);
+                    }
+                }
+
+                await _unitOfWork.Group.DeleteAsync(group);
+               await _unitOfWork.CompleteAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+           
         }
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] GroupDTO group)
@@ -143,10 +143,19 @@ namespace PlatformAPI.API.Controllers
             {
                 var g = await _unitOfWork.Group.GetByIdAsync(group.Id);
                 if (g == null) return NotFound($"No Group was found with ID {group.Id}");
-                g.Name = group.Name;
-                g = _unitOfWork.Group.Update(g);
-                await _unitOfWork.CompleteAsync();
-                return Ok(g);
+                try
+                {
+                    g.Name = group.Name;
+                    g.LevelYearId =(int)group.LevelYearId;
+                    g = _unitOfWork.Group.Update(g);
+                   await _unitOfWork.CompleteAsync();
+                    return Ok(g);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+               
             }
             return BadRequest(ModelState);
         }

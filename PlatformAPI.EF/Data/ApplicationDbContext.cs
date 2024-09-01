@@ -14,11 +14,18 @@ namespace PlatformAPI.EF.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<StudentQuiz>().HasKey(x => new {x.StudentId,x.QuizId});
             builder.Entity<GroupQuiz>().HasKey(x => new {x.QuizId,x.GroupId});
             builder.Entity<StudentMonth>().HasKey(x => new { x.StudentId, x.MonthId });
             builder.Entity<StudentAbsence>().HasKey(x => new { x.StudentId, x.DayId });
             builder.Entity<TeacherNotification>().HasKey(x => new { x.TeacherId, x.NotificationId });
+            builder.Entity<Quiz>()
+            .Property(q => q.Duration)
+            .HasConversion(
+                v => v.Ticks,                    // Convert TimeSpan to Ticks for storage
+                v => TimeSpan.FromTicks(v))      // Convert Ticks back to TimeSpan
+            .HasColumnType("bigint")             // Store as BIGINT in the database
+            .IsRequired();
+
         }
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
@@ -30,6 +37,7 @@ namespace PlatformAPI.EF.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Choose> Chooses { get; set; }
         public DbSet<StudentQuiz> StudentsQuizzes { get; set; }
+        public DbSet<StudentAnswer> StudentAnswers { get; set; }
         public DbSet<GroupQuiz>GroupsQuizzes { get; set; }
         public DbSet<Month> Months { get; set; }
         public DbSet<Day> Days { get; set; }

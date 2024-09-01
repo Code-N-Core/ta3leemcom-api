@@ -4,7 +4,7 @@ namespace PlatformAPI.Core.Interfaces
 {
     public interface IQuizRepository:IBaseRepository<Quiz>
     {
-        public  Task<IEnumerable<Quiz>> GetQuizzesByGroupId(int groupId);
+        public Task<IEnumerable<Quiz>> GetQuizzesByGroupsIds(List<int> groupsIds);
 
     }
 }

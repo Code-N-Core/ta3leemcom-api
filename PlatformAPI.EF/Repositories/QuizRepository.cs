@@ -10,10 +10,10 @@ namespace PlatformAPI.EF.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<Quiz>> GetQuizzesByGroupId(int groupId)
+        public async Task<IEnumerable<Quiz>> GetQuizzesByGroupsIds(List<int> groupsIds)
         {
             var quizzes = await _context.Quizzes
-                                        .Where(q => q.GroupsQuizzes.Any(gq => gq.GroupId == groupId))
+                                        .Where(q => q.GroupsQuizzes.Any(gq =>groupsIds.Contains(gq.GroupId)))
                                         .ToListAsync();
           /*  var quizzes = await _context.GroupsQuizzes
                                         .Where(g => g.GroupId == groupId)

@@ -5,3 +5,5 @@
 !*.cs
 !*.json
 !*.html
+!*.png
+!wwwroot/

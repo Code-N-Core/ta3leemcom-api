@@ -1,9 +1,13 @@
-# Ignore all files
-*
+# Ignore everything
+*.dll
+*.vs
 
-# Except for these file types
+# Unignore specific file types
 !*.cs
 !*.json
 !*.html
 !*.png
+
+# Unignore wwwroot directory and its contents
 !wwwroot/
+!wwwroot/**

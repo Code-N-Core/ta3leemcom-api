@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
+      "PackagePath": "staticwebassets\\EmailTemplate.html"
+    },
+    {
+      "Id": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
+      "PackagePath": "staticwebassets\\Imgs\\Logo.png"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x86\\staticwebassets\\msbuild.PlatformAPI.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x86\\staticwebassets\\msbuild.build.PlatformAPI.API.props",
+      "PackagePath": "build\\PlatformAPI.API.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x86\\staticwebassets\\msbuild.buildMultiTargeting.PlatformAPI.API.props",
+      "PackagePath": "buildMultiTargeting\\PlatformAPI.API.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x86\\staticwebassets\\msbuild.buildTransitive.PlatformAPI.API.props",
+      "PackagePath": "buildTransitive\\PlatformAPI.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

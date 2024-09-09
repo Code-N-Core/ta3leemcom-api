@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "Hash": "CNFVjqKcuc1dSA0YSaGsXTIG5j9+Yx2MATGC6UAdy3U=",
+  "Source": "PlatformAPI.API",
+  "BasePath": "_content/PlatformAPI.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "PlatformAPI.API\\wwwroot",
+      "Source": "PlatformAPI.API",
+      "ContentRoot": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "EmailTemplate.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\EmailTemplate.html"
+    },
+    {
+      "Identity": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "Imgs/Logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Imgs\\Logo.png"
+    }
+  ]
+}

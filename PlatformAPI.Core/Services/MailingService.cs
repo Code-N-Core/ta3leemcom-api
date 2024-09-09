@@ -45,7 +45,7 @@ namespace PlatformAPI.Core.Services
             email.From.Add(MailboxAddress.Parse(_mailSettings.Email));
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port,SecureSocketOptions.StartTls);
+            await smtp.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Email,_mailSettings.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);

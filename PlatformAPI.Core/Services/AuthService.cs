@@ -18,6 +18,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 namespace PlatformAPI.Core.Services
 {
@@ -31,8 +32,9 @@ namespace PlatformAPI.Core.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMailingService _mailingService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHostingEnvironment _webHostEnvironment; // Inject IWebHostEnvironment
         public AuthService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-            IMapper mapper, IOptions<JWT> jwt, IUrlHelperFactory urlHelperFactory,IHttpContextAccessor httpContextAccessor, IMailingService mailingService)
+            IMapper mapper, IOptions<JWT> jwt, IUrlHelperFactory urlHelperFactory,IHttpContextAccessor httpContextAccessor, IMailingService mailingService,IHostingEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -42,6 +44,7 @@ namespace PlatformAPI.Core.Services
             _httpContextAccessor = httpContextAccessor;
             _mailingService = mailingService;
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<AuthDTO> RegisterAsync(RegisterDTO model)
         {
@@ -74,7 +77,13 @@ namespace PlatformAPI.Core.Services
                 + urlHelper.Action("ConfirmEmail", "Authentication", new {userId=userId,code=code});
 
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "..\\PlatformAPI.Core\\Templates\\EmailTemplate.html");
+            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath,"wwwroot", "EmailTemplate.html");
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Email template not found.", filePath);
+            }
+
             var str = new StreamReader(filePath);
 
             var mailText = str.ReadToEnd();

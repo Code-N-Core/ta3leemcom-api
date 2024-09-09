@@ -23,4 +23,8 @@
     <ProjectReference Include="..\PlatformAPI.EF\PlatformAPI.EF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\EmailTemplate.html" />
+  </ItemGroup>
+
 </Project>

@@ -12,7 +12,7 @@ namespace PlatformAPI.EF.Repositories
 
         public async Task<bool> CheckMonthExistAsync(Month month)
         {
-            var result= await _context.Months.FirstOrDefaultAsync(m=> m.Name == month.Name && m.Year == month.Year );
+            var result= await _context.Months.FirstOrDefaultAsync(m=> m.Name == month.Name && m.Year == month.Year&&m.GroupId==month.GroupId);
             return result!=null;
         }
     }

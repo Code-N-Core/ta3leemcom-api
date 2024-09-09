@@ -132,9 +132,32 @@ namespace PlatformAPI.API.Controllers
                     {
                         return BadRequest(ex.Message);
                     }
-                    student.ApplicationUserId = user.Id;
-                    await _unitOfWork.Student.AddAsync(student);
-                   await _unitOfWork.CompleteAsync();
+                    try
+                    {
+                        student.ApplicationUserId = user.Id;
+                        await _unitOfWork.Student.AddAsync(student);
+                        await _unitOfWork.CompleteAsync();
+                        // Add to studentMonth for all months
+                        var months=await _unitOfWork.Month.FindAllAsync(m=>m.GroupId==model.GroupId);
+                        foreach(var month in months)
+                        {
+                            var studentMonth = new StudentMonth { MonthId = month.Id, Pay = false, StudentId = student.Id };
+                            await _unitOfWork.StudentMonth.AddAsync(studentMonth);
+                            // Add to studentAbsence for all days
+                            var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == month.Id);
+                            foreach (var day in days)
+                            {
+                                var studentAbsenc = new StudentAbsence { DayId = day.Id, Attended = false, StudentId = student.Id };
+                                await _unitOfWork.StudentAbsence.AddAsync(studentAbsenc);
+                            }
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        return BadRequest(ex);
+                    }
+                    await _unitOfWork.CompleteAsync();
+                    // complete
                     var studentDto = new StudentDTO
                     {
                         Id=student.Id,
@@ -169,6 +192,21 @@ namespace PlatformAPI.API.Controllers
             }
             try
             {
+
+                var months = await _unitOfWork.Month.FindAllAsync(m => m.GroupId == student.GroupId);
+                foreach (var m in months)
+                {
+                    var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == student.Id && sm.MonthId == m.Id);
+                    await _unitOfWork.StudentMonth.DeleteAsync(studentMonth);
+
+                    var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == m.Id);
+                    foreach (var d in days)
+                    {
+                        var studentAbsenc = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.StudentId == student.Id && sa.DayId == d.Id);
+                        await _unitOfWork.StudentAbsence.DeleteAsync(studentAbsenc);
+                    }
+                }
+
                 await _unitOfWork.Student.DeleteAsync(student);
                 await _unitOfWork.CompleteAsync();
                 return Ok();
@@ -191,13 +229,62 @@ namespace PlatformAPI.API.Controllers
                     return NotFound($"No Group was found with ID {student.Id} OR There Is No Application User of This Student");
                 try
                 {
-                    s.GroupId = student.GroupId;
-                    User.Name = student.Name;
-                    var result = await _userManager.UpdateAsync(User);
+                    bool flag = false;
+                    if (student.GroupId != s.GroupId)
+                    {
+                        flag = true;
+                        // delete from last studentMonth and studentAbsences
+                        var months = await _unitOfWork.Month.FindAllAsync(m => m.GroupId == s.GroupId);
+                        foreach(var m in months)
+                        {
+                            var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == student.Id && sm.MonthId == m.Id);
+                            await _unitOfWork.StudentMonth.DeleteAsync(studentMonth);
+                            
+                            var days=await _unitOfWork.Day.FindAllAsync(d=>d.MonthId==m.Id);
+                            foreach(var d in days)
+                            {
+                                var studentAbsenc = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.StudentId == student.Id && sa.DayId == d.Id);
+                                await _unitOfWork.StudentAbsence.DeleteAsync(studentAbsenc);
+                            }
+                        }
 
-                    s = _unitOfWork.Student.Update(s);
+                    }
+                    // update
+                    try
+                    {
+                        s.GroupId = student.GroupId;
+                        User.Name = student.Name;
+                        var result = await _userManager.UpdateAsync(User);
+
+                        s = _unitOfWork.Student.Update(s);
+
+                    }
+                    catch(Exception ex) 
+                    {
+                        return BadRequest(ex);
+                    }
                     await _unitOfWork.CompleteAsync();
-                    return Ok();
+
+                    if (flag)
+                    {
+                        // Add to studentMonth for all months
+                        var months = await _unitOfWork.Month.FindAllAsync(m => m.GroupId == s.GroupId);
+                        foreach (var month in months)
+                        {
+                            var studentMonth = new StudentMonth { MonthId = month.Id, Pay = false, StudentId = student.Id };
+                            await _unitOfWork.StudentMonth.AddAsync(studentMonth);
+                            // Add to studentAbsence for all days
+                            var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == month.Id);
+                            foreach (var day in days)
+                            {
+                                var studentAbsenc = new StudentAbsence { DayId = day.Id, Attended = false, StudentId = student.Id };
+                                await _unitOfWork.StudentAbsence.AddAsync(studentAbsenc);
+                            }
+                        }
+                    }
+                    await _unitOfWork.CompleteAsync();
+
+                    return Ok("Student updated successfully");
                 }
                 catch (Exception ex)
                 {

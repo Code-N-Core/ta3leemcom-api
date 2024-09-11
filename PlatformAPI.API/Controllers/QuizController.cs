@@ -91,6 +91,15 @@ namespace PlatformAPI.API.Controllers
             if (res == null) return BadRequest();
             return Ok(res);
         }
+
+        [HttpGet("GetQuizesStatusOfStudentId")]
+        public async Task<IActionResult> GetQuizesStatus(int studentId)
+        {
+            var result= await _unitOfWork.Quiz.GetQuizzesStatusByStudentId(studentId);
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         [HttpPost("AddOnlineQuiz")]
         public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
         {

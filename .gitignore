@@ -11,3 +11,5 @@
 # Unignore wwwroot directory and its contents
 !wwwroot/
 !wwwroot/**
+/.vs
+/.vs

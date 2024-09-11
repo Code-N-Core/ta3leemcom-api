@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\Imgs\\Logo.png"
     },
     {
+      "Id": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
+      "PackagePath": "staticwebassets\\ResetPassword.html"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.PlatformAPI.API.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

@@ -19119,6 +19119,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.7",
+      "Microsoft.AspNetCore.Hosting >= 2.2.7",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.7",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.3",
       "PlatformAPI.Core >= 1.0.0",
@@ -19176,6 +19177,10 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[8.0.7, )"
+          },
+          "Microsoft.AspNetCore.Hosting": {
+            "target": "Package",
+            "version": "[2.2.7, )"
           },
           "Microsoft.EntityFrameworkCore.Design": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",

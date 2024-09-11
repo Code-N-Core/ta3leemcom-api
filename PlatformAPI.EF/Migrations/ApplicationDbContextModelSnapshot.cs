@@ -202,6 +202,12 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ResetCodeExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetPasswordCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 

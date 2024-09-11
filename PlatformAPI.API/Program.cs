@@ -26,16 +26,33 @@ namespace PlatformAPI.API
             // Add services to the container.
             var apiBaseUrl = builder.Configuration.GetValue<string>("AppSettings:ApiBaseUrl");
 
+
+
             // Configure HttpClient with the retrieved base URL
             builder.Services.AddHttpClient("QuizApiClient", client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
             });
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+            // Configure the password constraints
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;                    // Require at least one numeric digit
+                options.Password.RequiredLength = 8;                     // Minimum length of the password
+                options.Password.RequireNonAlphanumeric = true;          // Require at least one non-alphanumeric character
+                options.Password.RequireUppercase = true;                // Require at least one uppercase letter
+                options.Password.RequireLowercase = true;                // Require at least one lowercase letter
+                options.Password.RequiredUniqueChars = 1;                // Require at least one unique character
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
             builder.Services.AddTransient<HttpClient, HttpClient>();
             builder.Services.AddTransient<QuestionService, QuestionService>();
             builder.Services.AddTransient<ChooseService, ChooseService>();

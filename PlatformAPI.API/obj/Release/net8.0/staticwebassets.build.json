@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CNFVjqKcuc1dSA0YSaGsXTIG5j9+Yx2MATGC6UAdy3U=",
+  "Hash": "oTd8+rD2WGr1BlFv+sR27uzxjme3PxO2GcgAhX8NTJ8=",
   "Source": "PlatformAPI.API",
   "BasePath": "_content/PlatformAPI.API",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Imgs\\Logo.png"
+    },
+    {
+      "Identity": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "ResetPassword.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ResetPassword.html"
     }
   ]
 }

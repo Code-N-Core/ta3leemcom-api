@@ -811,3 +811,4 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\System.F
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\System.Text.Json.dll
 C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\System.Formats.Asn1.dll
 C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\System.Text.Json.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\PlatformAPI.API.staticwebassets.runtime.json

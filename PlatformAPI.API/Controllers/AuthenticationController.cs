@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using PlatformAPI.Core.DTOs.Auth;
 using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.Models;
+using Microsoft.AspNetCore.Hosting;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -12,13 +16,18 @@ namespace PlatformAPI.API.Controllers
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMailingService _mailingService;
         private readonly IMapper _mapper;
-        public AuthenticationController(IAuthService authService,UserManager<ApplicationUser> userManager,IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IHostingEnvironment _webHostEnvironment; // Inject IWebHostEnvironment
+
+        public AuthenticationController(IHostingEnvironment webHostEnvironment, IAuthService authService,UserManager<ApplicationUser> userManager,IUnitOfWork unitOfWork,IMapper mapper,IMailingService mailingService)
         {
             _authService = authService;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _mailingService= mailingService;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO model)
@@ -175,6 +184,158 @@ namespace PlatformAPI.API.Controllers
                 Code=model.Code,
                 Role = Roles.Student.ToString()
             });
+        }
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if (await _unitOfWork.Parent.GetByIdAsync(model.Id)!=null)
+            {
+                var parent = await _unitOfWork.Parent.GetByIdAsync(model.Id);
+                var user = await _userManager.FindByIdAsync(parent.ApplicationUserId);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                // Check if the current password matches
+                var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+                if (!isCurrentPasswordValid)
+                {
+                    return BadRequest("الباسورد الحالي غير صحييح");
+                }
+
+                // Check if the new password is the same as the old one
+                if (model.CurrentPassword == model.NewPassword)
+                {
+                    return BadRequest("مينفعش الباسورد القديم يكون مشابه للجديد");
+                }
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    // Return errors if password reset failed
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return BadRequest($"Failed to update password: {errors}");
+                }
+                return Ok("تم تغير كلمة السر بنجاح");
+            }
+            else if(await _unitOfWork.Teacher.GetByIdAsync(model.Id) != null)
+            {
+                var parent = await _unitOfWork.Teacher.GetByIdAsync(model.Id);
+                var user = await _userManager.FindByIdAsync(parent.ApplicationUserId);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                // Check if the current password matches
+                var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+                if (!isCurrentPasswordValid)
+                {
+                    return BadRequest("الباسورد الحالي غير صحييح");
+                }
+
+                // Check if the new password is the same as the old one
+                if (model.CurrentPassword == model.NewPassword)
+                {
+                    return BadRequest("مينفعش الباسورد القديم يكون مشابه للجديد");
+                }
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    // Return errors if password reset failed
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return BadRequest($"Failed to update password: {errors}");
+                }
+                return Ok("تم تغير كلمة السر بنجاح");
+            }
+            else
+                return BadRequest("Invalid id");
+        }
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest("لم يتم العثور علي الإيميل");
+
+            // Generate the reset code
+            string resetCode = _mailingService.GenerateCode();
+
+            // Set the reset code and expiration time
+            user.ResetPasswordCode = resetCode;
+            user.ResetCodeExpiry = DateTime.UtcNow.AddMinutes(30); // Expiry time of 30 minutes
+
+            // Save the reset code and expiration time in the database
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+                return StatusCode(500, "An error occurred while updating the user record.");
+
+            // Load the email template
+            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "ResetPassword.html");
+            string emailBody = await System.IO.File.ReadAllTextAsync(filePath);
+
+            // Customize email body with reset code if needed
+            emailBody = emailBody.Replace("{ResetCode}", resetCode);
+
+            // Send the reset code via email
+            await _mailingService.SendEmailAsync(
+                model.Email,
+                "Code For Reset Password",
+                emailBody // Using the modified template with the reset code
+            );
+
+            return Ok("تم إرسال رمز التأكيد الي ايميلك");
+        }
+        [HttpPost("check-reset-code")]
+        public async Task<IActionResult> CheckResetCode(CheckResetCodeDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest("لم يتم العثور علي الإيميل");
+
+            // Check if the reset code matches and has not expired
+            if (user.ResetPasswordCode != model.ResetCode || user.ResetCodeExpiry < DateTime.UtcNow)
+                return BadRequest("The reset code is invalid or has expired.");
+
+            // Code is valid
+            return Ok("Reset code is valid.");
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest("لم يتم العثور علي الإيميل");
+
+
+            // Reset the password
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            // Clear the reset code after successful password reset
+            user.ResetPasswordCode = null;
+            user.ResetCodeExpiry = null;
+            await _userManager.UpdateAsync(user);
+
+            return Ok("تم تغير كلمة السر بنجاح.");
         }
 
     }

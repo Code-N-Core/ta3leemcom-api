@@ -50,5 +50,12 @@ namespace PlatformAPI.Core.Services
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
+        public string GenerateCode()
+        {
+            // Generate a random 6-digit code (can be customized)
+            Random random = new Random();
+            return random.Next(100000, 999999).ToString(); // Generates a code between 100000 and 999999
+        }
+
     }
 }

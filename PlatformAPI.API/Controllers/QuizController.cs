@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using PlatformAPI.Core.DTOs.Choose;
+using PlatformAPI.Core.DTOs.Questions;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.Core.Models;
@@ -103,52 +105,95 @@ namespace PlatformAPI.API.Controllers
         [HttpPost("AddOnlineQuiz")]
         public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 try
                 {
+                    // Map the quiz DTO to the quiz entity
                     var quiz = _mapper.Map<Quiz>(model);
-                    quiz.StartDate = QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
-                    quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
-                    //addQuiz
-                    await _unitOfWork.Quiz.AddAsync(quiz);
-                    await _unitOfWork.CompleteAsync();
-                    ShowQuiz shq = _mapper.Map<ShowQuiz>(quiz);
+
+                    try
+                    {
+                        // Assign StartDate and Duration
+                        quiz.StartDate = QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
+                        quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
+
+                        // Add the quiz to the repository
+                        await _unitOfWork.Quiz.AddAsync(quiz);
+                        await _unitOfWork.CompleteAsync(); // Commit after adding quiz
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
+                    // Create GroupQuiz entries
+                    var shq = _mapper.Map<ShowQuiz>(quiz);
                     shq.GroupsIds = new List<int>();
-                    foreach (var group in model.GroupsIds)
+
+                    try
                     {
-                        GroupQuiz gq = new GroupQuiz
+                        foreach (var group in model.GroupsIds)
                         {
-                            GroupId = group,
-                            QuizId = quiz.Id,
-                        };
-                        await _unitOfWork.GroupQuiz.AddAsync(gq);
-                        shq.GroupsIds.Add(gq.GroupId);
-                    }
-                    await _unitOfWork.CompleteAsync();
-                    //addQuestion
-                    foreach (var q in model.Questions)
-                    {
-                        q.QuizId=quiz.Id;
-                       var quest=await questionService.CreateQuestion(q);
-                        //addChoice
-                        foreach (var c in q.Choices)
-                        {
-                            c.QuestionId=quest.Id;
-                           await chooseService.CreateChoose(c);
+                            var groupQuiz = new GroupQuiz
+                            {
+                                GroupId = group,
+                                QuizId = quiz.Id,
+                            };
+                            await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
+                            shq.GroupsIds.Add(groupQuiz.GroupId);
                         }
+
+                        await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
                     }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
+                    // Add questions and choices
+                    try
+                    {
+                        foreach (var q in model.Questions)
+                        {
+                            q.QuizId = quiz.Id;
+                            var lcho = new List<ChooseDTO>();
+                     
+                                foreach (var c in q.Choices)
+                                {
+                                    var choice = new ChooseDTO 
+                                    {
+                                        Content=c.Content,
+
+                                    };
+                                    lcho.Add(choice);
+
+                                }
+                            
+                             await questionService.CreateQuestion(q,lcho); // Add question
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
+                    // Retrieve and map all questions
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id));
 
                     return Ok(shq);
                 }
                 catch (Exception ex)
                 {
-
                     return BadRequest(ex.Message);
                 }
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
         [HttpPost("AddStudentSolution")]
         public async Task<IActionResult> Submit(StudentSolutionDTO model)
@@ -301,7 +346,19 @@ namespace PlatformAPI.API.Controllers
             {
                 // delete from studentquizes
                 if (id == 0) return BadRequest($"There is No Quiz With Id: {id}");
-                var quiz = await _unitOfWork.Quiz.GetByIdAsync(id);
+                var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(id,
+                    q=>q.Questions,
+                    q=>q.GroupsQuizzes
+                    );
+                foreach (var question in quiz.Questions)
+                {
+                  await  questionService.DeleteQuestionsWithChoises(question.Id);
+                }
+                foreach (var gq in quiz.GroupsQuizzes)
+                {
+                    await _unitOfWork.GroupQuiz.DeleteAsync(gq);
+                }
+                await _unitOfWork.CompleteAsync();
                 await _unitOfWork.Quiz.DeleteAsync(quiz);
                await _unitOfWork.CompleteAsync();
                 return Ok();

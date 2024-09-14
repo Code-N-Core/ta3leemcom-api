@@ -37,6 +37,7 @@ namespace PlatformAPI.EF
 
         public IGroupQuizRepository GroupQuiz {  get; private set; }
         public IFeedbackRepository Feedback { get; private set; }
+        public INotificationRepository Notification { get; }
 
         private readonly ApplicationDbContext _context;
         public UnitOfWork(ApplicationDbContext context)
@@ -59,6 +60,7 @@ namespace PlatformAPI.EF
             LevelYear = new LevelYearRepository(context);
             GroupQuiz = new GroupQuizRepository(context);
             Feedback = new FeedbackRepository(context);
+            Notification = new NotificationRepository(context);
         }
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {

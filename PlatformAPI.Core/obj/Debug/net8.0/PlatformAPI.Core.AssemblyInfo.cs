@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlatformAPI.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5bfee1bc5b13740f9179d5e92ab0bcd6cbef80d5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a457283a6a7360040d7f07e416f6e4918291aae")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlatformAPI.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlatformAPI.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

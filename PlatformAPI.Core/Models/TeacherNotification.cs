@@ -10,6 +10,7 @@ namespace PlatformAPI.Core.Models
         public int NotificationId { get; set; }
         [ForeignKey(nameof(NotificationId))]
         public Notification Notification { get; set; }
+        public int? quizId { get; set; }
         public DateTime Date { get; set; }
     }
 }

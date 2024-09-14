@@ -21,6 +21,7 @@ namespace PlatformAPI.Core.Interfaces
         ILevelYearRepository LevelYear { get; }
         IGroupQuizRepository GroupQuiz { get; }
         IFeedbackRepository Feedback { get; }
+        INotificationRepository Notification { get; }
         Task<int> CompleteAsync();
         Task RollbackAsync();
         Task CommitAsync();

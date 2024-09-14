@@ -21,7 +21,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     }
     public class timeStart
     {
-        [Range(1,12)]
+        [Range(0,12)]
         public int Hours { get; set; }
         [Range(0,55)]
         public int Minute { get; set; }
@@ -31,7 +31,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     }
     public class timeDuration
     {
-        [Range(1, 12)]
+        [Range(0, 12)]
         public int Hours { get; set; }
         [Range(0, 55)]
         public int Minute { get; set; }

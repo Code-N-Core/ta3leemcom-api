@@ -3,6 +3,8 @@ using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.EF.Repositories;
 using Microsoft.EntityFrameworkCore;
 using PlatformAPI.Core.Const;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+using System.Data;
 
 namespace PlatformAPI.EF.Repositories
 {
@@ -77,7 +79,17 @@ namespace PlatformAPI.EF.Repositories
 
             return quizzes;
         }
+        public async Task<List<Quiz>> GetEndedQuiz(DateTime datenow)
+        {
+            var endedQuizzes =await _context.Quizzes
+                    .Where(q => q.EndDate <= datenow && !q.IsNotfy)
+                    .Include(q => q.GroupsQuizzes)
+                    .ThenInclude(gq => gq.Group)
+                    .ThenInclude(g => g.Teacher)
+                    .ToListAsync();
 
+            return endedQuizzes;
+        }
 
     }
 }

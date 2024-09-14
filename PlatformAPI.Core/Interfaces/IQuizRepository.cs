@@ -7,6 +7,8 @@ namespace PlatformAPI.Core.Interfaces
     {
         public Task<IEnumerable<Quiz>> GetQuizzesByGroupsIds(List<int> groupsIds);
         public  Task<List<QuizStatusDto>> GetQuizzesStatusByStudentId(int studentId);
+        public Task<List<Quiz>> GetEndedQuiz(DateTime datenow);
+
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
@@ -24,7 +25,7 @@ namespace PlatformAPI.API.Controllers
             _studentQuizService = studentQuizService;
             _studentService = studentService;
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpGet("GetAllStudentOfGroupsIds")]
         public async Task<IActionResult> GetAll([FromQuery]List<int> ids)
         {
@@ -41,7 +42,7 @@ namespace PlatformAPI.API.Controllers
             return Ok(result);
 
         }
-
+        [Authorize]
         [HttpGet("GetStudent")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -57,6 +58,7 @@ namespace PlatformAPI.API.Controllers
             var s =await _studentService.GetMapStudnt(student);
             return Ok(s);
         }
+        [Authorize]
         [HttpGet("GetAllResultsOfStudentId")]
         public async Task<IActionResult> GetResults(int id)
         {
@@ -69,6 +71,7 @@ namespace PlatformAPI.API.Controllers
 
             return Ok(res.OrderByDescending(s=>s.Id));
         }
+        [Authorize(Roles = "Teacher")]
         [HttpGet("GetAllStudnetDidntEnterQuizId")]
         public async Task<IActionResult> GetStudents(int quizid)
         {
@@ -84,6 +87,7 @@ namespace PlatformAPI.API.Controllers
 
 
         }
+        [Authorize]
         [HttpGet("GetAllTopStudentOfGroupsIds")]
         public async Task<IActionResult> GetTopStudent([FromQuery]List<int> ids)
         {
@@ -100,7 +104,7 @@ namespace PlatformAPI.API.Controllers
             }
             return Ok(result);
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(CreateStudentDTO model)
         {
@@ -181,6 +185,7 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest(ModelState);
         }
+        [Authorize(Roles = "Teacher")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
@@ -218,6 +223,7 @@ namespace PlatformAPI.API.Controllers
             }
            
         }
+        [Authorize(Roles = "Teacher")]
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
         {
@@ -296,8 +302,6 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest(ModelState);
         }
-
-       
 
     }
 }

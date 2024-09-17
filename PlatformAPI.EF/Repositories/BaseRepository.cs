@@ -75,6 +75,6 @@ namespace PlatformAPI.EF.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
-
+       
     }
 }

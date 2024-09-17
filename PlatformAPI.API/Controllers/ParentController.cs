@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.Parent;
@@ -8,6 +9,7 @@ namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Parent")]
     public class ParentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +19,7 @@ namespace PlatformAPI.API.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetAllParentData(int id)
         {
             var parent=await _unitOfWork.Parent.GetByIdAsync(id);
@@ -25,7 +27,7 @@ namespace PlatformAPI.API.Controllers
                 return NotFound($"No parent with id: {id}");
 
             
-
+            
             var parentData = await _userManager.FindByIdAsync(parent.ApplicationUserId);
 
             
@@ -52,12 +54,15 @@ namespace PlatformAPI.API.Controllers
                     foreach (var day in days)
                     {
                         var studentAbsence = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.DayId == day.Id && sa.StudentId == student.Id);
-                        var dayDto = new StudentMonthDayParentDTO
+                        if (studentAbsence != null)
                         {
-                            Date=day.Date,
-                            Attended=studentAbsence.Attended
-                        };
-                        daysDto.Add(dayDto);
+                            var dayDto = new StudentMonthDayParentDTO
+                            {
+                                Date=day.Date,
+                                Attended=studentAbsence.Attended
+                            };
+                            daysDto.Add(dayDto);
+                        }
                     }
                     studentMonthDto.MonthName = monthData.Name;
                     studentMonthDto.Year= monthData.Year;
@@ -73,14 +78,17 @@ namespace PlatformAPI.API.Controllers
                 {
                     var studentQuizData = await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.QuizId == quiz.QuizId && sq.StudentId == student.Id);
                     var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.GroupId);
-                    var studentQuizDto = new StudentQuizParentDTO
+                    if (quizData != null)
                     {
-                        Date = quizData.StartDate,
-                        QuizMark=quizData.Mark,
-                        StudentMark=studentQuizData.StudentMark,
-                        Title=quizData.Title
-                    };
-                    studentQuizzesDto.Add(studentQuizDto);
+                        var studentQuizDto = new StudentQuizParentDTO
+                        {
+                            Date = quizData.StartDate,
+                            QuizMark=quizData.Mark,
+                            StudentMark=studentQuizData.StudentMark,
+                            Title=quizData.Title
+                        };
+                        studentQuizzesDto.Add(studentQuizDto);
+                    }
                 }
                 
                 // Full Student Data

@@ -122,36 +122,42 @@ namespace PlatformAPI.Core.Services
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             return authModel;
         }
-        
+
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
+            // Retrieve user claims and roles
             var userClaims = await _userManager.GetClaimsAsync(user);
             var userRoles = await _userManager.GetRolesAsync(user);
-            var roleClaims = new List<Claim>();
-            foreach (var role in userRoles)
+
+            // Create role claims
+            var roleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+
+            // Combine all claims into a single list
+            var claims = new List<Claim>
             {
-                roleClaims.Add(new Claim("roles", role));
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // User ID
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),     // Username
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)      // Email
             }
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+            .Union(userClaims)       // Include additional claims from user
+            .Union(roleClaims);      // Include role claims
+
+            // Create the signing key using the secret key
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
+            // Create the JWT token
             var jwtSecurityToken = new JwtSecurityToken(
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
+                expires: DateTime.UtcNow.AddDays(_jwt.DurationInDays), // Use UTC for expiration
                 signingCredentials: signingCredentials,
-                claims: claims,
-                expires: DateTime.Now.AddDays(_jwt.DurationInDays)
-                );
+                claims: claims
+            );
+
             return jwtSecurityToken;
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using PlatformAPI.Core.Helpers;
 
 namespace PlatformAPI.API.Controllers
@@ -41,6 +42,7 @@ namespace PlatformAPI.API.Controllers
             }
             else return BadRequest(ModelState);
         }
+        [Authorize(Roles = "Student,Teacher,Parent")]
         [HttpPost("AddFeedback")]
         public async Task<IActionResult> AddFeedbackAsync(AddFeedbackDTO model)
         {
@@ -60,6 +62,7 @@ namespace PlatformAPI.API.Controllers
             }
             else return BadRequest(ModelState);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteFeedbackAsync(int id)
         {

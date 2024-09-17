@@ -6,6 +6,7 @@ using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.Models;
 using Microsoft.AspNetCore.Hosting;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -104,7 +105,7 @@ namespace PlatformAPI.API.Controllers
 
             return BadRequest("Error confirming email.");
         }
-        [HttpPost("login")]// Login for teacher or parent or admin
+        [HttpPost("login")] // Login for teacher or parent or admin
         public async Task<IActionResult> LoginAsync(LoginDTO model)
         {
             if (!ModelState.IsValid)
@@ -130,11 +131,13 @@ namespace PlatformAPI.API.Controllers
                     Name = user.Name,
                     IsActive=teacher.IsActive,
                     IsSubscribed=teacher.IsSubscribed,
-                    Role=Roles.Teacher.ToString()
+                    Role=Roles.Teacher.ToString(),
+                    TeacherId=teacher.Id
                 });
             }
             else if(await _userManager.IsInRoleAsync(user, Roles.Parent.ToString()))
             {
+                var parent = await _unitOfWork.Parent.GetByAppUserIdAsync(user.Id);
                 return Ok(new
                 {
                     token = result.Token,
@@ -142,7 +145,8 @@ namespace PlatformAPI.API.Controllers
                     UserId = user.Id,
                     Email = user.Email,
                     Name = user.Name,
-                    Role = Roles.Parent.ToString()
+                    Role = result.Roles,
+                    ParentId=parent.Id
                 });
             }
             else
@@ -185,6 +189,7 @@ namespace PlatformAPI.API.Controllers
                 Role = Roles.Student.ToString()
             });
         }
+        [Authorize(Roles="Parent,Teacher")]
         [HttpPut("update-password")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO model)
         {
@@ -257,6 +262,7 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest("Invalid id");
         }
+        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("forget-password")]
         public async Task<IActionResult> ForgetPassword(ForgetPasswordDTO model)
         {
@@ -295,6 +301,7 @@ namespace PlatformAPI.API.Controllers
 
             return Ok("تم إرسال رمز التأكيد الي ايميلك");
         }
+        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("check-reset-code")]
         public async Task<IActionResult> CheckResetCode(CheckResetCodeDTO model)
         {
@@ -312,6 +319,7 @@ namespace PlatformAPI.API.Controllers
             // Code is valid
             return Ok("Reset code is valid.");
         }
+        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {

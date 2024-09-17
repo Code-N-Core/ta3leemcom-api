@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.Day;
 
@@ -19,7 +20,7 @@ namespace PlatformAPI.API.Controllers
             _mapper = mapper;
             _studentAbsenceService = studentAbsenceService;
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> AddAsync(DayDTO model)
         {
@@ -51,6 +52,7 @@ namespace PlatformAPI.API.Controllers
             viewDayDTO.studentAbsences = await _studentAbsenceService.GetAllAsync(viewDayDTO.Id);
             return Ok(viewDayDTO);
         }
+        [Authorize(Roles = "Teacher")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync([FromQuery]int dayId)
         {

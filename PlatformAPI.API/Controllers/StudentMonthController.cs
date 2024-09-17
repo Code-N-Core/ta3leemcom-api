@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.StudentMonth;
 using PlatformAPI.Core.Models;
@@ -59,6 +60,7 @@ namespace PlatformAPI.API.Controllers
         //    await _unitOfWork.CompleteAsync();
         //    return Ok("MonthStudents added successfully");
         //}
+        [Authorize(Roles = "Teacher")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(List<StudentMonthDto> models)
         {

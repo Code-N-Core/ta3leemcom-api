@@ -1,4 +1,5 @@
-﻿using PlatformAPI.Core.DTOs.Groub;
+﻿using Microsoft.AspNetCore.Authorization;
+using PlatformAPI.Core.DTOs.Groub;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
 using Group = PlatformAPI.Core.Models.Group;
@@ -17,6 +18,7 @@ namespace PlatformAPI.API.Controllers
             _mapper = mapper;
             _studentQuizService = studentQuizService;
         }
+        [Authorize(Roles = "Student,Teacher")]
         [HttpGet("GetAllGroupsOfTeacherId")]
         public async Task<IActionResult> GetAllAsync(int teacherId,int levelYearId) 
         {
@@ -29,7 +31,7 @@ namespace PlatformAPI.API.Controllers
 
             return  Ok(Groups);
         }
-
+        [Authorize(Roles = "Student,Teacher,Parent")]
         [HttpGet("GetGroup")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -64,6 +66,7 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(data);
         }
+        [Authorize(Roles = "Student,Teacher,Parent")]
         [HttpGet("GetResultsOfStudnetsInGruopID")]
         public async Task<IActionResult> GetResultInListOfGruops([FromQuery]List<int> groupids)
         {
@@ -73,7 +76,7 @@ namespace PlatformAPI.API.Controllers
             return Ok(res.OrderByDescending(s=>s.StudentMark));
 
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPost("Add")]
         public async Task<IActionResult> AddAsync(AddGroupDTO model)
         {
@@ -104,7 +107,7 @@ namespace PlatformAPI.API.Controllers
          * 
          * there are more entitese need to delete
          * */
-
+        [Authorize(Roles = "Teacher")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id) 
         {
@@ -136,6 +139,7 @@ namespace PlatformAPI.API.Controllers
             }
            
         }
+        [Authorize(Roles = "Teacher")]
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] GroupDTO group)
         {

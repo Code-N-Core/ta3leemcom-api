@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PlatformAPI.Core.DTOs.Choose;
 
 namespace PlatformAPI.API.Controllers
@@ -18,6 +19,7 @@ namespace PlatformAPI.API.Controllers
         }
 
         //return all chooses of question with (id) or return all chooses
+        [Authorize(Roles = "Student,Teacher")]
         [HttpGet("GetAllChoosesofQuestionWithId")]
         public async Task<IActionResult> GetAll(int id)
         {
@@ -28,6 +30,7 @@ namespace PlatformAPI.API.Controllers
 
         }
         //return specific choose
+        [Authorize(Roles = "Student,Teacher")]
         [HttpGet("GetChoiceById")]
         public async Task<IActionResult> GetById(int id) 
         {
@@ -37,19 +40,19 @@ namespace PlatformAPI.API.Controllers
             return Ok(choose);
         }
 
-       /* [HttpPost("CreateChose")]
-        public async Task<IActionResult> Create(ChooseDTO model)
-        {
-            if (ModelState.IsValid) 
-            {
-                var choice = _mapper.Map<Choose>(model);
-              await  _unitOfWork.Choose.AddAsync(choice);
-               await _unitOfWork.CompleteAsync();
-                return Ok(choice);
-            }
-            return BadRequest();
-        }*/
-
+        /* [HttpPost("CreateChose")]
+         public async Task<IActionResult> Create(ChooseDTO model)
+         {
+             if (ModelState.IsValid) 
+             {
+                 var choice = _mapper.Map<Choose>(model);
+               await  _unitOfWork.Choose.AddAsync(choice);
+                await _unitOfWork.CompleteAsync();
+                 return Ok(choice);
+             }
+             return BadRequest();
+         }*/
+        [Authorize(Roles = "Teacher")]
         [HttpDelete]
         public async Task<IActionResult>Delete(int id)
         {
@@ -61,7 +64,7 @@ namespace PlatformAPI.API.Controllers
            await _unitOfWork.CompleteAsync();
             return Ok();
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPut("Edit-Choices")]
         public async Task<IActionResult> Update([FromBody] List<ChooseDTO> chooses)
         {

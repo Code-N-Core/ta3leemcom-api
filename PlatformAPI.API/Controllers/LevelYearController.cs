@@ -1,4 +1,6 @@
-﻿namespace PlatformAPI.API.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -9,7 +11,7 @@
         {
             _unitOfWork = unitOfWork;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllLevelsYearsAsync()
         {

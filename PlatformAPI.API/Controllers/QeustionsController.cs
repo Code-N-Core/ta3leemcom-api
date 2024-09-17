@@ -1,4 +1,5 @@
-﻿using PlatformAPI.Core.DTOs.Questions;
+﻿using Microsoft.AspNetCore.Authorization;
+using PlatformAPI.Core.DTOs.Questions;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -37,6 +38,7 @@ namespace PlatformAPI.API.Controllers
               return Ok(show);
           }*/
         #endregion
+        [Authorize]
         [HttpGet("GetQuestion")]
         public async Task<IActionResult> GetById(int id) 
         {
@@ -46,6 +48,7 @@ namespace PlatformAPI.API.Controllers
             var s=QuestionService.GetQuestionMap(q);
             return Ok(s);
         }
+        [Authorize]
         [HttpGet("GetQuestionsResultOfStudentQuizId")]
         public async Task<IActionResult> GetResults(int StudentQuizId)
         {
@@ -79,8 +82,8 @@ namespace PlatformAPI.API.Controllers
              });
          }*/
 
-        
 
+        [Authorize(Roles = "Teacher")]
         [HttpDelete("DeleteQuestion")]
         public async Task<IActionResult> Delete( int id)
         {
@@ -109,7 +112,7 @@ namespace PlatformAPI.API.Controllers
             else
                 return NotFound(ModelState);
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPut("Edit-Question")]
         public async Task<IActionResult> Update([FromForm] UQDTO model)
         {

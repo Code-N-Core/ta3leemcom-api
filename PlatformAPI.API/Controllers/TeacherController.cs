@@ -6,7 +6,6 @@ namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles ="Teacher")]
     public class TeacherController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -16,9 +15,11 @@ namespace PlatformAPI.API.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
             => Ok( await _unitOfWork.Teacher.GetAllAsync());
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet("GetTeacherInformation")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -35,6 +36,7 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(info);
         }
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(UpdateTeacherDTO model)
         {

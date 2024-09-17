@@ -10,9 +10,9 @@
         public string LevelYearName { get; set; }
         public string GroupName { get; set; }
         // Student Months Data
-        public IEnumerable<StudentMonthParentDTO> Months { get; set; }
+        public IEnumerable<StudentMonthParentDTO>? Months { get; set; }
         // Student Quizzes
-        public IEnumerable<StudentQuizParentDTO> Quizzes { get; set; }
+        public IEnumerable<StudentQuizParentDTO>? Quizzes { get; set; }
         // Teacher Data
         public string TeacherName {  get; set; }
         public string TeacherPhone { get; set; }

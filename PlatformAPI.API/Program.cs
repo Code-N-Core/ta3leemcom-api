@@ -14,6 +14,7 @@ using PlatformAPI.Core.Services;
 using PlatformAPI.EF;
 using PlatformAPI.EF.Data;
 using System.Configuration;
+using System.Security.Claims;
 using System.Text;
 
 namespace PlatformAPI.API
@@ -103,7 +104,8 @@ namespace PlatformAPI.API
                         ValidateLifetime = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
                         ValidIssuer = builder.Configuration["JWT:Issuer"],
-                        ValidAudience = builder.Configuration["JWT:Audience"]
+                        ValidAudience = builder.Configuration["JWT:Audience"],
+                        RoleClaimType = ClaimTypes.Role
                     };
                 });
 
@@ -150,7 +152,7 @@ namespace PlatformAPI.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<TeacherIsSubsMiddleware>();
+            //app.UseMiddleware<TeacherIsSubsMiddleware>();
 
             app.MapControllers();
 

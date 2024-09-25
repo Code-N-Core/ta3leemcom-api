@@ -39,6 +39,7 @@ namespace PlatformAPI.API.MiddleWares
                                 return;
                             }
                         }
+                        
                     }
                 }
             context.Response.StatusCode = StatusCodes.Status403Forbidden;

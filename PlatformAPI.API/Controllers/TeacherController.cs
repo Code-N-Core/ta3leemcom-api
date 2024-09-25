@@ -6,7 +6,7 @@ namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles ="Teacher")]
+    [Authorize(Roles ="Teacher")]
     public class TeacherController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

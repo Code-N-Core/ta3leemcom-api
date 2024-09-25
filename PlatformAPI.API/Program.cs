@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -20,6 +22,23 @@ namespace PlatformAPI.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            // Register Hangfire services
+            builder.Services.AddHangfire(configuration =>
+                configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                             .UseSimpleAssemblyNameTypeSerializer()
+                             .UseRecommendedSerializerSettings()
+                             .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+                             {
+                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                 QueuePollInterval = TimeSpan.Zero,
+                                 UseRecommendedIsolationLevel = true,
+                                 DisableGlobalLocks = true
+                             }));
+
+            // Add the Hangfire server
+            builder.Services.AddHangfireServer();
+
             var apiBaseUrl = builder.Configuration.GetValue<string>("AppSettings:ApiBaseUrl");
 
             // Configure HttpClient with the retrieved base URL
@@ -54,6 +73,7 @@ namespace PlatformAPI.API
             builder.Services.AddTransient<QuestionService, QuestionService>();
             builder.Services.AddTransient<ChooseService, ChooseService>();
             builder.Services.AddTransient<QuizService, QuizService>();
+            builder.Services.AddTransient<NotificationService, NotificationService>();
             builder.Services.AddTransient<StudentService, StudentService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddTransient<IDayServices, DayServices>();
@@ -68,7 +88,6 @@ namespace PlatformAPI.API
             builder.Services.AddTransient<IMailingService, MailingService>();
 
             // Add Quiz Notification Background Service
-            builder.Services.AddHostedService<QuizNotificationService>();
 
             // Swagger/OpenAPI setup
             builder.Services.AddEndpointsApiExplorer();
@@ -136,11 +155,22 @@ namespace PlatformAPI.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<TeacherIsSubsMiddleware>();
+            //app.UseMiddleware<TeacherIsSubsMiddleware>();
 
             // Add routing for SignalR
             app.MapHub<NotificationHub>("/notificationHub");
 
+
+            // Configure Hangfire dashboard
+            app.UseHangfireDashboard("/dashboard");
+
+
+            // Schedule the recurring Hangfire job for the vacation escalation process
+            RecurringJob.AddOrUpdate<QuizNotificationService>(
+                "escalate-vacation-requests",
+                job => job.CheckEndedQuizzesAsync(),
+                Cron.HourInterval(3) // This schedules the job to run every 6 hours
+                ); 
             app.MapControllers();
 
             app.Run();

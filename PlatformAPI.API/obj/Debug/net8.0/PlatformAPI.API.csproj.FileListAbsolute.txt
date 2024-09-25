@@ -813,3 +813,7 @@ C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.
 C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\System.Text.Json.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\PlatformAPI.API.staticwebassets.runtime.json
 C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\PlatformAPI.API.staticwebassets.runtime.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\Hangfire.AspNetCore.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\Hangfire.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\Hangfire.NetCore.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom-api\PlatformAPI.API\bin\Debug\net8.0\Hangfire.SqlServer.dll

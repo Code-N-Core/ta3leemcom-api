@@ -218,6 +218,9 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("VerificationCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -254,7 +257,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Chooses", (string)null);
+                    b.ToTable("Chooses");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Day", b =>
@@ -275,7 +278,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("MonthId");
 
-                    b.ToTable("Days", (string)null);
+                    b.ToTable("Days");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Feedback", b =>
@@ -304,7 +307,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Feedbacks", (string)null);
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Group", b =>
@@ -332,7 +335,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.GroupQuiz", b =>
@@ -347,7 +350,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupsQuizzes", (string)null);
+                    b.ToTable("GroupsQuizzes");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Level", b =>
@@ -365,7 +368,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Levels", (string)null);
+                    b.ToTable("Levels");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.LevelYear", b =>
@@ -388,7 +391,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("LevelId");
 
-                    b.ToTable("LevelYears", (string)null);
+                    b.ToTable("LevelYears");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Month", b =>
@@ -414,7 +417,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Months", (string)null);
+                    b.ToTable("Months");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Notification", b =>
@@ -432,7 +435,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Parent", b =>
@@ -452,7 +455,7 @@ namespace PlatformAPI.EF.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Parents", (string)null);
+                    b.ToTable("Parents");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Question", b =>
@@ -493,7 +496,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Quiz", b =>
@@ -538,7 +541,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Student", b =>
@@ -572,7 +575,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentAbsence", b =>
@@ -590,7 +593,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("DayId");
 
-                    b.ToTable("StudentsAbsences", (string)null);
+                    b.ToTable("StudentsAbsences");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentAnswer", b =>
@@ -621,7 +624,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("StudentQuizId");
 
-                    b.ToTable("StudentAnswers", (string)null);
+                    b.ToTable("StudentAnswers");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentMonth", b =>
@@ -639,7 +642,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("MonthId");
 
-                    b.ToTable("StudentsMonths", (string)null);
+                    b.ToTable("StudentsMonths");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentQuiz", b =>
@@ -674,7 +677,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentsQuizzes", (string)null);
+                    b.ToTable("StudentsQuizzes");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Teacher", b =>
@@ -700,7 +703,7 @@ namespace PlatformAPI.EF.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.TeacherNotification", b =>
@@ -718,7 +721,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("TeachersNotifications", (string)null);
+                    b.ToTable("TeachersNotifications");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

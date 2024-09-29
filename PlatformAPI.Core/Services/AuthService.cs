@@ -49,9 +49,11 @@ namespace PlatformAPI.Core.Services
         public async Task<AuthDTO> RegisterAsync(RegisterDTO model)
         {
             if (await _userManager.FindByEmailAsync(model.Email) is not null)
-                return new AuthDTO { Message = "Email is already registerd!" };
+                return new AuthDTO { Message = "Email is already registered!" };
+
             var user = _mapper.Map<ApplicationUser>(model);
             var result = await _userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
             {
                 var errors = string.Empty;
@@ -61,38 +63,57 @@ namespace PlatformAPI.Core.Services
                 }
                 return new AuthDTO { Message = errors };
             }
+
             await _userManager.AddToRoleAsync(user, model.Role);
             var jwtSecurityToken = await CreateJwtToken(user);
 
-            //Verification Code
-            var userId = await _userManager.GetUserIdAsync(user);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext(
-                _httpContextAccessor.HttpContext,
-                _httpContextAccessor.HttpContext.GetRouteData(),
-                new ActionDescriptor()));
-
-
-            var verificationUrl = _httpContextAccessor.HttpContext.Request.Scheme+"://"+_httpContextAccessor.HttpContext.Request.Host
-                + urlHelper.Action("ConfirmEmail", "Authentication", new {userId=userId,code=code});
-
-
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath,"wwwroot", "EmailTemplate.html");
-
-            if (!File.Exists(filePath))
+            // Verification Code for Parent
+            if (model.Role == Roles.Parent.ToString())
             {
-                throw new FileNotFoundException("Email template not found.", filePath);
+                // Generate a 6-digit verification code
+                var verificationCode = new Random().Next(100000, 999999);
+
+                // Store the code (this could be stored in the database associated with the user or using a distributed cache)
+                // For demonstration, assuming you save it in the database as a field called VerificationCode.
+                user.VerificationCode = verificationCode.ToString();
+                await _userManager.UpdateAsync(user);
+
+                // Load email template
+                var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "ParentVerificationCodeTemplate.html");
+                if (!File.Exists(filePath))
+                {
+                    throw new FileNotFoundException("Email template not found.", filePath);
+                }
+
+                var mailText = await File.ReadAllTextAsync(filePath);
+                mailText = mailText.Replace("[name]", user.Name)
+                                   .Replace("[email]", user.Email)
+                                   .Replace("[code]", verificationCode.ToString()); // Here, replace the link placeholder with the code.
+
+                // Send the 6-digit verification code to the parent's email
+                await _mailingService.SendEmailAsync(user.Email, "Verification Code", mailText);
             }
+            else
+            {
+                // For other roles, send the email confirmation link
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext(
+                    _httpContextAccessor.HttpContext,
+                    _httpContextAccessor.HttpContext.GetRouteData(),
+                    new ActionDescriptor()));
 
-            var str = new StreamReader(filePath);
+                var verificationUrl = _httpContextAccessor.HttpContext.Request.Scheme + "://" + _httpContextAccessor.HttpContext.Request.Host
+                    + urlHelper.Action("ConfirmEmail", "Authentication", new { userId = userId, code = code });
 
-            var mailText = str.ReadToEnd();
-            str.Close();
+                var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "EmailTemplate.html");
+                var mailText = await File.ReadAllTextAsync(filePath);
+                mailText = mailText.Replace("[name]", user.Name)
+                                   .Replace("[email]", user.Email)
+                                   .Replace("[link]", verificationUrl);
 
-            mailText = mailText.Replace("[name]", user.Name).Replace("[email]", user.Email).Replace("[link]",verificationUrl);
-            await _mailingService.SendEmailAsync(user.Email, "Verificstion Code",mailText);
-            
-            ////////////////////////////////////////
+                await _mailingService.SendEmailAsync(user.Email, "Verification Code", mailText);
+            }
 
             return new AuthDTO
             {
@@ -102,8 +123,8 @@ namespace PlatformAPI.Core.Services
                 Roles = new List<string> { Roles.Teacher.ToString() },
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken)
             };
-
         }
+
         public async Task<AuthDTO> LoginAsync(LoginDTO model)
         {
             var authModel = new AuthDTO();

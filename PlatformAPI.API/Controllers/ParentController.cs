@@ -8,6 +8,10 @@ namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+<<<<<<< Updated upstream
+=======
+    [Authorize(Roles = "Parent")]
+>>>>>>> Stashed changes
     public class ParentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -68,12 +72,17 @@ namespace PlatformAPI.API.Controllers
                 }
 
                 var studentQuizzesDto = new List<StudentQuizParentDTO>();
-                var studentQuizzes = await _unitOfWork.GroupQuiz.FindAllAsync(gq => gq.GroupId == student.GroupId);
+                var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllAsync(sq => sq.StudentId == student.Id);
                 foreach (var quiz in studentQuizzes)
                 {
                     var studentQuizData = await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.QuizId == quiz.QuizId && sq.StudentId == student.Id);
+<<<<<<< Updated upstream
                     var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.GroupId);
                     var studentQuizDto = new StudentQuizParentDTO
+=======
+                    var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.QuizId);
+                    if (quizData != null)
+>>>>>>> Stashed changes
                     {
                         Date = quizData.StartDate,
                         QuizMark=quizData.Mark,
@@ -122,6 +131,8 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest($"There is no parent with id: {model.ParentId}");
             if (await _unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode) == null)
                 return NotFound("لا يوجد طالب بهذا الكود");
+            if (_unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode).Result.ParentId != null)
+                return BadRequest("هذا الطالب تمة اضافة ولي امر له مسبقا");
             var student = await _unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode);
             student.ParentId= model.ParentId;
             _unitOfWork.Student.Update(student);

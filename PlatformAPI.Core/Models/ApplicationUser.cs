@@ -14,5 +14,6 @@ namespace PlatformAPI.Core.Models
 
         // Add the ResetCodeExpiry property
         public DateTime? ResetCodeExpiry { get; set; }
+        public string? VerificationCode { get; set; }
     }
 }

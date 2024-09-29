@@ -1,4 +1,6 @@
-﻿namespace PlatformAPI.API.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -11,6 +13,7 @@
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllLevelsYearsAsync()
         {
             var levelsYears=await _unitOfWork.LevelYear.GetAllAsync();

@@ -16,6 +16,7 @@ namespace PlatformAPI.API.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
             => Ok( await _unitOfWork.Teacher.GetAllAsync());
@@ -35,6 +36,7 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(info);
         }
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(UpdateTeacherDTO model)
         {

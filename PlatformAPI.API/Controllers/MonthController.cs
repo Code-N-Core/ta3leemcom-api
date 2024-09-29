@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.Day;
 using PlatformAPI.Core.DTOs.Month;
@@ -23,7 +24,7 @@ namespace PlatformAPI.API.Controllers
             _studentMonthService = studentMonthService;
             _studentAbsenceService = studentAbsenceService;
         }
-        
+        [Authorize(Roles = "Teacher")]
         [HttpGet("GetLastMonthAdded")]
         public async Task<IActionResult> GetAsync(int groupId)
         {
@@ -47,6 +48,7 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(monthData);
         }
+        [Authorize]
         [HttpGet("GetMonthData")]
         public async Task<IActionResult> GetMonthDataAsync(int monthId)
         {
@@ -69,7 +71,7 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(monthData);
         }
-
+        [Authorize]
         [HttpGet("GetAllMonthsOfGroups")]
         public async Task<IActionResult> GetAllAsync([FromQuery] List<int> ids)
         {
@@ -88,7 +90,7 @@ namespace PlatformAPI.API.Controllers
 
             return Ok(months);
         }
-
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> AddAsync(AddMonthDTO model)
         {
@@ -118,6 +120,7 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest(ex.ToString());
             } 
         }
+        [Authorize(Roles = "Teacher")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -179,6 +182,7 @@ namespace PlatformAPI.API.Controllers
                 }
             }
         }
+        [Authorize(Roles = "Teacher")]
         [HttpPut("SaveChanges")]
         public async Task<IActionResult> SaveAsync(SaveMonthDataDTO model)
         {

@@ -77,15 +77,17 @@ namespace PlatformAPI.API.Controllers
                 foreach (var quiz in studentQuizzes)
                 {
                     var studentQuizData = await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.QuizId == quiz.QuizId && sq.StudentId == student.Id);
-                    var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.GroupId);
-                    if (quizData != null)
+                    var studentMark = 0;
+                    if(studentQuizData!=null)studentMark=studentQuizData.StudentMark;
+                    var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.QuizId);
+                    if (quizData != null&& quizData.StartDate+quizData.Duration<DateTime.Now)
                     {
                         var studentQuizDto = new StudentQuizParentDTO
                         {
                             Date = quizData.StartDate,
                             QuizMark=quizData.Mark,
-                            StudentMark=studentQuizData.StudentMark,
-                            Title=quizData.Title
+                            StudentMark= studentMark,
+                            Title =quizData.Title
                         };
                         studentQuizzesDto.Add(studentQuizDto);
                     }

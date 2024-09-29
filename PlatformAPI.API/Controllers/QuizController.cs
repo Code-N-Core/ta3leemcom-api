@@ -154,7 +154,7 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [Authorize(Roles ="Student")]
+        [Authorize(Roles = "Student")]
         [HttpPost("AddStudentSolution")]
         public async Task<IActionResult> Submit(StudentSolutionDTO model)
         {
@@ -248,7 +248,6 @@ namespace PlatformAPI.API.Controllers
           }*/
         #endregion
         [Authorize(Roles = "Teacher")]
-
         [HttpPut("UpdateOnlineQuiz")]
         public async Task<IActionResult> UpdateOn(UpdateOnlineQuizDto model)
         {
@@ -300,7 +299,6 @@ namespace PlatformAPI.API.Controllers
  */
         #endregion
         [Authorize(Roles = "Teacher,Admin")]
-
         [HttpDelete("DeleteQuiz")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
@@ -105,7 +106,7 @@ namespace PlatformAPI.API.Controllers
 
             return BadRequest("Error confirming email.");
         }
-        [HttpPost("login")] // Login for teacher or parent or admin
+        [HttpPost("login")]// Login for teacher or parent or admin
         public async Task<IActionResult> LoginAsync(LoginDTO model)
         {
             if (!ModelState.IsValid)
@@ -131,13 +132,11 @@ namespace PlatformAPI.API.Controllers
                     Name = user.Name,
                     IsActive=teacher.IsActive,
                     IsSubscribed=teacher.IsSubscribed,
-                    Role=Roles.Teacher.ToString(),
-                    TeacherId=teacher.Id
+                    Role=Roles.Teacher.ToString()
                 });
             }
             else if(await _userManager.IsInRoleAsync(user, Roles.Parent.ToString()))
             {
-                var parent = await _unitOfWork.Parent.GetByAppUserIdAsync(user.Id);
                 return Ok(new
                 {
                     token = result.Token,
@@ -145,8 +144,7 @@ namespace PlatformAPI.API.Controllers
                     UserId = user.Id,
                     Email = user.Email,
                     Name = user.Name,
-                    Role = result.Roles,
-                    ParentId=parent.Id
+                    Role = Roles.Parent.ToString()
                 });
             }
             else
@@ -189,7 +187,7 @@ namespace PlatformAPI.API.Controllers
                 Role = Roles.Student.ToString()
             });
         }
-        [Authorize(Roles="Parent,Teacher")]
+        [Authorize(Roles = "Parent,Teacher")]
         [HttpPut("update-password")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO model)
         {
@@ -344,6 +342,97 @@ namespace PlatformAPI.API.Controllers
             await _userManager.UpdateAsync(user);
 
             return Ok("تم تغير كلمة السر بنجاح.");
+        }
+        [HttpPost("verify-parent-code")]
+        public async Task<IActionResult> VerifyParentCode(VerifyParentCodeDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Find the user by email
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest("لم يتم العثور علي الإيميل");
+
+            // Check if the user is a parent
+            if (!await _userManager.IsInRoleAsync(user, Roles.Parent.ToString()))
+                return BadRequest("The user is not a parent.");
+
+            // Verify the code
+            if (user.VerificationCode != model.VerificationCode)
+                return BadRequest("The verification code is invalid.");
+
+            // Code matches, mark IsConfirmed as true
+            user.EmailConfirmed = true;
+
+            // Clear the verification code to prevent reuse
+            user.VerificationCode = null;
+
+            // Update the user in the database
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return BadRequest("Failed to update confirmation status.");
+
+            var loginModelDto = new LoginDTO
+            {
+                Email=model.Email,
+                Password=model.Password
+            };
+            var result2 = await _authService.LoginAsync(loginModelDto);
+
+            if (!result2.IsAuthenticated)
+                return BadRequest(result2.Message);
+
+            var parent = await _unitOfWork.Parent.GetByAppUserIdAsync(user.Id);
+            return Ok(new
+            {
+                token = result2.Token,
+                expiresOn = result2.ExpiresOn,
+                UserId = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                Role = result2.Roles,
+                ParentId = parent.Id
+            });
+        }
+        [HttpPost("resend-verification-code")]
+        public async Task<IActionResult> ResendVerificationCode(ResendVerificationCodeDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Find the user by email
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest("لم يتم العثور علي الإيميل");
+
+            // Check if the user is already confirmed
+            if (user.EmailConfirmed)
+                return BadRequest("The account is already confirmed.");
+
+            // Generate a new 6-digit verification code
+            var newVerificationCode = new Random().Next(100000, 999999).ToString();
+
+            // Store the new verification code
+            user.VerificationCode = newVerificationCode;
+
+            // Update the user in the database
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return StatusCode(500, "An error occurred while updating the user record.");
+
+            // Load email template
+            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "ParentVerificationCodeTemplate.html");
+
+            var mailText = await System.IO.File.ReadAllTextAsync(filePath);
+            mailText = mailText.Replace("[name]", user.Name)
+                               .Replace("[email]", user.Email)
+                               .Replace("[code]", newVerificationCode); // Replace link with the new verification code
+
+            // Send the email with the new verification code
+            await _mailingService.SendEmailAsync(user.Email, "Resend Verification Code", mailText);
+
+            return Ok("A new verification code has been sent to your email.");
         }
 
     }

@@ -12,15 +12,15 @@ using PlatformAPI.EF.Data;
 namespace PlatformAPI.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240704022818_SeedLevels")]
-    partial class SeedLevels
+    [Migration("20240919141155_AddVerificationCodeForApplicationUserTable")]
+    partial class AddVerificationCodeForApplicationUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -205,6 +205,12 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ResetCodeExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetPasswordCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -214,6 +220,10 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -241,6 +251,9 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -265,16 +278,40 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<int>("MonthId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MonthId");
 
                     b.ToTable("Days");
+                });
+
+            modelBuilder.Entity("PlatformAPI.Core.Models.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Group", b =>
@@ -293,9 +330,14 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LevelYearId");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Groups");
                 });
@@ -328,12 +370,7 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("TeacherId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Levels");
                 });
@@ -376,6 +413,9 @@ namespace PlatformAPI.EF.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -430,11 +470,6 @@ namespace PlatformAPI.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -451,6 +486,16 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("attachmentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("attachmentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuizId");
@@ -466,20 +511,26 @@ namespace PlatformAPI.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("AnswerForm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Bounce")
+                        .HasColumnType("int");
+
+                    b.Property<long>("Duration")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Mark")
                         .HasColumnType("int");
 
+                    b.Property<string>("QuestionForm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
-
-                    b.Property<int?>("Time")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("TimeExist")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -499,28 +550,42 @@ namespace PlatformAPI.EF.Migrations
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Student", b =>
                 {
-                    b.Property<string>("Code")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.HasIndex("GroupId");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Students");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentAbsence", b =>
                 {
-                    b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.Property<int>("DayId")
                         .HasColumnType("int");
@@ -528,17 +593,48 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<bool>("Attended")
                         .HasColumnType("bit");
 
-                    b.HasKey("StudentCode", "DayId");
+                    b.HasKey("StudentId", "DayId");
 
                     b.HasIndex("DayId");
 
                     b.ToTable("StudentsAbsences");
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChosenOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentQuizId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChosenOptionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("StudentQuizId");
+
+                    b.ToTable("StudentAnswers");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentMonth", b =>
                 {
-                    b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.Property<int>("MonthId")
                         .HasColumnType("int");
@@ -546,7 +642,7 @@ namespace PlatformAPI.EF.Migrations
                     b.Property<bool>("Pay")
                         .HasColumnType("bit");
 
-                    b.HasKey("StudentCode", "MonthId");
+                    b.HasKey("StudentId", "MonthId");
 
                     b.HasIndex("MonthId");
 
@@ -555,18 +651,35 @@ namespace PlatformAPI.EF.Migrations
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentQuiz", b =>
                 {
-                    b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsAttend")
+                        .HasColumnType("bit");
 
                     b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentBounce")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentMark")
                         .HasColumnType("int");
 
-                    b.HasKey("StudentCode", "QuizId");
+                    b.Property<DateTime>("SubmitAnswerDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("QuizId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("StudentsQuizzes");
                 });
@@ -696,7 +809,15 @@ namespace PlatformAPI.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PlatformAPI.Core.Models.Teacher", "Teacher")
+                        .WithMany("Groups")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("LevelYear");
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.GroupQuiz", b =>
@@ -716,13 +837,6 @@ namespace PlatformAPI.EF.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("PlatformAPI.Core.Models.Level", b =>
-                {
-                    b.HasOne("PlatformAPI.Core.Models.Teacher", null)
-                        .WithMany("Levels")
-                        .HasForeignKey("TeacherId");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.LevelYear", b =>
@@ -782,13 +896,27 @@ namespace PlatformAPI.EF.Migrations
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Student", b =>
                 {
+                    b.HasOne("PlatformAPI.Core.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("Student")
+                        .HasForeignKey("PlatformAPI.Core.Models.Student", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PlatformAPI.Core.Models.Group", "Group")
                         .WithMany("Students")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PlatformAPI.Core.Models.Parent", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("ApplicationUser");
+
                     b.Navigation("Group");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentAbsence", b =>
@@ -801,13 +929,40 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasOne("PlatformAPI.Core.Models.Student", "Student")
                         .WithMany("StudentAbsences")
-                        .HasForeignKey("StudentCode")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Day");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentAnswer", b =>
+                {
+                    b.HasOne("PlatformAPI.Core.Models.Choose", "ChosenOption")
+                        .WithMany()
+                        .HasForeignKey("ChosenOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlatformAPI.Core.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlatformAPI.Core.Models.StudentQuiz", "StudentQuiz")
+                        .WithMany("StudentAnswers")
+                        .HasForeignKey("StudentQuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChosenOption");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("StudentQuiz");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.StudentMonth", b =>
@@ -820,7 +975,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasOne("PlatformAPI.Core.Models.Student", "Student")
                         .WithMany("StudentMonths")
-                        .HasForeignKey("StudentCode")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -839,7 +994,7 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasOne("PlatformAPI.Core.Models.Student", "Student")
                         .WithMany("StudentQuizs")
-                        .HasForeignKey("StudentCode")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -881,6 +1036,9 @@ namespace PlatformAPI.EF.Migrations
             modelBuilder.Entity("PlatformAPI.Core.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Parent")
+                        .IsRequired();
+
+                    b.Navigation("Student")
                         .IsRequired();
 
                     b.Navigation("Teacher")
@@ -946,9 +1104,14 @@ namespace PlatformAPI.EF.Migrations
                     b.Navigation("StudentQuizs");
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.StudentQuiz", b =>
+                {
+                    b.Navigation("StudentAnswers");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.Teacher", b =>
                 {
-                    b.Navigation("Levels");
+                    b.Navigation("Groups");
 
                     b.Navigation("TeacherNotifications");
                 });

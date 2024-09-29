@@ -13,6 +13,7 @@ namespace PlatformAPI.API.Controllers
         }
         [Authorize]
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllLevelsYearsAsync()
         {
             var levelsYears=await _unitOfWork.LevelYear.GetAllAsync();

@@ -24,7 +24,7 @@ namespace PlatformAPI.API.Controllers
             _studentMonthService = studentMonthService;
             _studentAbsenceService = studentAbsenceService;
         }
-        [Authorize(Roles="Teacher")]
+        [Authorize(Roles = "Teacher")]
         [HttpGet("GetLastMonthAdded")]
         public async Task<IActionResult> GetAsync(int groupId)
         {
@@ -72,7 +72,6 @@ namespace PlatformAPI.API.Controllers
             return Ok(monthData);
         }
         [Authorize]
-
         [HttpGet("GetAllMonthsOfGroups")]
         public async Task<IActionResult> GetAllAsync([FromQuery] List<int> ids)
         {

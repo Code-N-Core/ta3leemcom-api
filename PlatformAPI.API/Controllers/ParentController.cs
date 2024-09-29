@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.Parent;
 using PlatformAPI.Core.DTOs.Student;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Parent")]
+    [Authorize(Roles = "Parent")]
     public class ParentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -77,15 +77,17 @@ namespace PlatformAPI.API.Controllers
                 foreach (var quiz in studentQuizzes)
                 {
                     var studentQuizData = await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.QuizId == quiz.QuizId && sq.StudentId == student.Id);
-                    var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.GroupId);
-                    if (quizData != null)
+                    var studentMark = 0;
+                    if(studentQuizData!=null)studentMark=studentQuizData.StudentMark;
+                    var quizData = await _unitOfWork.Quiz.GetByIdAsync(quiz.QuizId);
+                    if (quizData != null&& quizData.StartDate+quizData.Duration<DateTime.Now)
                     {
                         var studentQuizDto = new StudentQuizParentDTO
                         {
                             Date = quizData.StartDate,
                             QuizMark=quizData.Mark,
-                            StudentMark=studentQuizData.StudentMark,
-                            Title=quizData.Title
+                            StudentMark= studentMark,
+                            Title =quizData.Title
                         };
                         studentQuizzesDto.Add(studentQuizDto);
                     }
@@ -130,6 +132,8 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest($"There is no parent with id: {model.ParentId}");
             if (await _unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode) == null)
                 return NotFound("لا يوجد طالب بهذا الكود");
+            if (_unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode).Result.ParentId != null)
+                return BadRequest("هذا الطالب تمة اضافة ولي امر له مسبقا");
             var student = await _unitOfWork.Student.FindTWithExpression<Student>(s => s.Code == model.StudentCode);
             student.ParentId= model.ParentId;
             _unitOfWork.Student.Update(student);

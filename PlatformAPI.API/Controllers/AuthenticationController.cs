@@ -132,7 +132,8 @@ namespace PlatformAPI.API.Controllers
                     Name = user.Name,
                     IsActive=teacher.IsActive,
                     IsSubscribed=teacher.IsSubscribed,
-                    Role=Roles.Teacher.ToString()
+                    Role=Roles.Teacher.ToString(),
+                    TeacherId=teacher.Id
                 });
             }
             else if(await _userManager.IsInRoleAsync(user, Roles.Parent.ToString()))
@@ -144,7 +145,8 @@ namespace PlatformAPI.API.Controllers
                     UserId = user.Id,
                     Email = user.Email,
                     Name = user.Name,
-                    Role = Roles.Parent.ToString()
+                    Role = result.Roles,
+                    parentId=_unitOfWork.Parent.FindTWithExpression<Parent>(p=>p.ApplicationUserId==user.Id).Result.Id
                 });
             }
             else
@@ -184,7 +186,8 @@ namespace PlatformAPI.API.Controllers
                 expiresOn = result.ExpiresOn,
                 Name = user.Name,
                 Code=model.Code,
-                Role = Roles.Student.ToString()
+                Role = Roles.Student.ToString(),
+                StudentId= _unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id
             });
         }
         [Authorize(Roles = "Parent,Teacher")]

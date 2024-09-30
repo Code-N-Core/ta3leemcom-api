@@ -35,7 +35,6 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetGroup")]
         public async Task<IActionResult> GetById(int id)
         {
-          
            var group=await _unitOfWork.Group.FindTWithIncludes<Group>(id,
                g=>g.Teacher,
                g=>g.Students,
@@ -56,15 +55,17 @@ namespace PlatformAPI.API.Controllers
                s.LevelName=group.LevelYear.Level.Name;
                 listStudents.Add(s);
             }
-            var data = new GroupDTO()
+            return Ok(new
             {
                 Id = id,
-                LevelYearId = group.LevelYear.LevelId,
+                LevelYearId = group.LevelYear.Id,
+                LevelYearName = group.LevelYear.Name,
                 Name = group.Name,
                 TeacherId = group.TeacherId,
-                Students = listStudents
-            };
-            return Ok(data);
+                Students = listStudents,
+                LevelId = group.LevelYear.LevelId,
+                LevelName = group.LevelYear.Level.Name
+            });
         }
         [Authorize(Roles = "Student,Teacher,Parent")]
         [HttpGet("GetResultsOfStudnetsInGruopID")]
@@ -93,7 +94,16 @@ namespace PlatformAPI.API.Controllers
                     await _unitOfWork.Group.AddAsync(group);
                    await _unitOfWork.CompleteAsync();
                     var groupDto=_mapper.Map<GroupDTO>(group);
-                    return Ok(groupDto);
+                    return Ok(new
+                    {
+                        Id = groupDto.Id,
+                        Name = groupDto.Name,
+                        LevelYearId = groupDto.LevelYearId,
+                        TeacherId = groupDto.TeacherId,
+                        LevelYearName = _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId).Result.Name,
+                        LevelId = _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId).Result.LevelId,
+                        LevelName =_unitOfWork.Level.GetByIdAsync( _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId).Result.LevelId).Result.Name
+                    });
                 }
                 catch(Exception ex)
                 {
@@ -153,7 +163,18 @@ namespace PlatformAPI.API.Controllers
                     g.LevelYearId =(int)group.LevelYearId;
                     g = _unitOfWork.Group.Update(g);
                    await _unitOfWork.CompleteAsync();
-                    return Ok(g);
+                    return Ok(
+                        new
+                        {
+                            Id = g.Id,
+                            Name = g.Name,
+                            LevelYearId = g.LevelYearId,
+                            TeacherId = g.TeacherId,
+                            LevelYearName = _unitOfWork.LevelYear.GetByIdAsync(g.LevelYearId).Result.Name,
+                            LevelId = _unitOfWork.LevelYear.GetByIdAsync(g.LevelYearId).Result.LevelId,
+                            LevelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(g.LevelYearId).Result.LevelId).Result.Name
+                        }
+                        );
                 }
                 catch (Exception ex)
                 {

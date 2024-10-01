@@ -56,7 +56,29 @@ namespace PlatformAPI.API.Controllers
             if (student is null)
                 return NotFound($"there is no student with id {id}");
             var s =await _studentService.GetMapStudnt(student);
-            return Ok(s);
+            string parentName = null;
+            string parentPhone = null;
+            if (s.StudentParentId != null)
+            {
+                int pId = s.StudentParentId ?? 0;
+                parentName = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(pId).Result.ApplicationUserId).Result.Name;
+                parentPhone = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(pId).Result.ApplicationUserId).Result.PhoneNumber;
+            }
+            return Ok(new
+            {
+                id = s.Id,
+                name = _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(s.Id).Result.ApplicationUserId).Result.Name,
+                code = s.Code,
+                groupId = s.GroupId,
+                groupName = _unitOfWork.Group.GetByIdAsync(s.GroupId).Result.Name,
+                levelYearId = _unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId,
+                levelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.Name,
+                levelId = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId,
+                levelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
+                studentParentId = s.StudentParentId,
+                studentParentName = parentName,
+                studentParentPhone = parentPhone
+            });
         }
         [Authorize]
         [HttpGet("GetAllResultsOfStudentId")]
@@ -289,8 +311,29 @@ namespace PlatformAPI.API.Controllers
                         }
                     }
                     await _unitOfWork.CompleteAsync();
-
-                    return Ok("Student updated successfully");
+                    string parentName = null;
+                    string parentPhone = null;
+                    if (s.ParentId != null)
+                    {
+                        int id = s.ParentId ?? 0;
+                        parentName = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(id).Result.ApplicationUserId).Result.Name;
+                        parentPhone = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(id).Result.ApplicationUserId).Result.PhoneNumber;
+                    }
+                    return Ok(new
+                    {
+                        id=s.Id,
+                        name=_userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(s.Id).Result.ApplicationUserId).Result.Name,
+                        code=s.Code,
+                        groupId = s.GroupId,
+                        groupName=_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.Name,
+                        levelYearId= _unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId,
+                        levelYearName= _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.Name,
+                        levelId =_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId,
+                        levelName=_unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
+                        studentParentId=s.ParentId,
+                        studentParentName=parentName,
+                        studentParentPhone=parentPhone
+                    });
                 }
                 catch (Exception ex)
                 {

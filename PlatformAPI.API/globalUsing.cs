@@ -7,3 +7,4 @@ global using System.Text.RegularExpressions;
 global using PlatformAPI.Core.Models;
 global using PlatformAPI.Core.Services;
 global using PlatformAPI.Core.Const;
+global using PlatformAPI.EF;

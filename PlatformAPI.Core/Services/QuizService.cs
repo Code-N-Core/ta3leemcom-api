@@ -6,6 +6,7 @@ using PlatformAPI.Core.Interfaces;
 using PlatformAPI.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,19 @@ namespace PlatformAPI.Core.Services
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+        }
+        public async Task<List<Quiz>> GetEndedQuizez()
+        {
+            var datenow = DateTime.Now;
+
+            var endedQuizzes = await _unitOfWork.Quiz.GetEndedQuiz(datenow);
+     
+            // Now manually filter in memory to debug and inspect
+            var d = endedQuizzes.Last().EndDate;
+            var filteredQuizzes = endedQuizzes
+            .Where(q => q.EndDate <= datenow)  // Client-side evaluation of the date logic
+                .ToList();
+            return filteredQuizzes;
         }
 
         public async Task<StudentQuiz> CreateQuizStudent(Quiz quiz, StudentSolutionDTO model,int totalmark, int bouncemark)

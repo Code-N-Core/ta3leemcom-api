@@ -30,6 +30,7 @@ namespace PlatformAPI.Core.Models
 
         [Required]
         public int TeacherId { get; set; }
+        public bool IsNotfy { get; set; }
 
         public virtual Teacher Teacher { get; set; }
         public virtual List<StudentQuiz> StudentsQuizzes { get; set; }

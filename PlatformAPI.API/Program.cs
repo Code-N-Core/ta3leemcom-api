@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -8,13 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlatformAPI.API.MiddleWares;
 using PlatformAPI.Core.Helpers;
-using PlatformAPI.Core.Interfaces;
-using PlatformAPI.Core.Models;
-using PlatformAPI.Core.Services;
-using PlatformAPI.EF;
+using PlatformAPI.Core.Hubs; // Add this for the NotificationHub
 using PlatformAPI.EF.Data;
-using System.Configuration;
-using System.Security.Claims;
 using System.Text;
 
 namespace PlatformAPI.API
@@ -24,10 +20,26 @@ namespace PlatformAPI.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
             // Add services to the container.
+            // Register Hangfire services
+            builder.Services.AddHangfire(configuration =>
+                configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                             .UseSimpleAssemblyNameTypeSerializer()
+                             .UseRecommendedSerializerSettings()
+                             .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+                             {
+                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                 QueuePollInterval = TimeSpan.Zero,
+                                 UseRecommendedIsolationLevel = true,
+                                 DisableGlobalLocks = true
+                             }));
+
+            // Add the Hangfire server
+            builder.Services.AddHangfireServer();
+
             var apiBaseUrl = builder.Configuration.GetValue<string>("AppSettings:ApiBaseUrl");
-
-
 
             // Configure HttpClient with the retrieved base URL
             builder.Services.AddHttpClient("QuizApiClient", client =>
@@ -38,13 +50,12 @@ namespace PlatformAPI.API
             // Configure the password constraints
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                // Password settings
-                options.Password.RequireDigit = true;                    // Require at least one numeric digit
-                options.Password.RequiredLength = 8;                     // Minimum length of the password
-                options.Password.RequireNonAlphanumeric = true;          // Require at least one non-alphanumeric character
-                options.Password.RequireUppercase = true;                // Require at least one uppercase letter
-                options.Password.RequireLowercase = true;                // Require at least one lowercase letter
-                options.Password.RequiredUniqueChars = 1;                // Require at least one unique character
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredUniqueChars = 1;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -54,10 +65,15 @@ namespace PlatformAPI.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            // Add SignalR for real-time notifications
+            builder.Services.AddSignalR();
+
+            // Register services
             builder.Services.AddTransient<HttpClient, HttpClient>();
             builder.Services.AddTransient<QuestionService, QuestionService>();
             builder.Services.AddTransient<ChooseService, ChooseService>();
             builder.Services.AddTransient<QuizService, QuizService>();
+            builder.Services.AddTransient<NotificationService, NotificationService>();
             builder.Services.AddTransient<StudentService, StudentService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddTransient<IDayServices, DayServices>();
@@ -69,8 +85,11 @@ namespace PlatformAPI.API
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
             builder.Services.Configure<AppSetteings>(builder.Configuration.GetSection("AppSetteings"));
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-            builder.Services.AddTransient<IMailingService,MailingService>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddTransient<IMailingService, MailingService>();
+
+            // Add Quiz Notification Background Service
+
+            // Swagger/OpenAPI setup
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(options =>
@@ -87,62 +106,46 @@ namespace PlatformAPI.API
                     },
                 });
             });
+
+            // JWT Authentication
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(o =>
+            .AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = false;
+                o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    o.RequireHttpsMetadata = false;
-                    o.SaveToken = false;
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-                        ValidIssuer = builder.Configuration["JWT:Issuer"],
-                        ValidAudience = builder.Configuration["JWT:Audience"],
-                        RoleClaimType = ClaimTypes.Role
-                    };
-                });
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"]
+                };
+            });
 
             builder.Services.AddCors();
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(PlatformAPI.Core.Helpers.MappingProfile));
             builder.Services.AddAutoMapper(typeof(PlatformAPI.API.Helpers.MappingProfile));
 
-
-            // Registering the IActionContextAccessor service with a singleton lifetime.
-            // This ensures that the same instance of IActionContextAccessor is used throughout the application's lifetime.
+            // Register IActionContextAccessor and IUrlHelper
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-            // Registering the IUrlHelper service with a transient lifetime.
-            // This means a new instance of IUrlHelper will be created each time it is requested.
             builder.Services.AddTransient<IUrlHelper>(x =>
             {
-                // Retrieve the ActionContext from the IActionContextAccessor service.
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
-
-                // Retrieve the IUrlHelperFactory service.
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
-
-                // Use the factory to create a new IUrlHelper instance based on the retrieved ActionContext.
                 return factory.GetUrlHelper(actionContext);
             });
 
-
-
             var app = builder.Build();
 
-            //// Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
+            // Configure the HTTP request pipeline
             app.UseSwagger();
             app.UseSwaggerUI();
 
@@ -154,6 +157,20 @@ namespace PlatformAPI.API
             app.UseAuthorization();
             //app.UseMiddleware<TeacherIsSubsMiddleware>();
 
+            // Add routing for SignalR
+            app.MapHub<NotificationHub>("/notificationHub");
+
+
+            // Configure Hangfire dashboard
+            app.UseHangfireDashboard("/dashboard");
+
+
+            // Schedule the recurring Hangfire job for the vacation escalation process
+            RecurringJob.AddOrUpdate<QuizNotificationService>(
+                "escalate-vacation-requests",
+                job => job.CheckEndedQuizzesAsync(),
+                Cron.HourInterval(3) // This schedules the job to run every 6 hours
+                ); 
             app.MapControllers();
 
             app.Run();

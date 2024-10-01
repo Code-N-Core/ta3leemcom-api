@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PlatformAPI.Core.DTOs.Quiz;
-using PlatformAPI.EF.Repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.Const;
+using System.Data;
 
 namespace PlatformAPI.EF.Repositories
 {
@@ -77,7 +75,19 @@ namespace PlatformAPI.EF.Repositories
 
             return quizzes;
         }
+        public async Task<List<Quiz>> GetEndedQuiz(DateTime datenow)
+        {
+            // Fetch non-notified quizzes first
+            // Get them all in memory first
+            var endedQuizzes =await _context.Quizzes
+                    .Where(q => q.EndDate <= datenow && !q.IsNotfy)
+                    .Include(q => q.GroupsQuizzes)
+                    .ThenInclude(gq => gq.Group)
+                    .ThenInclude(g => g.Teacher)
+                    .ToListAsync();
 
+            return endedQuizzes;
+        }
 
     }
 }

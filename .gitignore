@@ -2,6 +2,7 @@
 *.dll
 *.vs
 
+<<<<<<< Updated upstream
 # Unignore specific file types
 !*.cs
 !*.json
@@ -14,5 +15,9 @@
 /.vs
 /.vs
 /.vs
+/.vs
+=======
+/PlatformAPI.Core/obj/Debug
+>>>>>>> Stashed changes
 /.vs
 /.vs

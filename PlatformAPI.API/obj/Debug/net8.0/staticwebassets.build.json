@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "HjMwDGQkUNAEBEJjLZvj3nyBV6VDGJKrqrflkWCqqeA=",
+  "Hash": "sxONLzFXgSbh6nFCNHfYqumWa6VUHm2xj0mVHirp8v4=",
   "Source": "PlatformAPI.API",
   "BasePath": "_content/PlatformAPI.API",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Imgs\\Logo.png"
+    },
+    {
+      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "ParentVerificationCodeTemplate.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ParentVerificationCodeTemplate.html"
     },
     {
       "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",

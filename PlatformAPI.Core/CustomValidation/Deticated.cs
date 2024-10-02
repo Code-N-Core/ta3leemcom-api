@@ -4,11 +4,13 @@
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is int price && price >= 0)
+            if (value == null)
             {
-                return ValidationResult.Success;
+                return new ValidationResult("null value");
             }
-            return new ValidationResult("The value must be greater than or equal to 0.");
+            if (value.ToString() == "اونلاين" || value.ToString() == "اوفلاين")
+                return ValidationResult.Success;
+            return new ValidationResult("should only online or offline!");
         }
     }
 }

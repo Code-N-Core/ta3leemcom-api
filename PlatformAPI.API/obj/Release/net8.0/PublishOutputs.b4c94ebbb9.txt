@@ -8,6 +8,10 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Azure.Core.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\BouncyCastle.Cryptography.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Hangfire.AspNetCore.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Hangfire.Core.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Hangfire.NetCore.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Hangfire.SqlServer.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Humanizer.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\MailKit.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll

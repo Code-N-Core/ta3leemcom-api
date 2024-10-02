@@ -35,7 +35,7 @@ namespace PlatformAPI.Core.Services
                 {
                     Id = c.Id,
                     Content = c.Content,
-                    IsCorrect = c.IsCorrect,
+                    //IsCorrect = c.IsCorrect,
                     QuestionId = c.QuestionId,
                 };
                 answer.Add(a);
@@ -61,39 +61,56 @@ namespace PlatformAPI.Core.Services
         }
 
 
-        public async Task<Question> CreateQuestion(QDTO q)
+        public async Task<Question> CreateQuestion(QDTO q,List<ChooseDTO> lcso)
         {
             var question = _mapper.Map<Question>(q);
+
             try
             {
                 question.Type = q.Type == "اجباري" ? QuestionType.Mandatory : QuestionType.Optional;
-                /* if (q.AttachFile != null)
-                 {
-                     // Example: Save the file to the server or cloud storage
 
+                #region AttachFile (Optional handling of file upload)
+                /*
+                if (q.AttachFile != null)
+                {
+                    // Example: Save the file to the server or cloud storage
+                    var fileUrl = $"/uploads/{q.AttachFile.FileName}";
 
-                     // Return the file path or a URL that can be used later
-                     var fileUrl = $"/uploads/{q.AttachFile.FileName}";
+                    // Check for the type of the attachment using the attachment service
+                    var attachmentType = _attachmentService.GetAttachmentType(q.AttachFile.FileName);
+                    if (attachmentType == "unknown")
+                        return null;  // Or handle as you like
 
-                     //return the type of the attachment
-                     var attachmentType = _attachmentService.GetAttachmentType(q.AttachFile.FileName);
-                     if (attachmentType == "unknown")
-                         return BadRequest("Unsupported file type.");
+                    question.attachmentPath = fileUrl;
+                    question.attachmentType = attachmentType;
+                }
+                */
+                #endregion
 
-                     question.attachmentPath = fileUrl;
-                     question.attachmentType = attachmentType;
-
-                 }*/
                 await _unitOfWork.Question.AddAsync(question);
-            }
-            catch (Exception)
-            {
 
-                return null;
+                // Commit the transaction
+                await _unitOfWork.CompleteAsync();
+                foreach (var model in lcso)
+                {
+                   var choice = _mapper.Map<Choose>(model);
+                    choice.QuestionId = question.Id;
+                    // Add the choice to the repository
+                    await _unitOfWork.Choose.AddAsync(choice);
+                }
+                await _unitOfWork.CompleteAsync();
+
             }
-            await _unitOfWork.CompleteAsync();
-            return question;
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                // e.g., _logger.LogError(ex, "An error occurred while creating a question.");
+                return null;  // Return null to indicate failure
+            }
+
+            return question;  // Return the question entity with any generated data (e.g., Id)
         }
+
         public async Task<List<ShowQuestionsOfQuiz>> GetAllQuestionsOfQuiz(int id)
         {
             var Q = await _unitOfWork.Question.FindAllWithIncludes<Question>(q => q.QuizId == id,
@@ -127,5 +144,30 @@ namespace PlatformAPI.Core.Services
             }
             return results;
         }
+
+        public async Task<bool> DeleteQuestionsWithChoises(int id)
+        {
+           
+                var q = await _unitOfWork.Question.GetByIdAsync(id);
+            if (q == null) return false;
+                try
+                {
+                    var choices = await _unitOfWork.Choose.FindAllAsync(c => c.QuestionId == id);
+                    foreach (var choice in choices)
+                        await _unitOfWork.Choose.DeleteAsync(choice);
+                    await _unitOfWork.Question.DeleteAsync(q);
+
+                }
+                catch (Exception ex)
+                {
+
+                    return false;
+                }
+                return true;
+
+
+            }
+          
+        }
     }
-}
+

@@ -21,22 +21,31 @@ namespace PlatformAPI.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<Choose> CreateChoose(ChooseDTO model)
+        public async Task<bool> CreateChoose(List<ChooseDTO> models)
         {
-            var choice = new Choose();
+            Choose choice = null;
             try
             {
-                 choice = _mapper.Map<Choose>(model);
-                await _unitOfWork.Choose.AddAsync(choice);
+                // Map the DTO to the entity
+                foreach (var model in models)
+                {
+                    choice = _mapper.Map<Choose>(model);
+
+                    // Add the choice to the repository
+                    await _unitOfWork.Choose.AddAsync(choice);
+                }
                
+
+                // Commit the changes
             }
             catch (Exception ex)
             {
-
-                return null;
+                return false; 
             }
             await _unitOfWork.CompleteAsync();
-            return choice;
+
+            return true; 
         }
+
     }
 }

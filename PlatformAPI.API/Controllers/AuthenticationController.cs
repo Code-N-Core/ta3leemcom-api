@@ -263,7 +263,6 @@ namespace PlatformAPI.API.Controllers
             else
                 return BadRequest("Invalid id");
         }
-        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("forget-password")]
         public async Task<IActionResult> ForgetPassword(ForgetPasswordDTO model)
         {
@@ -320,7 +319,6 @@ namespace PlatformAPI.API.Controllers
             // Code is valid
             return Ok("Reset code is valid.");
         }
-        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {

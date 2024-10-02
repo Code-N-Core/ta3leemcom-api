@@ -50,13 +50,12 @@ namespace PlatformAPI.EF.Repositories
                     SubmitAnswerDate = sq.SubmitAnswerDate,
                     QuizStatus = q.StartDate > currentDate
                         ? "Not Started Yet"
-                        : q.StartDate.Add(q.Duration) > currentDate && !sq.IsAttend // No need for null check here
-                        ? "Available"
-                        : q.StartDate.Add(q.Duration) <= currentDate
-                        ? "Ended"
-                        : "Solved",
+                        :   currentDate < q.EndDate&&currentDate >= q.StartDate
+                        ? (sq != null && sq.IsAttend ? "Solved" : "Available")
+                        : "Ended",
+                        
                     SolveStatus = sq.IsAttend // Always true or false, no null check needed
-                        ? (sq.SubmitAnswerDate <= q.StartDate.Add(q.Duration)
+                        ? (sq.SubmitAnswerDate <= q.EndDate
                             ? "Solved In Time"
                             : "Solved Late")
                         : "Not Solved",

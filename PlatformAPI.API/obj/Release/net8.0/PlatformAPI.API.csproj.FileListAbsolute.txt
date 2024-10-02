@@ -271,3 +271,7 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\Platfo
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PlatformAPI.API.genruntimeconfig.cache
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\ref\PlatformAPI.API.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Release\net8.0\PlatformAPI.API.staticwebassets.runtime.json
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Release\net8.0\Hangfire.AspNetCore.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Release\net8.0\Hangfire.Core.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Release\net8.0\Hangfire.NetCore.dll
+D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\bin\Release\net8.0\Hangfire.SqlServer.dll

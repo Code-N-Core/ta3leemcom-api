@@ -23,7 +23,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     {
         [Range(0,12)]
         public int Hours { get; set; }
-        [Range(0,55)]
+        [Range(0,59)]
         public int Minute { get; set; }
         [ModeDeticated]
         public String Mode { get; set; }
@@ -33,7 +33,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     {
         [Range(0, 12)]
         public int Hours { get; set; }
-        [Range(0, 55)]
+        [Range(0, 59)]
         public int Minute { get; set; }
         [ModeDeticated]
         public String Mode { get; set; }

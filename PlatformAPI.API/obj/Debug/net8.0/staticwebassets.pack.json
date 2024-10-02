@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\Imgs\\Logo.png"
     },
     {
+      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
+      "PackagePath": "staticwebassets\\ParentVerificationCodeTemplate.html"
+    },
+    {
       "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
       "PackagePath": "staticwebassets\\ResetPassword.html"
     },

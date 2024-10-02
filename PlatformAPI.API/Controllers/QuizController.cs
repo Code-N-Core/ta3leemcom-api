@@ -36,7 +36,6 @@ namespace PlatformAPI.API.Controllers
             this.QuizService = QuizService;
         }
 
-        //[Authorize]
         [HttpGet("GetAllQuizsByGroupsIds")]
         public async Task<IActionResult> GetAllByGroup([FromQuery]List<int> GroupsIds)
         {
@@ -50,8 +49,6 @@ namespace PlatformAPI.API.Controllers
             }
             return Ok(lsq);
         }
-
-        //[Authorize]
         [HttpGet("GetQuizById")]
         public async Task<IActionResult>GetById(int QuizId)
         {
@@ -66,8 +63,6 @@ namespace PlatformAPI.API.Controllers
             sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId);
             return Ok(sq);
         }
-
-        //[Authorize]
         [HttpGet("GetAllResultsOfQuizId")]
         public async Task<IActionResult> GetResults(int quizId)
         {
@@ -81,7 +76,6 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
         }
 
-       // [Authorize]
         [HttpGet("GetDescreptionOfQuiz")]
         public async Task<IActionResult> GetDes(int quizId)
         {
@@ -92,8 +86,6 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
 
         }
-
-        //[Authorize]
         [HttpGet("GetAllStatsOfQuizId")]
         public async Task<IActionResult> GetStats(int quizid)
         {
@@ -102,7 +94,6 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
         [HttpGet("GetQuizesStatusOfStudentId")]
         public async Task<IActionResult> GetQuizesStatus(int studentId)
         {
@@ -111,7 +102,6 @@ namespace PlatformAPI.API.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Teacher")]
         [HttpPost("AddOnlineQuiz")]
         public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
         {
@@ -174,7 +164,6 @@ namespace PlatformAPI.API.Controllers
                                     var choice = new ChooseDTO 
                                     {
                                         Content=c.Content,
-                                        IsCorrect=c.IsCorrect,
 
                                     };
                                     lcho.Add(choice);
@@ -206,8 +195,6 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-
-       // [Authorize(Roles = "Student")]
         [HttpPost("AddStudentSolution")]
         public async Task<IActionResult> Submit(StudentSolutionDTO model)
         {
@@ -301,7 +288,6 @@ namespace PlatformAPI.API.Controllers
           }*/
         #endregion
 
-       // [Authorize(Roles = "Teacher")]
         [HttpPut("UpdateOnlineQuiz")]
         public async Task<IActionResult> UpdateOn(UpdateOnlineQuizDto model)
         {
@@ -353,7 +339,6 @@ namespace PlatformAPI.API.Controllers
  */
         #endregion
         
-       // [Authorize(Roles = "Teacher,Admin")]
         [HttpDelete("DeleteQuiz")]
         public async Task<IActionResult> Delete(int id)
         {

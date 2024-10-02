@@ -2,7 +2,6 @@
 *.dll
 *.vs
 
-<<<<<<< Updated upstream
 # Unignore specific file types
 !*.cs
 !*.json
@@ -16,6 +15,5 @@
 /.vs
 /.vs
 /.vs
-=======
->>>>>>> Stashed changes
 /.vs
+.vs/PlatformAPI/v17/DocumentLayout.json

@@ -70,7 +70,7 @@ namespace PlatformAPI.API.Controllers
                 int f = 0;
                 foreach (var choice in chooses)
                 {
-                    if (choice.IsCorrect)
+                    if ((bool)choice.IsCorrect)
                     {
                         f=choice.Id;
                     }

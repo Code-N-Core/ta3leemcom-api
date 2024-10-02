@@ -35,7 +35,7 @@ namespace PlatformAPI.Core.Services
                 {
                     Id = c.Id,
                     Content = c.Content,
-                    IsCorrect = c.IsCorrect,
+                    //IsCorrect = c.IsCorrect,
                     QuestionId = c.QuestionId,
                 };
                 answer.Add(a);

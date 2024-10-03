@@ -18,10 +18,11 @@ namespace PlatformAPI.API.Helpers
             CreateMap<Student, StudentDTO>();
             CreateMap<Group,GroupDTO>();
             CreateMap<AddFeedbackDTO, Feedback>();
-            CreateMap<ChooseDTO, Choose>();
+            CreateMap<ChooseDTO, Choose>().ReverseMap();
             CreateMap<CreateOnlineQuizDTO, Quiz>().ForMember(dest=>dest.Questions,opt=>opt.Ignore());
             CreateMap<CreateOffLineQuizDto, Quiz>();
             CreateMap<UpdateOnlineQuizDto, Quiz>();
+            CreateMap<UQDTO, Question>();
             CreateMap<UpdateOfflineQuizDto, Quiz>();
             CreateMap<Quiz, ShowQuiz>();
             CreateMap<StudentMonthDto, StudentMonth>().ForMember(dest=>dest.Student,opt=>opt.Ignore())

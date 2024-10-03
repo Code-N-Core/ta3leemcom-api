@@ -25,7 +25,7 @@ namespace PlatformAPI.EF.Repositories
                  .Any(sq => sq.StudentId == s.Id && sq.QuizId == quizid && sq.IsAttend)) // Ensure the student hasn't taken the quiz
                  .ToListAsync();
 
-            if (studentsNotInQuiz == null || !studentsNotInQuiz.Any())
+            if (studentsNotInQuiz == null)
                 return null;
 
             return studentsNotInQuiz;

@@ -52,7 +52,7 @@ namespace PlatformAPI.API.Controllers
         }
         [Authorize]
         [HttpGet("GetQuizById")]
-        public async Task<IActionResult>GetById(int QuizId)
+        public async Task<IActionResult>GetById(int QuizId,bool IsTeacher)
         {
             var quizs =await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(QuizId,q=>q.GroupsQuizzes);
             if (quizs == null) return NotFound($"There is No Quizs With Id {QuizId}");
@@ -62,7 +62,7 @@ namespace PlatformAPI.API.Controllers
             {
                 sq.GroupsIds.Add(gq.GroupId);
             }
-            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId);
+            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,IsTeacher);
             return Ok(sq);
         }
         [Authorize]
@@ -163,7 +163,7 @@ namespace PlatformAPI.API.Controllers
                             q.QuizId = quiz.Id;
                             var lcho = new List<ChooseDTO>();
                      
-                                foreach (var c in q.Choices)
+                                foreach (var c in q.Chooses)
                                 {
                                     var choice = new ChooseDTO 
                                     {
@@ -185,7 +185,7 @@ namespace PlatformAPI.API.Controllers
                     }
 
                     // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id));
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id,true));
 
                     return Ok(shq);
                 }
@@ -303,7 +303,7 @@ namespace PlatformAPI.API.Controllers
                     var quiz = _mapper.Map<Quiz>(model);
                     _unitOfWork.Quiz.Update(quiz);
                     await _unitOfWork.CompleteAsync();
-                    return Ok(quiz);
+                    return Ok();
 
                 }
                 catch (Exception ex)

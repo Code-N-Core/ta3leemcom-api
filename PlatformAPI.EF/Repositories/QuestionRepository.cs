@@ -50,7 +50,7 @@ namespace PlatformAPI.EF.Repositories
                                 
             }
            
-            if (results is null || !results.Any())
+            if (results is null )
                 return null;
             return results;
         }

@@ -11,5 +11,6 @@ namespace PlatformAPI.Core.Models
         [ForeignKey(nameof(ApplicationUserId))]
         public virtual ApplicationUser ApplicationUser { get; set; }
         List<Student> Students { get; set; } 
+        public List<Child> Children { get; set; }
     }
 }

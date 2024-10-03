@@ -183,21 +183,21 @@ namespace PlatformAPI.API.Controllers
                         return BadRequest(ex);
                     }
                     await _unitOfWork.CompleteAsync();
-                    // complete
-                    var studentDto = new StudentDTO
+                    return Ok(new
                     {
-                        Id=student.Id,
-                        Code = student.Code,
-                        Name = _userManager.FindByEmailAsync(student.Code +StudentConst.EmailComplete).Result.Name,
-                        GroupId = student.GroupId,
-                        GroupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
-                        LevelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
-                        LevelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
-                        StudentParentId=null,
-                        StudentParentName=null,
-                        StudentParentPhone=null
-                    };
-                    return Ok(studentDto);
+                        id = student.Id,
+                        name = _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(student.Id).Result.ApplicationUserId).Result.Name,
+                        code = student.Code,
+                        groupId = student.GroupId,
+                        groupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
+                        levelYearId = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId,
+                        levelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
+                        levelId = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId,
+                        levelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
+                        studentParentId = (int?)null,
+                        studentParentName = (string)null,
+                        studentParentPhone = (string)null
+                    });
                 }
                 catch(Exception ex)
                 {

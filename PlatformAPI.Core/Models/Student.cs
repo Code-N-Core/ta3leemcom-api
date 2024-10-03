@@ -23,5 +23,7 @@ namespace PlatformAPI.Core.Models
         public virtual List<StudentMonth> StudentMonths { get; set; }
         public virtual List<StudentAbsence> StudentAbsences { get; set; }
         public virtual List<StudentQuiz> StudentQuizs { get; set; }
+        public int? ChildId { get; set; }
+        public virtual Child Child { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace PlatformAPI.EF
     public class UnitOfWork : IUnitOfWork
     {
         private IDbContextTransaction _transaction;
+        public IChildRepository Child {  get; private set; }
         public ITeacherRepository Teacher {  get; private set; }
 
         public IStudentRepository Student {  get; private set; }
@@ -61,6 +62,7 @@ namespace PlatformAPI.EF
             GroupQuiz = new GroupQuizRepository(context);
             Feedback = new FeedbackRepository(context);
             Notification = new NotificationRepository(context);
+            Child=new ChildRepository(context);
         }
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {

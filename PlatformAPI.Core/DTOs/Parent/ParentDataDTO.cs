@@ -1,4 +1,6 @@
-﻿namespace PlatformAPI.Core.DTOs.Parent
+﻿using PlatformAPI.Core.DTOs.Child;
+
+namespace PlatformAPI.Core.DTOs.Parent
 {
     public class ParentDataDTO
     {
@@ -6,6 +8,6 @@
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public IEnumerable<StudentParentDTO> Students { get; set; }
+        public IEnumerable<ParentChildDTO> Chidren { get; set; }
     }
 }

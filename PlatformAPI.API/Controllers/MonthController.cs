@@ -5,7 +5,6 @@ using PlatformAPI.Core.DTOs.Day;
 using PlatformAPI.Core.DTOs.Month;
 using PlatformAPI.Core.DTOs.StudentAbsence;
 using PlatformAPI.Core.DTOs.StudentMonth;
-using System.Security.Claims;
 namespace PlatformAPI.API.Controllers
 {
     [Route("api/[controller]")]
@@ -31,13 +30,6 @@ namespace PlatformAPI.API.Controllers
         {
             if (await _unitOfWork.Group.GetByIdAsync(groupId) == null)
                 return NotFound($"No group with id: {groupId}");
-
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupId).Select(g => g.TeacherId).FirstOrDefault();
-            if (teacherOfGroup != int.Parse(loggedInId))
-                return BadRequest("You Do Not Have The Premission");
-
-
             int lastMonthId = _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Id;
             var viewDaysDto = await _dayServices.GetAllAsync(lastMonthId);
             foreach(var day in viewDaysDto)
@@ -56,31 +48,11 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(monthData);
         }
-        [Authorize(Roles = "Teacher,Student")]
+        [Authorize]
         [HttpGet("GetMonthData")]
         public async Task<IActionResult> GetMonthDataAsync(int monthId)
         {
-           
-
             if (await _unitOfWork.Month.GetByIdAsync(monthId) == null) return NotFound($"No month with id: {monthId}");
-
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-
-            var groupOfMonth = ((await _unitOfWork.Month.GetAllAsync()).Where(m => m.Id == monthId)).Select(m => m.GroupId).FirstOrDefault();
-            if (userRoles.Contains(Roles.Teacher.ToString()))
-            {
-                var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupOfMonth).Select(g => g.TeacherId).FirstOrDefault();
-                if (teacherOfGroup != int.Parse(loggedInId))
-                    return BadRequest("You Do Not Have The Premission");
-            }
-            else if ((userRoles.Contains(Roles.Student.ToString())))
-            {
-                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(int.Parse(loggedInId))).GroupId;
-                if (studentGroupId != groupOfMonth)
-                    return BadRequest("You Do Not Have The Premission");
-            }
-
             var viewDaysDto = await _dayServices.GetAllAsync(monthId);
             foreach (var day in viewDaysDto)
             {
@@ -99,50 +71,29 @@ namespace PlatformAPI.API.Controllers
             };
             return Ok(monthData);
         }
-        [Authorize(Roles = "Teacher")]
+        [Authorize]
         [HttpGet("GetAllMonthsOfGroups")]
         public async Task<IActionResult> GetAllAsync([FromQuery] List<int> ids)
         {
-            try
+            // If no ids are provided, return all months in the system.
+            if (ids == null || ids.Count == 0)
             {
-                var loggedInId = User.FindFirst("LoggedId")?.Value;
-                var groupsTeacherIds = (await _unitOfWork.Group.GetAllAsync()).Where(g => ids.Contains(g.Id)).Select(g => g.TeacherId);
-                if (!groupsTeacherIds.Contains(int.Parse(loggedInId)))
-                    return BadRequest("You Dont Have Premission");
-
-                // If no ids are provided, return all months in the system.
-                if (ids == null || ids.Count == 0)
-                {
-                    var allMonths = await _unitOfWork.Month.FindAllAsync(g => true);
-                    return Ok(allMonths);
-                }
-
-
-                // Fetch months where the GroupId is in the list of ids.
-                var months = await _unitOfWork.Month.FindAllAsync(g => ids.Contains(g.GroupId));
-
-                if (months is null || !months.Any())
-                    return NotFound($"No groups found for the provided IDs.");
-
-                return Ok(months);
+                var allMonths = await _unitOfWork.Month.FindAllAsync(g => true);
+                return Ok(allMonths);
             }
-            catch (Exception ex) 
-            {
 
-                return BadRequest(ex);
-            }
-          
-           
+            // Fetch months where the GroupId is in the list of ids.
+            var months = await _unitOfWork.Month.FindAllAsync(g => ids.Contains(g.GroupId));
+
+            if (months is null || !months.Any())
+                return NotFound($"No groups found for the provided IDs.");
+
+            return Ok(months);
         }
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> AddAsync(AddMonthDTO model)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var TeacherIdOfGroup = (await _unitOfWork.Group.GetByIdAsync(model.GroupId)).TeacherId;
-            if (TeacherIdOfGroup != int.Parse(loggedInId))
-                return BadRequest("You Dont Have Premission");
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -177,12 +128,6 @@ namespace PlatformAPI.API.Controllers
             var month = await _unitOfWork.Month.GetByIdAsync(id);
             if (month == null)
                 return BadRequest($"There is no month with ID: {id}");
-
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var TeacherIdOfGroup = (await _unitOfWork.Group.GetByIdAsync(month.GroupId)).TeacherId;
-            if (TeacherIdOfGroup != int.Parse(loggedInId))
-                return BadRequest("You Dont Have Premission");
-
 
             // Retrieve related days and month students
             var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == id);
@@ -244,11 +189,7 @@ namespace PlatformAPI.API.Controllers
             SaveMonthDataDTO saved = new SaveMonthDataDTO();
             var studentAbsenceDTO = new List<StudentAbsenceDTO>();
             var studentMonthDto = new List<StudentMonthDto>();
-
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-           
-
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             foreach (var item in model.AbsenceStudents)
             {
@@ -266,36 +207,17 @@ namespace PlatformAPI.API.Controllers
             }
             try
             {
-                int monthId = 0;
-                foreach (var item in model.MonthStudents)
+                foreach(var item in model.AbsenceStudents)
                 {
-                    if(monthId==0)
-                        monthId=item.MonthId;
-                    else if(monthId!=item.MonthId)
-                    {
-                        return BadRequest("InVAlid Month IDs");
-                    }
-                    var updated = await _studentMonthService.UpdateAsync(item);
-                    studentMonthDto.Add(updated);
-                }
-                var GroupId = (await _unitOfWork.Month.GetByIdAsync(monthId)).GroupId;
-                var TeacherOfGroupId = (await _unitOfWork.Group.GetByIdAsync(GroupId)).TeacherId;
-                if (TeacherOfGroupId != int.Parse(loggedInId))
-                    return BadRequest("You Dont Have Premission");
-
-                foreach (var item in model.AbsenceStudents)
-                {
-                    var monthidofday = (await _unitOfWork.Day.GetByIdAsync(item.DayId)).MonthId;
-                    if(monthId != monthidofday)
-                        return BadRequest("InVAlid Month ID");
-                    var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(item.StudentId)).GroupId;
-                    if (studentGroupId != GroupId)
-                        return BadRequest("Invalid Student in Group");
                     var updated = await _studentAbsenceService.UpdateAsync(item);
                     studentAbsenceDTO.Add(updated);
                 
                 }
-               await _unitOfWork.CompleteAsync();
+                foreach(var item in model.MonthStudents)
+                {
+                    var updated = await _studentMonthService.UpdateAsync(item);
+                    studentMonthDto.Add(updated);
+                }
             }
             catch(Exception ex)
             {

@@ -234,6 +234,28 @@ namespace PlatformAPI.EF.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.Child", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Children");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.Choose", b =>
                 {
                     b.Property<int>("Id")
@@ -483,9 +505,6 @@ namespace PlatformAPI.EF.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Mark")
                         .HasColumnType("int");
 
@@ -569,6 +588,9 @@ namespace PlatformAPI.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("ChildId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -583,6 +605,8 @@ namespace PlatformAPI.EF.Migrations
 
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
+
+                    b.HasIndex("ChildId");
 
                     b.HasIndex("GroupId");
 
@@ -791,6 +815,17 @@ namespace PlatformAPI.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.Child", b =>
+                {
+                    b.HasOne("PlatformAPI.Core.Models.Parent", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.Choose", b =>
                 {
                     b.HasOne("PlatformAPI.Core.Models.Question", "Question")
@@ -914,6 +949,10 @@ namespace PlatformAPI.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PlatformAPI.Core.Models.Child", "Child")
+                        .WithMany("Students")
+                        .HasForeignKey("ChildId");
+
                     b.HasOne("PlatformAPI.Core.Models.Group", "Group")
                         .WithMany("Students")
                         .HasForeignKey("GroupId")
@@ -925,6 +964,8 @@ namespace PlatformAPI.EF.Migrations
                         .HasForeignKey("ParentId");
 
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Child");
 
                     b.Navigation("Group");
 
@@ -1057,6 +1098,11 @@ namespace PlatformAPI.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PlatformAPI.Core.Models.Child", b =>
+                {
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("PlatformAPI.Core.Models.Day", b =>
                 {
                     b.Navigation("StudentAbsence");
@@ -1091,6 +1137,11 @@ namespace PlatformAPI.EF.Migrations
             modelBuilder.Entity("PlatformAPI.Core.Models.Notification", b =>
                 {
                     b.Navigation("TeacherNotifications");
+                });
+
+            modelBuilder.Entity("PlatformAPI.Core.Models.Parent", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("PlatformAPI.Core.Models.Question", b =>

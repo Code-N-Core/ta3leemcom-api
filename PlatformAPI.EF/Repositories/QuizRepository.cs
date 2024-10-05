@@ -49,15 +49,16 @@ namespace PlatformAPI.EF.Repositories
                     IsAttend = sq.IsAttend,
                     SubmitAnswerDate = sq.SubmitAnswerDate,
                     QuizStatus = q.StartDate > currentDate
-                        ? "Not Started "
+                        ? "Not Started Yet"
                         :   currentDate < q.EndDate&&currentDate >= q.StartDate
-                        ? (sq != null && sq.IsAttend ? "Solved" : "Started")
+                        ? (sq != null && sq.IsAttend ? "Solved" : "Available")
                         : "Ended",
                         
-                    SolveStatus =sq.IsAttend
+                    SolveStatus = sq.IsAttend // Always true or false, no null check needed
+                        ? (sq.SubmitAnswerDate <= q.EndDate
                             ? "Solved In Time"
-                            :(sq.Id>0? "Solved Late"
-                        : "Not Solved"),
+                            : "Solved Late")
+                        : "Not Solved",
                     MandatoryQuestionCount = (from qq in _context.Questions
                                               where qq.QuizId == q.Id && qq.Type == QuestionType.Mandatory
                                               select qq).Count(),
@@ -65,7 +66,7 @@ namespace PlatformAPI.EF.Repositories
                                              where qq.QuizId == q.Id && qq.Type == QuestionType.Optional
                                              select qq).Count(),
                     TotalMark = q.Mark,
-                    StudentMark = sq.Id >0 ? sq.StudentMark : (int?)null, // StudentMark is not nullable
+                    StudentMark = sq.IsAttend ? sq.StudentMark : (int?)null, // StudentMark is not nullable
                     Bounce=q.Bounce,
                     StudentBounce=sq.StudentBounce,
                 }

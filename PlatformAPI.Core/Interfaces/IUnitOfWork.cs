@@ -4,6 +4,7 @@ namespace PlatformAPI.Core.Interfaces
 {
     public interface IUnitOfWork
     {
+        IChildRepository Child {  get; }
         ITeacherRepository Teacher { get; }
         IStudentRepository Student { get; }
         IParentRepository Parent { get; }

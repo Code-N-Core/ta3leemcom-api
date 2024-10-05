@@ -6,5 +6,7 @@
         public string StudentCode { get; set; }
         [Required]
         public int ParentId { get; set; }
+        [Required]
+        public int ChildId {  get; set; }
     }
 }

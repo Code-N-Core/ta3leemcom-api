@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.DTOs.Teacher;
-using PlatformAPI.Core.Models;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -24,16 +23,6 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetTeacherInformation")]
         public async Task<IActionResult> GetAsync(int id)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-
-            if (id != int.Parse(loggedInId))
-            {
-                return BadRequest("You do not have permission");
-            }
             var teacher = await _unitOfWork.Teacher.GetByIdAsync(id);
             if (teacher == null)
                 return NotFound($"No teacher with id: {id}");
@@ -51,19 +40,7 @@ namespace PlatformAPI.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(UpdateTeacherDTO model)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-          
-            if (model.TeacherId != int.Parse(loggedInId))
-            {
-                return BadRequest("You do not have permission");
-            }
-
-
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             if(await _unitOfWork.Teacher.GetByIdAsync(model.TeacherId)==null)
                 return BadRequest($"No teacher with id: {model.TeacherId}");

@@ -9,7 +9,6 @@ using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.Core.Models;
 using PlatformAPI.Core.Services;
-using System.Security.Claims;
 using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -37,29 +36,10 @@ namespace PlatformAPI.API.Controllers
             this.chooseService = chooseService;
             this.QuizService = QuizService;
         }
-        [Authorize(Roles= "Teacher")]
+        [Authorize]
         [HttpGet("GetAllQuizsByGroupsIds")]
         public async Task<IActionResult> GetAllByGroup([FromQuery]List<int> GroupsIds)
         {
-            // Get the logged-in teacher's ID from the token
-            var loggedInTeacherId = User.FindFirst("LoggedId")?.Value;
-
-            if (string.IsNullOrEmpty(loggedInTeacherId))
-            {
-                return Unauthorized("User not found");
-            }
-            var groups = (await _unitOfWork.Group.GetAllAsync()).Where(g => GroupsIds.Contains(g.Id));
-            if (groups == null)
-            {
-                return NotFound("Group not found");
-            }
-
-            if (groups.Any(g=>g.TeacherId != int.Parse(loggedInTeacherId)))
-            {
-                return BadRequest("You do not have permission to get These groups");
-            }
-
-
             var quizs =await _unitOfWork.Quiz.GetQuizzesByGroupsIds(GroupsIds);
             if (quizs == null) return NotFound($"There is No Quizs For These Groups");
             List<ShowQuiz> lsq = new List<ShowQuiz>();
@@ -70,51 +50,10 @@ namespace PlatformAPI.API.Controllers
             }
             return Ok(lsq);
         }
-        [Authorize(Roles= "Teacher,Student")]
+        [Authorize]
         [HttpGet("GetQuizById")]
         public async Task<IActionResult>GetById(int QuizId)
         {
-            // Get the logged-in teacher's ID from the token
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-            bool f=false;
-            if (userRoles.Contains(Roles.Teacher.ToString()))
-            {
-                if (string.IsNullOrEmpty(loggedInId))
-                {
-                    return Unauthorized("User not found");
-                }
-                var quiz = (await _unitOfWork.Quiz.GetByIdAsync(QuizId));
-                if (quiz == null)
-                {
-                    return NotFound("Quiz not found");
-                }
-
-                if (quiz.TeacherId != int.Parse(loggedInId))
-                {
-                    return BadRequest("You do not have permission to get this Quiz");
-                }
-                else
-                {
-                    f = true;
-                }
-            }
-            else if (userRoles.Contains(Roles.Student.ToString()))
-            {
-                var groupofstudent = (await _unitOfWork.Student.GetByIdAsync(int.Parse(loggedInId))).GroupId;
-                var groupIdsOfQuiz=(await _unitOfWork.GroupQuiz.GetAllAsync()).Where(gq=>gq.QuizId==QuizId).Select(gq=>gq.GroupId).ToList();
-                if (!groupIdsOfQuiz.Contains(groupofstudent))
-                {
-                    return BadRequest("You do not have permission to get this Quiz");
-                }
-                else
-                {
-                    f = false;
-                }
-            }
-
-            //////////////////////////
-
             var quizs =await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(QuizId,q=>q.GroupsQuizzes);
             if (quizs == null) return NotFound($"There is No Quizs With Id {QuizId}");
             var sq=_mapper.Map<ShowQuiz>(quizs);
@@ -123,94 +62,26 @@ namespace PlatformAPI.API.Controllers
             {
                 sq.GroupsIds.Add(gq.GroupId);
             }
-            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,f);
+            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId);
             return Ok(sq);
         }
-        [Authorize(Roles ="Teacher")]
+        [Authorize]
         [HttpGet("GetAllResultsOfQuizId")]
         public async Task<IActionResult> GetResults(int quizId)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-            var quiz = (await _unitOfWork.Quiz.GetByIdAsync(quizId));
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found");
-            }
-
-            if (quiz.TeacherId != int.Parse(loggedInId))
-            {
-                return BadRequest("You do not have permission to get this Quiz");
-            }
-
             if (quizId == 0) return BadRequest($"There is no Quiz With ID: {quizId}");
             var studentQuizzes = await _unitOfWork.StudentQuiz
-                .FindAllWithIncludes<StudentQuiz>(q => q.QuizId == quizId && !q.IsAttend,
+                .FindAllWithIncludes<StudentQuiz>(q => q.QuizId == quizId && q.IsAttend,
                     Sq => Sq.Quiz);
             var res=await QuizService.GetAllStudentQuizResults(studentQuizzes);
             if (res == null) return BadRequest();
 
             return Ok(res);
         }
-
-        [Authorize(Roles="Student")]
-        [HttpGet("GetStudentSolutionByStudentQuizId")]
-        public async Task<IActionResult> GetResultOfStudentQuizId(int studentQuizId)
-        {
-            var studentQuizzes = await _unitOfWork.StudentQuiz
-                .FindAllWithIncludes<StudentQuiz>(q => q.Id == studentQuizId,
-                    Sq => Sq.Quiz);
-
-            var studentId = studentQuizzes.Select(sq => sq.StudentId).FirstOrDefault();
-
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-            if (studentId != int.Parse(loggedInId))
-                return BadRequest("You Do Not Have Premission");
-
-            var res =( await QuizService.GetAllStudentQuizResults(studentQuizzes)).FirstOrDefault();
-            if (res == null) return BadRequest();
-
-            var quizs = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(res.QuizId, q => q.GroupsQuizzes);
-            if (quizs == null) return NotFound($"There is No Quizs With Id {res.QuizId}");
-            var sq = _mapper.Map<ShowQuiz>(quizs);
-            sq.GroupsIds = new List<int>();
-            foreach (var gq in quizs.GroupsQuizzes)
-            {
-                sq.GroupsIds.Add(gq.GroupId);
-            }
-            sq.questionsOfQuizzes = await questionService.GetAllQuestionsOfQuiz(quizs.Id, true);
-            return Ok(new
-            {
-                Quiz=sq,
-                StudentSolve=res
-            });
-        }
-        [Authorize(Roles = "Teacher")]
+        [Authorize]
         [HttpGet("GetDescreptionOfQuiz")]
         public async Task<IActionResult> GetDes(int quizId)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-            var quiz = (await _unitOfWork.Quiz.GetByIdAsync(quizId));
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found");
-            }
-
-            if (quiz.TeacherId != int.Parse(loggedInId))
-            {
-                return BadRequest("You do not have permission to get this Quiz");
-            }
             if (quizId == 0) return BadRequest($"There is no Quiz With ID: {quizId}");
             var res =await QuizService.GetQuizDescreption(quizId);
             if (res == null) return BadRequest();
@@ -218,42 +89,19 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
 
         }
-        [Authorize(Roles = "Teacher")]
+        [Authorize]
         [HttpGet("GetAllStatsOfQuizId")]
-        public async Task<IActionResult> GetStats(int quizId)
+        public async Task<IActionResult> GetStats(int quizid)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-            var quiz = (await _unitOfWork.Quiz.GetByIdAsync(quizId));
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found");
-            }
-
-            if (quiz.TeacherId != int.Parse(loggedInId))
-            {
-                return BadRequest("You do not have permission to get this Quiz");
-            }
-            var res=await _unitOfWork.Question.GetStatsOfQuiz(quizId);
+            var res=await _unitOfWork.Question.GetStatsOfQuiz(quizid);
             if (res == null) return BadRequest();
             return Ok(res);
         }
-        [Authorize(Roles= "Student")]
+        [Authorize]
         [HttpGet("GetQuizesStatusOfStudentId")]
         public async Task<IActionResult> GetQuizesStatus(int studentId)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-             if (studentId!=int.Parse(loggedInId))
-                {
-                    return BadRequest("You do not have permission to get this Statues");
-                }
-
-            if (await _unitOfWork.Student.GetByIdAsync(studentId) == null)
-                return BadRequest($"There Is No Student With That Id {studentId}");
-            var result = await _unitOfWork.Quiz.GetQuizzesStatusByStudentId(studentId);
+            var result= await _unitOfWork.Quiz.GetQuizzesStatusByStudentId(studentId);
             if (result == null) return BadRequest();
             return Ok(result);
         }
@@ -261,14 +109,8 @@ namespace PlatformAPI.API.Controllers
         [HttpPost("AddOnlineQuiz")]
         public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
         {
-
             if (ModelState.IsValid)
             {
-                var loggedInId = User.FindFirst("LoggedId")?.Value;
-
-                var groups = (await _unitOfWork.Group.GetAllAsync()).Where(g => model.GroupsIds.Contains(g.Id));
-                if (groups.Any(g => g.TeacherId != model.TeacherId)||model.TeacherId!=int.Parse(loggedInId))
-                    return BadRequest("You Do not Have Permission");
                 try
                 {
                     // Map the quiz DTO to the quiz entity
@@ -343,7 +185,7 @@ namespace PlatformAPI.API.Controllers
                     }
 
                     // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id,true));
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id));
 
                     return Ok(shq);
                 }
@@ -363,24 +205,11 @@ namespace PlatformAPI.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var loggedInId = User.FindFirst("LoggedId")?.Value;
-                var groupofstudent = (await _unitOfWork.Student.GetByIdAsync(int.Parse(loggedInId))).GroupId;
-                var groupIdsOfQuiz = (await _unitOfWork.GroupQuiz.GetAllAsync()).Where(gq => gq.QuizId == model.QuizId).Select(gq => gq.GroupId).ToList();
-                if (!groupIdsOfQuiz.Contains(groupofstudent)||model.StudentId!= int.Parse(loggedInId))
-                {
-                    return BadRequest("You do not have permission to Solve this Quiz");
-                }
                 try
                 {
                     int totalmark = 0;
                     int bouncemark = 0;
                     var quiz = await _unitOfWork.Quiz.GetByIdAsync(model.QuizId);
-                    var datenow=DateTime.Now;
-                    var f=false;
-                    if (quiz.StartDate <= datenow && quiz.EndDate >= datenow)
-                    {
-                        f=true;
-                    }
                     List<StudentAnswer> answers = new List<StudentAnswer>();
                     foreach (var qf in model.questionForms)
                     {
@@ -388,17 +217,17 @@ namespace PlatformAPI.API.Controllers
                         var studentanswer = await _unitOfWork.Choose.GetByIdAsync(qf.ChoiceId);
                         var validanswer = await _unitOfWork.Choose.ValidAnswer(qf.QuestionId);
 
-                      
+                        if (studentanswer != null)
+                        {
                             var answer = new StudentAnswer
                             {
                                 ChosenOptionId = studentanswer != null ? studentanswer.Id : 0,
                                 QuestionId = qf.QuestionId,
-                                IsCorrect =  validanswer == studentanswer ? true : false
+                                IsCorrect = studentanswer == validanswer ? true : false
 
                             };
-                           
-                                answers.Add(answer);
-                            
+                            answers.Add(answer);
+                        }
 
                         if (quest.Type==QuestionType.Mandatory)
                         {
@@ -411,19 +240,15 @@ namespace PlatformAPI.API.Controllers
 
                         }
                     }
-                    //if the date of Student Answer is valid
-                    if (f)
+                    StudentQuiz sq = await QuizService.CreateQuizStudent(quiz, model, totalmark, bouncemark);
+                    foreach (var answer in answers)
                     {
-                        StudentQuiz sq = await QuizService.CreateQuizStudent(quiz, model, totalmark, bouncemark);
-                        foreach (var answer in answers)
-                        {
-                            answer.StudentQuizId = sq.Id;
-                            await _unitOfWork.StudentAnswer.AddAsync(answer);
-                        }
-                        await _unitOfWork.CompleteAsync();
+                        answer.StudentQuizId = sq.Id;
+                        await _unitOfWork.StudentAnswer.AddAsync(answer);
                     }
+                    await _unitOfWork.CompleteAsync();
                    
-                    return Ok(totalmark+bouncemark);
+                    return Ok();
                 }
                 catch (Exception ex)
                 {
@@ -468,26 +293,15 @@ namespace PlatformAPI.API.Controllers
           }*/
         #endregion
         [Authorize(Roles = "Teacher")]
-        [HttpPut("UpdateOnlineQuizBeforeStart")]
+        [HttpPut("UpdateOnlineQuiz")]
         public async Task<IActionResult> UpdateOn(UpdateOnlineQuizDto model)
         {
             if (ModelState.IsValid) 
             {
-                var loggedInId = User.FindFirst("LoggedId")?.Value;
-
-                var groups = (await _unitOfWork.Group.GetAllAsync()).Where(g => model.GroupsIds.Contains(g.Id));
-                if (groups.Any(g => g.TeacherId != model.TeacherId) || model.TeacherId != int.Parse(loggedInId))
-                    return BadRequest("You Do not Have Permission");
                 try
                 {
-
                     var quiz = _mapper.Map<Quiz>(model);
-                    var datenow = DateTime.Now;
-                    if (quiz.StartDate <= datenow)
-                        return BadRequest("The Quiz Is Started");
-                   await QuizService.deleteQuiz(quiz.Id);
-                    quiz.Id = 0;
-                   await _unitOfWork.Quiz.AddAsync(quiz);
+                    _unitOfWork.Quiz.Update(quiz);
                     await _unitOfWork.CompleteAsync();
                     return Ok(quiz);
 
@@ -533,16 +347,25 @@ namespace PlatformAPI.API.Controllers
         [HttpDelete("DeleteQuiz")]
         public async Task<IActionResult> Delete(int id)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var TeacherOfQuiz = (await _unitOfWork.Quiz.GetByIdAsync(id)).TeacherId;
-            if (TeacherOfQuiz != int.Parse(loggedInId))
-                return BadRequest("You Do not Have Permission To Delete This Quiz");
             try
             {
-               
                 // delete from studentquizes
                 if (id == 0) return BadRequest($"There is No Quiz With Id: {id}");
-             await QuizService.deleteQuiz(id);
+                var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(id,
+                    q=>q.Questions,
+                    q=>q.GroupsQuizzes
+                    );
+                foreach (var question in quiz.Questions)
+                {
+                  await  questionService.DeleteQuestionsWithChoises(question.Id);
+                }
+                foreach (var gq in quiz.GroupsQuizzes)
+                {
+                    await _unitOfWork.GroupQuiz.DeleteAsync(gq);
+                }
+                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.Quiz.DeleteAsync(quiz);
+               await _unitOfWork.CompleteAsync();
                 return Ok();
             }
             catch (Exception ex)

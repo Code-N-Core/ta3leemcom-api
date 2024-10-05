@@ -12,8 +12,7 @@ namespace PlatformAPI.EF.Repositories
         {
             _context = context;
         }
-        public async Task<Student> GetByAppUserIdAsync(string id)
-           => await _context.Students.SingleOrDefaultAsync(s =>s.ApplicationUserId  == id);
+
         public async Task<Student> FindByCodeAsync(string Code)
             => await _context.Students.FirstOrDefaultAsync(s => s.Code == Code);
 
@@ -26,7 +25,7 @@ namespace PlatformAPI.EF.Repositories
                  .Any(sq => sq.StudentId == s.Id && sq.QuizId == quizid && sq.IsAttend)) // Ensure the student hasn't taken the quiz
                  .ToListAsync();
 
-            if (studentsNotInQuiz == null || !studentsNotInQuiz.Any())
+            if (studentsNotInQuiz == null)
                 return null;
 
             return studentsNotInQuiz;

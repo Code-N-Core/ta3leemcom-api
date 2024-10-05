@@ -14,6 +14,7 @@
         public string Type { get; set; }
         public string? attachmentType {  get; set; } 
         public string? attachmentPath {  get; set; } 
+        public bool IsUpdated { get; set; }
         [Required]
         public int QuizId { get; set; }
         public virtual Quiz Quiz { get; set; }

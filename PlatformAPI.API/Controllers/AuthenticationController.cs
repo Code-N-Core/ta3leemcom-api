@@ -204,6 +204,7 @@ namespace PlatformAPI.API.Controllers
                 .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.Id,
                 GroupName= _unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
                 .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.Name
+
             });
         }
         [Authorize(Roles = "Parent,Teacher")]

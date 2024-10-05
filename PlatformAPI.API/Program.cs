@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlatformAPI.API.MiddleWares;
@@ -126,6 +127,22 @@ namespace PlatformAPI.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
                     ValidAudience = builder.Configuration["JWT:Audience"]
+                };
+
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Check if the token is available in cookies
+                        var token = context.Request.Cookies["token"]; // Assuming 'token' is the cookie name
+
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token; // Assign the token from the cookie
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

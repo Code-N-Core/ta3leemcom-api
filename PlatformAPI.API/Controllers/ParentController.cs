@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.Parent;
 using PlatformAPI.Core.DTOs.Student;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -22,6 +23,15 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllParentData(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (id != int.Parse(loggedInId))
+                return BadRequest("Do Not Have Premission");
+
             var parent=await _unitOfWork.Parent.GetByIdAsync(id);
             if(parent == null)
                 return NotFound($"No parent with id: {id}");
@@ -126,7 +136,16 @@ namespace PlatformAPI.API.Controllers
         [HttpPost("add-student-to-parent")]
         public async Task<IActionResult> AddStudentToParent(AddStudentToParentDTO model)
         {
-            if(!ModelState.IsValid)
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (model.ParentId != int.Parse(loggedInId))
+                return BadRequest("Do Not Have Premission");
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if(await _unitOfWork.Parent.GetByIdAsync(model.ParentId)==null)
                 return BadRequest($"There is no parent with id: {model.ParentId}");
@@ -143,6 +162,15 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("edit-parent-name")]
         public async Task<IActionResult> EditParentNameAsync(EditParentNameDTO model)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (model.Id != int.Parse(loggedInId))
+                return BadRequest("Do Not Have Premission");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (await _unitOfWork.Parent.GetByIdAsync(model.Id) == null)
@@ -155,6 +183,15 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("edit-parent-phone")]
         public async Task<IActionResult> EditParentPhoneAsync(EditParentPhoneDTO model)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (model.Id != int.Parse(loggedInId))
+                return BadRequest("Do Not Have Premission");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

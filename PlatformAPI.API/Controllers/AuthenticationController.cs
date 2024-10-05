@@ -187,7 +187,9 @@ namespace PlatformAPI.API.Controllers
                 Name = user.Name,
                 Code=model.Code,
                 Role = Roles.Student.ToString(),
-                StudentId= _unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id
+                StudentId= _unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id,
+                GroupId=(await _unitOfWork.Student.FindByCodeAsync(model.Code)).GroupId
+
             });
         }
         [Authorize(Roles = "Parent,Teacher")]

@@ -24,7 +24,13 @@ namespace PlatformAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync(DayDTO model)
         {
-            if(!ModelState.IsValid)
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var groupOfMonth = ((await _unitOfWork.Month.GetAllAsync()).Where(m => m.Id == model.MonthId)).Select(m=>m.GroupId).FirstOrDefault();
+            var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupOfMonth).Select(g => g.TeacherId).FirstOrDefault();
+            if (teacherOfGroup != int.Parse(loggedInId))
+                return BadRequest("You Do Not Have The Premission");
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (await _unitOfWork.Month.GetByIdAsync(model.MonthId) == null)
                 return BadRequest($"No month with id: {model.MonthId}");
@@ -57,8 +63,18 @@ namespace PlatformAPI.API.Controllers
         public async Task<IActionResult> DeleteAsync([FromQuery]int dayId)
         {
             var day = await _unitOfWork.Day.GetByIdAsync(dayId);
-            if ( day==null)
+            if (day == null)
                 return NotFound($"No day with id: {dayId}");
+
+
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var groupOfMonth = ((await _unitOfWork.Month.GetAllAsync()).Where(m => m.Id == day.MonthId)).Select(m => m.GroupId).FirstOrDefault();
+            var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupOfMonth).Select(g => g.TeacherId).FirstOrDefault();
+            if (teacherOfGroup != int.Parse(loggedInId))
+                return BadRequest("You Do Not Have The Premission");
+
+
+          
             var studentsAbsence=await _unitOfWork.StudentAbsence.FindAllAsync(sa=>sa.DayId==dayId);
             if (studentsAbsence.Count() != 0)
             {

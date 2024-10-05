@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using PlatformAPI.Core.DTOs.Choose;
 using PlatformAPI.Core.DTOs.Questions;
 
 namespace PlatformAPI.API.Controllers
@@ -45,7 +46,7 @@ namespace PlatformAPI.API.Controllers
             var q = await _unitOfWork.Question.FindTWithIncludes<Question>(id,q=>q.Chooses,q=>q.Quiz);
             if (q == null)
                 return NotFound($"There is No Question with id: {id}");
-            var s=QuestionService.GetQuestionMap(q);
+            var s=QuestionService.GetQuestionMap(q,true);
             return Ok(s);
         }
         [Authorize]
@@ -113,50 +114,63 @@ namespace PlatformAPI.API.Controllers
                 return NotFound(ModelState);
         }
         [Authorize(Roles = "Teacher")]
-        [HttpPut("Edit-Question")]
-        public async Task<IActionResult> Update([FromForm] UQDTO model)
+        [HttpPut("Edit-QuestionAfterStarted")]
+        public async Task<IActionResult> Update([FromBody] UQDTO model)
         {
             if (ModelState.IsValid)
             {
-                var q = _mapper.Map<Question>(model);
+                var existingQuestion = await _unitOfWork.Question.GetByIdAsync(model.Id);
+
+                if (existingQuestion == null)
+                    return BadRequest("Question not found");
+
+                bool isUpdated = existingQuestion.IsUpdated;
+
+                var quiz = await _unitOfWork.Quiz.GetByIdAsync(existingQuestion.QuizId);
+                var dateNow = DateTime.Now;
+                if (!(quiz.StartDate <= dateNow))
+                    return BadRequest("The Quiz Is Not Started");
 
                 try
                 {
-                    if (q == null) return BadRequest();
+                    // Update question properties from the model
+                    _mapper.Map(model, existingQuestion); // Map the updated properties to the existing entity
 
-                    /* if (model.AttachFile != null)
-                     {
-                         var attachmentType = _attachmentService.GetAttachmentType(model.AttachFile.FileName);
-                         if (attachmentType == "unknown")
-                             return BadRequest("Unsupported file type.");
+                    foreach (var ch in model.Choices)
+                    {
+                        if (ch.IsDeleted && ch.Id != 0)
+                        {
+                            var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
+                            await _unitOfWork.Choose.DeleteAsync(choice);
+                        }
+                        else if (ch.Id == 0)
+                        {
+                            var newChoice = _mapper.Map<Choose>(ch);
+                            await _unitOfWork.Choose.AddAsync(newChoice);
+                        }
+                    }
 
-                         // Return the file path or a URL that can be used later
-                         var fileUrl = $"/uploads/{model.AttachFile.FileName}";
+                    // Handle file attachment if necessary (this is commented out for now in your example)
 
-                         //if its upload new file 
-                         if (q.attachmentPath != null && fileUrl!=q.attachmentPath)
-                         {
-                             //Delete the old url from the server
-                             //save the new fileurl in the sever
-                         }
-                         // 
-                         q.attachmentPath = fileUrl;
-                         q.attachmentType = attachmentType;
-                     }*/
-                    _unitOfWork.Question.Update(q);
-                    
+                    if (!isUpdated)
+                    {
+                        await _questionService.ModifiyQuiz(existingQuestion);
+                        existingQuestion.IsUpdated = true;
+                    }
+
+                    _unitOfWork.Question.Update(existingQuestion);
+
+                    await _unitOfWork.CompleteAsync();
                 }
                 catch (Exception ex)
                 {
-
                     return BadRequest(ex.Message);
                 }
-                await _unitOfWork.CompleteAsync();
-                return Ok(q);
 
+                return Ok();
             }
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
     }
 }

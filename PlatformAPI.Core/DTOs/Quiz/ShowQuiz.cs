@@ -16,12 +16,10 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int Mark { get; set; }
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
-        public TimeSpan Duration { get; set; }
-        [NotMapped]
-        public DateTime? EndDate
-        {
-            get { return Duration != null ? StartDate.Add(Duration) : null; }
-        }
+        public timeStart timeStart { get; set; }
+        public timeDuration timeDuration { get; set; }
+        public DateTime? EndDate { get; set; }
+       
 
         public string? QuestionForm { get; set; }
         public string? AnswerForm { get; set; }

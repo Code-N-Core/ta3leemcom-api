@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
+using PlatformAPI.Core.Models;
+using System.Security.Claims;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -29,7 +31,25 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetAllStudentOfGroupsIds")]
         public async Task<IActionResult> GetAll([FromQuery]List<int> ids)
         {
-           if(ids is null) return BadRequest("The IDs Of Groups is Null");
+            var loggedInTeacherId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInTeacherId))
+            {
+                return Unauthorized("User not found");
+            }
+            var groups = (await _unitOfWork.Group.GetAllAsync()).Where(g => ids.Contains(g.Id));
+            if (groups == null)
+            {
+                return NotFound("Group not found");
+            }
+
+            if (groups.Any(g => g.TeacherId != int.Parse(loggedInTeacherId)))
+            {
+                return BadRequest("You do not have permission to get These groups");
+            }
+
+
+            if (ids is null) return BadRequest("The IDs Of Groups is Null");
             var students = await _unitOfWork.Student.FindAllAsync(s=>ids.Contains(s.GroupId));
             if (students is null)
                 return NotFound($"There Is No Students");
@@ -42,10 +62,37 @@ namespace PlatformAPI.API.Controllers
             return Ok(result);
 
         }
-        [Authorize]
+        [Authorize(Roles="Teacher,Student,Parent")]
         [HttpGet("GetStudent")]
         public async Task<IActionResult> GetById(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (userRoles.Contains(Roles.Teacher.ToString()))
+            {
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+            else if (userRoles.Contains(Roles.Student.ToString()))
+            {
+                if(id != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+
+            }
+            else if (userRoles.Contains(Roles.Parent.ToString()))
+            {
+                var parentId = (await _unitOfWork.Student.GetByIdAsync(id)).ParentId;
+                if (parentId != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+
             var student =await _unitOfWork.Student.FindTWithIncludes<Student>(id,
                  s=>s.Group,
                  s=>s.Group.LevelYear,
@@ -80,10 +127,39 @@ namespace PlatformAPI.API.Controllers
                 studentParentPhone = parentPhone
             });
         }
-        [Authorize]
+        [Authorize(Roles = "Teacher,Student,Parent")]
         [HttpGet("GetAllResultsOfStudentId")]
         public async Task<IActionResult> GetResults(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (userRoles.Contains(Roles.Teacher.ToString()))
+            {
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+            else if (userRoles.Contains(Roles.Student.ToString()))
+            {
+                if (id != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+
+            }
+            else if (userRoles.Contains(Roles.Parent.ToString()))
+            {
+                var parentId = (await _unitOfWork.Student.GetByIdAsync(id)).ParentId;
+                if (parentId != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+
+            /////////////////////////////////////////
+
             if (id == 0) return BadRequest($"There is no Student With ID: {id}");
             var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(s => s.StudentId == id,
                 Sq => Sq.Quiz
@@ -97,6 +173,22 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetAllStudnetDidntEnterQuizId")]
         public async Task<IActionResult> GetStudents(int quizid)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            var quiz = (await _unitOfWork.Quiz.GetByIdAsync(quizid));
+            if (quiz == null)
+            {
+                return NotFound("Quiz not found");
+            }
+
+            if (quiz.TeacherId != int.Parse(loggedInId))
+            {
+                return BadRequest("You do not have permission to get this Quiz");
+            }
+
             if (quizid == 0) return NotFound();
             var students = await _unitOfWork.Student.GetStudentNotEnter(quizid);
             List<StudentMapDTO> result = new List<StudentMapDTO>();
@@ -132,7 +224,23 @@ namespace PlatformAPI.API.Controllers
         {
             if(ModelState.IsValid)
             {
-                if(await _unitOfWork.Group.GetByIdAsync(model.GroupId)==null)
+                var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }
+                
+                    var TeacherOfStudent = (await _unitOfWork.Group.GetByIdAsync(model.GroupId)).TeacherId;
+                    if (TeacherOfStudent != int.Parse(loggedInId))
+                        return BadRequest("You Do Not Have Permission");
+                
+
+
+
+
+                ////////////////////////////////
+                if (await _unitOfWork.Group.GetByIdAsync(model.GroupId)==null)
                     return BadRequest($"there is no group with groupId {model.GroupId}");
                 var student=_mapper.Map<Student>(model);
                 try
@@ -211,6 +319,21 @@ namespace PlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+           
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            
+
+
+            ////////////////////////
             var student = await _unitOfWork.Student.GetByIdAsync(id);
             if (student == null)
             {
@@ -249,6 +372,18 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+
+            var TeacherOfStudent = (await _unitOfWork.Group.GetByIdAsync(student.GroupId)).TeacherId;
+            if (TeacherOfStudent != int.Parse(loggedInId))
+                return BadRequest("You Do Not Have Permission");
+
+
             if (ModelState.IsValid)
             {
                 var s = await _unitOfWork.Student.GetByIdAsync(student.Id);

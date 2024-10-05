@@ -12,7 +12,8 @@ namespace PlatformAPI.EF.Repositories
         {
             _context = context;
         }
-
+        public async Task<Student> GetByAppUserIdAsync(string id)
+           => await _context.Students.SingleOrDefaultAsync(s =>s.ApplicationUserId  == id);
         public async Task<Student> FindByCodeAsync(string Code)
             => await _context.Students.FirstOrDefaultAsync(s => s.Code == Code);
 

@@ -36,7 +36,7 @@ namespace PlatformAPI.API.Controllers
             this.chooseService = chooseService;
             this.QuizService = QuizService;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetAllQuizsByGroupsIds")]
         public async Task<IActionResult> GetAllByGroup([FromQuery]List<int> GroupsIds)
         {
@@ -50,9 +50,9 @@ namespace PlatformAPI.API.Controllers
             }
             return Ok(lsq);
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetQuizById")]
-        public async Task<IActionResult>GetById(int QuizId,bool IsTeacher)
+        public async Task<IActionResult>GetById(int QuizId)
         {
             var quizs =await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(QuizId,q=>q.GroupsQuizzes);
             if (quizs == null) return NotFound($"There is No Quizs With Id {QuizId}");
@@ -62,10 +62,10 @@ namespace PlatformAPI.API.Controllers
             {
                 sq.GroupsIds.Add(gq.GroupId);
             }
-            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,IsTeacher);
+            sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId);
             return Ok(sq);
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetAllResultsOfQuizId")]
         public async Task<IActionResult> GetResults(int quizId)
         {
@@ -78,7 +78,7 @@ namespace PlatformAPI.API.Controllers
 
             return Ok(res);
         }
-        [Authorize]
+       // [Authorize]
         [HttpGet("GetDescreptionOfQuiz")]
         public async Task<IActionResult> GetDes(int quizId)
         {
@@ -89,7 +89,7 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
 
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetAllStatsOfQuizId")]
         public async Task<IActionResult> GetStats(int quizid)
         {
@@ -97,7 +97,7 @@ namespace PlatformAPI.API.Controllers
             if (res == null) return BadRequest();
             return Ok(res);
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetQuizesStatusOfStudentId")]
         public async Task<IActionResult> GetQuizesStatus(int studentId)
         {
@@ -105,7 +105,7 @@ namespace PlatformAPI.API.Controllers
             if (result == null) return BadRequest();
             return Ok(result);
         }
-        [Authorize(Roles = "Teacher")]
+        //[Authorize(Roles = "Teacher")]
         [HttpPost("AddOnlineQuiz")]
         public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
         {
@@ -163,7 +163,7 @@ namespace PlatformAPI.API.Controllers
                             q.QuizId = quiz.Id;
                             var lcho = new List<ChooseDTO>();
                      
-                                foreach (var c in q.Chooses)
+                                foreach (var c in q.Choices)
                                 {
                                     var choice = new ChooseDTO 
                                     {
@@ -185,7 +185,7 @@ namespace PlatformAPI.API.Controllers
                     }
 
                     // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id,true));
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id));
 
                     return Ok(shq);
                 }
@@ -199,7 +199,7 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-        [Authorize(Roles = "Student")]
+       // [Authorize(Roles = "Student")]
         [HttpPost("AddStudentSolution")]
         public async Task<IActionResult> Submit(StudentSolutionDTO model)
         {
@@ -292,7 +292,7 @@ namespace PlatformAPI.API.Controllers
                   return BadRequest(ModelState);
           }*/
         #endregion
-        [Authorize(Roles = "Teacher")]
+       // [Authorize(Roles = "Teacher")]
         [HttpPut("UpdateOnlineQuiz")]
         public async Task<IActionResult> UpdateOn(UpdateOnlineQuizDto model)
         {
@@ -303,7 +303,7 @@ namespace PlatformAPI.API.Controllers
                     var quiz = _mapper.Map<Quiz>(model);
                     _unitOfWork.Quiz.Update(quiz);
                     await _unitOfWork.CompleteAsync();
-                    return Ok();
+                    return Ok(quiz);
 
                 }
                 catch (Exception ex)
@@ -343,7 +343,7 @@ namespace PlatformAPI.API.Controllers
          }
  */
         #endregion
-        [Authorize(Roles = "Teacher,Admin")]
+       // [Authorize(Roles = "Teacher,Admin")]
         [HttpDelete("DeleteQuiz")]
         public async Task<IActionResult> Delete(int id)
         {

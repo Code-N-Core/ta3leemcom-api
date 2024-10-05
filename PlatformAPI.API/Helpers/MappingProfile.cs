@@ -20,6 +20,7 @@ namespace PlatformAPI.API.Helpers
             CreateMap<AddFeedbackDTO, Feedback>();
             CreateMap<ChooseDTO, Choose>().ReverseMap();
             CreateMap<CreateOnlineQuizDTO, Quiz>().ForMember(dest=>dest.Questions,opt=>opt.Ignore());
+
             CreateMap<CreateOffLineQuizDto, Quiz>();
             CreateMap<UpdateOnlineQuizDto, Quiz>();
             CreateMap<UQDTO, Question>();

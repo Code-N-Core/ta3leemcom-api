@@ -16,7 +16,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int Mark { get; set; }
         public DateTime StartDate { get; set; }
 
-        [Required, Deticated]
+        [Required]
         public string Type { get; set; }
         [Required]
         public int TeacherId { get; set; }

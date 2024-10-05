@@ -1,2 +1,6 @@
 
 /.vs
+/.vs
+/PlatformAPI.API/bin
+/PlatformAPI.API/obj
+.vs/PlatformAPI/v17/.suo

@@ -26,7 +26,7 @@ namespace PlatformAPI.Core.Services
             _mapper = mapper;
             _attachmentService = attachmentService;
         }
-        public static ShowQuestionsOfQuiz GetQuestionMap(Question q,bool f)
+        public static ShowQuestionsOfQuiz GetQuestionMap(Question q)
         {
             List<ChooseDTO> answer = new List<ChooseDTO>();
             foreach (var c in q.Chooses)
@@ -35,7 +35,7 @@ namespace PlatformAPI.Core.Services
                 {
                     Id = c.Id,
                     Content = c.Content,
-                    IsCorrect =f==true?c.IsCorrect:null,
+                    //IsCorrect = c.IsCorrect,
                     QuestionId = c.QuestionId,
                 };
                 answer.Add(a);
@@ -45,7 +45,7 @@ namespace PlatformAPI.Core.Services
             {
                 id = q.Id,
                 QuizId = q.QuizId,
-                AnswerId = ans is not null && f==true ? ans.Id : 0,
+                AnswerId = ans is not null ? ans.Id : 0,
                 Answer = ans is not null ? ans.Content : null,
                 Choices = answer,
                 Content = q.Content,
@@ -111,7 +111,7 @@ namespace PlatformAPI.Core.Services
             return question;  // Return the question entity with any generated data (e.g., Id)
         }
 
-        public async Task<List<ShowQuestionsOfQuiz>> GetAllQuestionsOfQuiz(int id,bool f)
+        public async Task<List<ShowQuestionsOfQuiz>> GetAllQuestionsOfQuiz(int id)
         {
             var Q = await _unitOfWork.Question.FindAllWithIncludes<Question>(q => q.QuizId == id,
               q => q.Chooses,
@@ -121,7 +121,7 @@ namespace PlatformAPI.Core.Services
             List<ShowQuestionsOfQuiz> show = new List<ShowQuestionsOfQuiz>();
             foreach (var q in Q)
             {
-                var s = GetQuestionMap(q,f);
+                var s = GetQuestionMap(q);
                 show.Add(s);
             }
             return show;

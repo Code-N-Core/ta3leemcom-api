@@ -26,6 +26,7 @@ namespace PlatformAPI.Core.Helpers
                 .ForSourceMember(src => src.Role, opt => opt.DoNotValidate());
             CreateMap<QDTO, Question>()
                 .ForMember(dst => dst.Chooses, opt => opt.Ignore());
+            CreateMap<UQDTO, Question>();
             CreateMap<AddMonthDTO, Month>();
             CreateMap<Month, ViewMonthDTO>();
             CreateMap<DayDTO,Day>().ReverseMap();

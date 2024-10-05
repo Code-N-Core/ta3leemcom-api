@@ -1,10 +1,8 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using PlatformAPI.Core.DTOs.Parent;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
-using PlatformAPI.Core.Models;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -185,21 +183,21 @@ namespace PlatformAPI.API.Controllers
                         return BadRequest(ex);
                     }
                     await _unitOfWork.CompleteAsync();
-                    return Ok(new
+                    // complete
+                    var studentDto = new StudentDTO
                     {
-                        id = student.Id,
-                        name = _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(student.Id).Result.ApplicationUserId).Result.Name,
-                        code = student.Code,
-                        groupId = student.GroupId,
-                        groupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
-                        levelYearId = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId,
-                        levelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
-                        levelId = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId,
-                        levelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
-                        studentParentId = (int?)null,
-                        studentParentName = (string)null,
-                        studentParentPhone = (string)null
-                    });
+                        Id=student.Id,
+                        Code = student.Code,
+                        Name = _userManager.FindByEmailAsync(student.Code +StudentConst.EmailComplete).Result.Name,
+                        GroupId = student.GroupId,
+                        GroupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
+                        LevelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
+                        LevelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
+                        StudentParentId=null,
+                        StudentParentName=null,
+                        StudentParentPhone=null
+                    };
+                    return Ok(studentDto);
                 }
                 catch(Exception ex)
                 {
@@ -346,46 +344,6 @@ namespace PlatformAPI.API.Controllers
             }
             else
                 return BadRequest(ModelState);
-        }
-        [Authorize(Roles ="Student")]
-        [HttpGet("GetMonthDataForStudent")]
-        public async Task<IActionResult> GetMonthDataForStudentAsync(int studentId)
-        {
-            if (await _unitOfWork.Student.GetByIdAsync(studentId) == null)
-                return BadRequest($"No student with id {studentId}");
-            var studentMonths = await _unitOfWork.StudentMonth.FindAllAsync(sm => sm.StudentId == studentId);
-
-            var studentMonthsDto = new List<StudentMonthParentDTO>();
-
-            foreach (var month in studentMonths)
-            {
-                var studentMonthDto = new StudentMonthParentDTO();
-
-                var monthData = await _unitOfWork.Month.GetByIdAsync(month.MonthId);
-                var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == studentId && sm.MonthId == monthData.Id);
-                var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == month.MonthId);
-                var daysDto = new List<StudentMonthDayParentDTO>();
-                foreach (var day in days)
-                {
-                    var studentAbsence = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.DayId == day.Id && sa.StudentId == studentId);
-                    if (studentAbsence != null)
-                    {
-                        var dayDto = new StudentMonthDayParentDTO
-                        {
-                            Date = day.Date,
-                            Attended = studentAbsence.Attended
-                        };
-                        daysDto.Add(dayDto);
-                    }
-                }
-                studentMonthDto.MonthName = monthData.Name;
-                studentMonthDto.Year = monthData.Year;
-                studentMonthDto.Pay = studentMonth.Pay;
-                studentMonthDto.Days = daysDto;
-
-                studentMonthsDto.Add(studentMonthDto);
-            }
-            return Ok(studentMonthsDto);
         }
 
     }

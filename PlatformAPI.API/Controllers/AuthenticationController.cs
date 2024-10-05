@@ -187,23 +187,7 @@ namespace PlatformAPI.API.Controllers
                 Name = user.Name,
                 Code=model.Code,
                 Role = Roles.Student.ToString(),
-                StudentId= _unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id,
-                LevelId=_unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.
-                GetByIdAsync(_unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.LevelYearId).Result.LevelId).Result.Id,
-                LevelName= _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.
-                GetByIdAsync(_unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
-                LevelYearId= _unitOfWork.LevelYear.
-                GetByIdAsync(_unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.LevelYearId).Result.Id,
-                LevelYearName= _unitOfWork.LevelYear.
-                GetByIdAsync(_unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.LevelYearId).Result.Name,
-                GroupId= _unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.Id,
-                GroupName= _unitOfWork.Group.GetByIdAsync(_unitOfWork.Student
-                .GetByIdAsync(_unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id).Result.GroupId).Result.Name
+                StudentId= _unitOfWork.Parent.FindTWithExpression<Student>(s => s.ApplicationUserId == user.Id).Result.Id
             });
         }
         [Authorize(Roles = "Parent,Teacher")]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PlatformAPI.Core.DTOs.Auth;
+using PlatformAPI.Core.DTOs.Choose;
 using PlatformAPI.Core.DTOs.Day;
 using PlatformAPI.Core.DTOs.Month;
 using PlatformAPI.Core.DTOs.Questions;
@@ -26,7 +27,9 @@ namespace PlatformAPI.Core.Helpers
                 .ForSourceMember(src => src.Role, opt => opt.DoNotValidate());
             CreateMap<QDTO, Question>()
                 .ForMember(dst => dst.Chooses, opt => opt.Ignore());
-            CreateMap<UQDTO, Question>();
+            CreateMap<UQDTO, Question>()
+                .ForMember(dst => dst.Chooses, opt => opt.Ignore())
+                .ForMember(dst => dst.IsUpdated, opt => opt.Ignore());
             CreateMap<AddMonthDTO, Month>();
             CreateMap<Month, ViewMonthDTO>();
             CreateMap<DayDTO,Day>().ReverseMap();

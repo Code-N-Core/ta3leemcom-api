@@ -1,8 +1,11 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using PlatformAPI.Core.DTOs.Parent;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
+using PlatformAPI.Core.Models;
+using System.Security.Claims;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -29,7 +32,25 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetAllStudentOfGroupsIds")]
         public async Task<IActionResult> GetAll([FromQuery]List<int> ids)
         {
-           if(ids is null) return BadRequest("The IDs Of Groups is Null");
+            var loggedInTeacherId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInTeacherId))
+            {
+                return Unauthorized("User not found");
+            }
+            var groups = (await _unitOfWork.Group.GetAllAsync()).Where(g => ids.Contains(g.Id));
+            if (groups == null)
+            {
+                return NotFound("Group not found");
+            }
+
+            if (groups.Any(g => g.TeacherId != int.Parse(loggedInTeacherId)))
+            {
+                return BadRequest("You do not have permission to get These groups");
+            }
+
+
+            if (ids is null) return BadRequest("The IDs Of Groups is Null");
             var students = await _unitOfWork.Student.FindAllAsync(s=>ids.Contains(s.GroupId));
             if (students is null)
                 return NotFound($"There Is No Students");
@@ -42,10 +63,37 @@ namespace PlatformAPI.API.Controllers
             return Ok(result);
 
         }
-        [Authorize]
+        [Authorize(Roles="Teacher,Student,Parent")]
         [HttpGet("GetStudent")]
         public async Task<IActionResult> GetById(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (userRoles.Contains(Roles.Teacher.ToString()))
+            {
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+            else if (userRoles.Contains(Roles.Student.ToString()))
+            {
+                if(id != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+
+            }
+            else if (userRoles.Contains(Roles.Parent.ToString()))
+            {
+                var parentId = (await _unitOfWork.Student.GetByIdAsync(id)).ParentId;
+                if (parentId != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+
             var student =await _unitOfWork.Student.FindTWithIncludes<Student>(id,
                  s=>s.Group,
                  s=>s.Group.LevelYear,
@@ -80,10 +128,39 @@ namespace PlatformAPI.API.Controllers
                 studentParentPhone = parentPhone
             });
         }
-        [Authorize]
+        [Authorize(Roles = "Teacher,Student,Parent")]
         [HttpGet("GetAllResultsOfStudentId")]
         public async Task<IActionResult> GetResults(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (userRoles.Contains(Roles.Teacher.ToString()))
+            {
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+            else if (userRoles.Contains(Roles.Student.ToString()))
+            {
+                if (id != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+
+            }
+            else if (userRoles.Contains(Roles.Parent.ToString()))
+            {
+                var parentId = (await _unitOfWork.Student.GetByIdAsync(id)).ParentId;
+                if (parentId != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            }
+
+            /////////////////////////////////////////
+
             if (id == 0) return BadRequest($"There is no Student With ID: {id}");
             var studentQuizzes = await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(s => s.StudentId == id,
                 Sq => Sq.Quiz
@@ -97,6 +174,22 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("GetAllStudnetDidntEnterQuizId")]
         public async Task<IActionResult> GetStudents(int quizid)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            var quiz = (await _unitOfWork.Quiz.GetByIdAsync(quizid));
+            if (quiz == null)
+            {
+                return NotFound("Quiz not found");
+            }
+
+            if (quiz.TeacherId != int.Parse(loggedInId))
+            {
+                return BadRequest("You do not have permission to get this Quiz");
+            }
+
             if (quizid == 0) return NotFound();
             var students = await _unitOfWork.Student.GetStudentNotEnter(quizid);
             List<StudentMapDTO> result = new List<StudentMapDTO>();
@@ -132,7 +225,23 @@ namespace PlatformAPI.API.Controllers
         {
             if(ModelState.IsValid)
             {
-                if(await _unitOfWork.Group.GetByIdAsync(model.GroupId)==null)
+                var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }
+                
+                    var TeacherOfStudent = (await _unitOfWork.Group.GetByIdAsync(model.GroupId)).TeacherId;
+                    if (TeacherOfStudent != int.Parse(loggedInId))
+                        return BadRequest("You Do Not Have Permission");
+                
+
+
+
+
+                ////////////////////////////////
+                if (await _unitOfWork.Group.GetByIdAsync(model.GroupId)==null)
                     return BadRequest($"there is no group with groupId {model.GroupId}");
                 var student=_mapper.Map<Student>(model);
                 try
@@ -183,21 +292,21 @@ namespace PlatformAPI.API.Controllers
                         return BadRequest(ex);
                     }
                     await _unitOfWork.CompleteAsync();
-                    // complete
-                    var studentDto = new StudentDTO
+                    return Ok(new
                     {
-                        Id=student.Id,
-                        Code = student.Code,
-                        Name = _userManager.FindByEmailAsync(student.Code +StudentConst.EmailComplete).Result.Name,
-                        GroupId = student.GroupId,
-                        GroupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
-                        LevelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
-                        LevelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
-                        StudentParentId=null,
-                        StudentParentName=null,
-                        StudentParentPhone=null
-                    };
-                    return Ok(studentDto);
+                        id = student.Id,
+                        name = _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(student.Id).Result.ApplicationUserId).Result.Name,
+                        code = student.Code,
+                        groupId = student.GroupId,
+                        groupName = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.Name,
+                        levelYearId = _unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId,
+                        levelYearName = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.Name,
+                        levelId = _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId,
+                        levelName = _unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(student.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
+                        studentParentId = (int?)null,
+                        studentParentName = (string)null,
+                        studentParentPhone = (string)null
+                    });
                 }
                 catch(Exception ex)
                 {
@@ -211,6 +320,21 @@ namespace PlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+           
+                var studentGroupId = (await _unitOfWork.Student.GetByIdAsync(id)).GroupId;
+                var TeacherOfStudent = ((await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == studentGroupId)).Select(g => g.TeacherId).FirstOrDefault();
+                if (TeacherOfStudent != int.Parse(loggedInId))
+                    return BadRequest("You Do Not Have Permission");
+            
+
+
+            ////////////////////////
             var student = await _unitOfWork.Student.GetByIdAsync(id);
             if (student == null)
             {
@@ -249,6 +373,18 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
         {
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+
+            var TeacherOfStudent = (await _unitOfWork.Group.GetByIdAsync(student.GroupId)).TeacherId;
+            if (TeacherOfStudent != int.Parse(loggedInId))
+                return BadRequest("You Do Not Have Permission");
+
+
             if (ModelState.IsValid)
             {
                 var s = await _unitOfWork.Student.GetByIdAsync(student.Id);
@@ -344,6 +480,46 @@ namespace PlatformAPI.API.Controllers
             }
             else
                 return BadRequest(ModelState);
+        }
+        [Authorize(Roles ="Student")]
+        [HttpGet("GetMonthDataForStudent")]
+        public async Task<IActionResult> GetMonthDataForStudentAsync(int studentId)
+        {
+            if (await _unitOfWork.Student.GetByIdAsync(studentId) == null)
+                return BadRequest($"No student with id {studentId}");
+            var studentMonths = await _unitOfWork.StudentMonth.FindAllAsync(sm => sm.StudentId == studentId);
+
+            var studentMonthsDto = new List<StudentMonthParentDTO>();
+
+            foreach (var month in studentMonths)
+            {
+                var studentMonthDto = new StudentMonthParentDTO();
+
+                var monthData = await _unitOfWork.Month.GetByIdAsync(month.MonthId);
+                var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == studentId && sm.MonthId == monthData.Id);
+                var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == month.MonthId);
+                var daysDto = new List<StudentMonthDayParentDTO>();
+                foreach (var day in days)
+                {
+                    var studentAbsence = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.DayId == day.Id && sa.StudentId == studentId);
+                    if (studentAbsence != null)
+                    {
+                        var dayDto = new StudentMonthDayParentDTO
+                        {
+                            Date = day.Date,
+                            Attended = studentAbsence.Attended
+                        };
+                        daysDto.Add(dayDto);
+                    }
+                }
+                studentMonthDto.MonthName = monthData.Name;
+                studentMonthDto.Year = monthData.Year;
+                studentMonthDto.Pay = studentMonth.Pay;
+                studentMonthDto.Days = daysDto;
+
+                studentMonthsDto.Add(studentMonthDto);
+            }
+            return Ok(studentMonthsDto);
         }
 
     }

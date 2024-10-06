@@ -9,6 +9,7 @@ namespace PlatformAPI.Core.Interfaces
         public Task<IEnumerable<Student>> GetStudentNotEnter(int quizid);
         public Task<IEnumerable<Student>> GetTopStudents(List<int> ids);
         public Task<int> GetAllStudentsSolveQuiz(int quizid);
+        public Task<Student> GetByAppUserIdAsync(string id);
 
 
 

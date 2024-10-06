@@ -152,6 +152,19 @@ namespace PlatformAPI.Core.Services
 
             // Create role claims
             var roleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+            var userIdLogged = "";
+            if (userRoles.Contains(Roles.Teacher.ToString()))
+            {
+                userIdLogged = ((await _unitOfWork.Teacher.GetByAppUserIdAsync(user.Id.ToString())).Id).ToString();
+            }
+            else if (userRoles.Contains(Roles.Parent.ToString()))
+            {
+                userIdLogged = ((await _unitOfWork.Parent.GetByAppUserIdAsync(user.Id.ToString())).Id).ToString();
+            }
+            else
+            {
+                userIdLogged = ((await _unitOfWork.Student.GetByAppUserIdAsync(user.Id.ToString())).Id).ToString();
+            }
 
             // Combine all claims into a single list
             var claims = new List<Claim>
@@ -159,7 +172,8 @@ namespace PlatformAPI.Core.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // User ID
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),     // Username
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)      // Email
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),      // Email
+                new Claim("LoggedId",userIdLogged.ToString())              // Id Of the LoggedIn User
             }
             .Union(userClaims)       // Include additional claims from user
             .Union(roleClaims);      // Include role claims

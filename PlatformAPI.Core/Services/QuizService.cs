@@ -17,11 +17,13 @@ namespace PlatformAPI.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly QuestionService questionService;
 
-        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, QuestionService questionService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            this.questionService = questionService;
         }
         public async Task<List<Quiz>> GetEndedQuizez()
         {
@@ -81,6 +83,7 @@ namespace PlatformAPI.Core.Services
                         iscorrect = ans.IsCorrect,
                         questionId = ans.QuestionId,
                         QuestionMark=ans.Question.Mark,
+                        ChoiceId=ans.ChosenOptionId
                     };
                     result.Answers.Add(answer);
                 }
@@ -136,6 +139,30 @@ namespace PlatformAPI.Core.Services
             );
 
             return result;
+        }
+
+        public async Task deleteQuiz(int quizId)
+        {
+            var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(quizId,
+                  q => q.Questions,
+                  q => q.GroupsQuizzes,
+                  q => q.StudentsQuizzes
+                  );
+            foreach (var question in quiz.Questions)
+            {
+                await questionService.DeleteQuestionsWithChoises(question.Id);
+            }
+            foreach (var gq in quiz.GroupsQuizzes)
+            {
+                await _unitOfWork.GroupQuiz.DeleteAsync(gq);
+            }
+            foreach (var sq in quiz.StudentsQuizzes)
+            {
+                await _unitOfWork.StudentQuiz.DeleteAsync(sq);
+            }
+            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.Quiz.DeleteAsync(quiz);
+            await _unitOfWork.CompleteAsync();
         }
 
     }

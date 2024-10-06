@@ -10,6 +10,7 @@ namespace PlatformAPI.Core.DTOs.Questions
     {
         public int id {  get; set; }
         public int questionId { get; set; }
+        public int ChoiceId { get; set; }
         public int QuestionMark {  get; set; }
         public bool iscorrect { get; set; }
     }

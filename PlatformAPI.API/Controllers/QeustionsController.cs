@@ -46,7 +46,7 @@ namespace PlatformAPI.API.Controllers
             var q = await _unitOfWork.Question.FindTWithIncludes<Question>(id,q=>q.Chooses,q=>q.Quiz);
             if (q == null)
                 return NotFound($"There is No Question with id: {id}");
-            var s=QuestionService.GetQuestionMap(q);
+            var s=QuestionService.GetQuestionMap(q,true);
             return Ok(s);
         }
         [Authorize]

@@ -326,7 +326,8 @@ namespace PlatformAPI.API.Controllers
                                     var choice = new ChooseDTO 
                                     {
                                         Content=c.Content,
-
+                                        IsCorrect=c.IsCorrect,
+                                        IsDeleted=c.IsDeleted,
                                     };
                                     lcho.Add(choice);
 

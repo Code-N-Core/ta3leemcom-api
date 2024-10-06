@@ -321,7 +321,7 @@ namespace PlatformAPI.API.Controllers
                             q.QuizId = quiz.Id;
                             var lcho = new List<ChooseDTO>();
                      
-                                foreach (var c in q.Chooses)
+                                foreach (var c in q.Choices)
                                 {
                                     var choice = new ChooseDTO 
                                     {

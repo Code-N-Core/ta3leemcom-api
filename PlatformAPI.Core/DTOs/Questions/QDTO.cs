@@ -23,7 +23,7 @@ namespace PlatformAPI.Core.DTOs.Questions
          public IFormFile? AttachFile { get; set; }
         public string Type { get; set; }
         public int? QuizId { get; set; }
-        public List<ChooseDTO> Chooses { get; set; }
+        public List<ChooseDTO> Choices { get; set; }
         
 
     }

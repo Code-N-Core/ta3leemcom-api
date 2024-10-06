@@ -488,9 +488,17 @@ namespace PlatformAPI.API.Controllers
                         return BadRequest("The Quiz Is Started");
                    await QuizService.deleteQuiz(quiz.Id);
                     quiz.Id = 0;
+                    foreach (var q in quiz.Questions)
+                    {
+                        q.Id = 0;
+                        foreach (var ch in q.Chooses)
+                        {
+                            ch.Id = 0;
+                        }
+                    }
                    await _unitOfWork.Quiz.AddAsync(quiz);
                     await _unitOfWork.CompleteAsync();
-                    return Ok();
+                    return Ok(quiz.Id);
 
                 }
                 catch (Exception ex)

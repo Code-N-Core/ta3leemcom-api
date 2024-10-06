@@ -26,9 +26,10 @@ namespace PlatformAPI.Core.Helpers
                 .ForMember(dst => dst.TwoFactorEnabled, opt => opt.Ignore())
                 .ForSourceMember(src => src.Role, opt => opt.DoNotValidate());
             CreateMap<QDTO, Question>()
-                .ForMember(dst => dst.Chooses, opt => opt.Ignore());
+            .ForMember(dst => dst.Chooses, opt => opt.MapFrom(uq => uq.Choices));
+
             CreateMap<UQDTO, Question>()
-                .ForMember(dst => dst.Chooses, opt => opt.Ignore())
+                .ForMember(dst => dst.Chooses, opt => opt.MapFrom(uq=>uq.Choices))
                 .ForMember(dst => dst.IsUpdated, opt => opt.Ignore());
             CreateMap<AddMonthDTO, Month>();
             CreateMap<Month, ViewMonthDTO>();

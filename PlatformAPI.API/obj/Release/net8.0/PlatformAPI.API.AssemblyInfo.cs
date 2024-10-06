@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+871127bf3a2a23ddb56c89cd18b0e42707ee99a8")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ce0ff1896c263c1c5b6e89f576d46334ebe43be")]
->>>>>>> parent of 53a09c5 (saveLastChangesForStdMonth)
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+37123a4570406252c2871798af2c3a1937e3ff73")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

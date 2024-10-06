@@ -23,12 +23,11 @@ namespace PlatformAPI.API.Helpers
 
             CreateMap<CreateOffLineQuizDto, Quiz>();
             CreateMap<UpdateOnlineQuizDto, Quiz>();
-            CreateMap<UQDTO, Question>();
             CreateMap<UpdateOfflineQuizDto, Quiz>();
             CreateMap<Quiz, ShowQuiz>()
                 .ForMember(dest => dest.timeStart, opt => opt.MapFrom(src => new timeStart
                 {
-                    Hours = src.StartDate.Hour,
+                    Hours = src.StartDate.Hour>12? src.StartDate.Hour-12: src.StartDate.Hour,
                     Minute = src.StartDate.Minute,
                     Mode = src.StartDate.Hour >= 12 ? "PM" : "AM"
                 }))

@@ -168,7 +168,7 @@ namespace PlatformAPI.Core.Services
 
 
             }
-        public async Task ModifiyQuiz(Question q)
+        public async Task ModifiyQuiz(Question q,bool IsDeleted)
         {
             var quiz = (await _unitOfWork.Quiz.GetByIdAsync(q.QuizId));
             bool f = q.Type == QuestionType.Mandatory ? true : false;
@@ -197,7 +197,13 @@ namespace PlatformAPI.Core.Services
                     }
                 }
                 answer.IsCorrect = false;
+                if (IsDeleted)
+                {
+                   await _unitOfWork.StudentAnswer.DeleteAsync(answer);
+
+                }
             }
+           await _unitOfWork.CommitAsync();
         }
           
         }

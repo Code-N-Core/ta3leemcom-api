@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.Const;
 using PlatformAPI.Core.DTOs.Questions;
 using PlatformAPI.Core.DTOs.Quiz;
+using PlatformAPI.Core.Helpers;
 using PlatformAPI.Core.Interfaces;
 using PlatformAPI.Core.Models;
 using System;
@@ -18,12 +20,14 @@ namespace PlatformAPI.Core.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly QuestionService questionService;
+        private readonly IMapper _mapper;
 
-        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, QuestionService questionService)
+        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, QuestionService questionService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             this.questionService = questionService;
+            _mapper = mapper;
         }
         public async Task<List<Quiz>> GetEndedQuizez()
         {
@@ -163,6 +167,34 @@ namespace PlatformAPI.Core.Services
             await _unitOfWork.CompleteAsync();
             await _unitOfWork.Quiz.DeleteAsync(quiz);
             await _unitOfWork.CompleteAsync();
+        }
+        public async Task<ShowQuiz> CreateGroupsOfQuiz(Quiz quiz,CreateOnlineQuizDTO model)
+        {
+
+
+            // Add the quiz to the repository
+            var shq = _mapper.Map<ShowQuiz>(quiz);
+            shq.GroupsIds = new List<int>();
+
+
+            foreach (var group in model.GroupsIds)
+            {
+                var groupQuiz = new GroupQuiz
+                {
+                    GroupId = group,
+                    QuizId = quiz.Id,
+                };
+                await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
+                shq.GroupsIds.Add(groupQuiz.GroupId);
+            }
+
+            await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
+
+
+
+            // Retrieve and map all questions
+            shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
+            return shq;
         }
 
     }

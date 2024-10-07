@@ -85,15 +85,28 @@ namespace PlatformAPI.API.Controllers
 
 
         [Authorize(Roles = "Teacher")]
-        [HttpDelete("DeleteQuestion")]
+        [HttpDelete("DeleteQuestionAfterStarted")]
         public async Task<IActionResult> Delete( int id)
         {
             if (ModelState.IsValid)
             {
                 var q = await _unitOfWork.Question.GetByIdAsync(id);
+                
                 if (q == null) return BadRequest($"There Is No Question With ID {id}");
+                var TecherOfQ = (await _unitOfWork.Quiz.GetByIdAsync(q.QuizId)).TeacherId;
+                var loggedInId = User.FindFirst("LoggedId")?.Value;
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }
+                if (TecherOfQ != int.Parse(loggedInId))
+                {
+                    return BadRequest("You Dont Have Premission To Delete This Question");
+                }
                 try
                 {
+                    await _questionService.ModifiyQuiz(q,true);
+
                     var choices = await _unitOfWork.Choose.FindAllAsync(c => c.QuestionId == id);
                     foreach (var choice in choices)
                         await _unitOfWork.Choose.DeleteAsync(choice);
@@ -124,6 +137,18 @@ namespace PlatformAPI.API.Controllers
                 if (existingQuestion == null)
                     return BadRequest("Question not found");
 
+
+                var TecherOfQ = (await _unitOfWork.Quiz.GetByIdAsync(existingQuestion.QuizId)).TeacherId;
+                var loggedInId = User.FindFirst("LoggedId")?.Value;
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }
+                if (TecherOfQ != int.Parse(loggedInId))
+                {
+                    return BadRequest("You Dont Have Premission To Update This Question");
+                }
+
                 bool isUpdated = existingQuestion.IsUpdated;
 
                 var quiz = await _unitOfWork.Quiz.GetByIdAsync(existingQuestion.QuizId);
@@ -133,8 +158,10 @@ namespace PlatformAPI.API.Controllers
 
                 try
                 {
-                    // Update question properties from the model
-                    _mapper.Map(model, existingQuestion); // Map the updated properties to the existing entity
+                    // Map only updated properties
+                    _mapper.Map(model, existingQuestion); // Map the updated properties into the existing entity
+
+                    existingQuestion.Chooses = null; // Ensure Choices are handled separately
 
                     foreach (var ch in model.Choices)
                     {
@@ -154,7 +181,7 @@ namespace PlatformAPI.API.Controllers
 
                     if (!isUpdated)
                     {
-                        await _questionService.ModifiyQuiz(existingQuestion);
+                        await _questionService.ModifiyQuiz(existingQuestion,false);
                         existingQuestion.IsUpdated = true;
                     }
 

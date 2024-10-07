@@ -65,6 +65,32 @@ namespace PlatformAPI.Core.Services
             }
 
             await _userManager.AddToRoleAsync(user, model.Role);
+            //Add Parent or Teacher Account
+
+
+            if (model.Role == Roles.Teacher.ToString())
+            {
+                var teacher = new Teacher
+                {
+                    ApplicationUserId = _userManager.FindByEmailAsync(model.Email).Result.Id,
+                    IsActive = true,
+                    IsSubscribed = false
+                };
+                
+                await _unitOfWork.Teacher.AddAsync(teacher);
+                await _unitOfWork.CompleteAsync();
+            }
+            else
+            {
+                var parent = new Parent
+                {
+                    ApplicationUserId = _userManager.FindByEmailAsync(model.Email).Result.Id
+                };
+                await _unitOfWork.Parent.AddAsync(parent);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            //
             var jwtSecurityToken = await CreateJwtToken(user);
 
             // Verification Code for Parent

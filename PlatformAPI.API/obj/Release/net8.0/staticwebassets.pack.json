@@ -1,19 +1,19 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
+      "Id": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
       "PackagePath": "staticwebassets\\EmailTemplate.html"
     },
     {
-      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
+      "Id": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
       "PackagePath": "staticwebassets\\Imgs\\Logo.png"
     },
     {
-      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
+      "Id": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
       "PackagePath": "staticwebassets\\ParentVerificationCodeTemplate.html"
     },
     {
-      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
+      "Id": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
       "PackagePath": "staticwebassets\\ResetPassword.html"
     },
     {

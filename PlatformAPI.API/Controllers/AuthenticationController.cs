@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using PlatformAPI.Core.DTOs.Auth;
 using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.Models;
@@ -41,45 +40,18 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest("Invalid Email");
 
             model.UserName = model.Email;
-            var result = await _authService.RegisterAsync(model);
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-            if (model.Role == Roles.Teacher.ToString())
+            try
             {
-                var teacher = new Teacher
-                {
-                    ApplicationUserId = _userManager.FindByEmailAsync(model.Email).Result.Id,
-                    IsActive = true,
-                    IsSubscribed = false
-                };
-                try
-                {
-                    await _unitOfWork.Teacher.AddAsync(teacher);
-                    await _unitOfWork.CompleteAsync();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                
+                var result= await _authService.RegisterAsync(model);
+                if (!result.IsAuthenticated)
+                    return BadRequest(result.Message);
+                return Ok(new { token = result.Token, expiresOn = result.ExpiresOn });
             }
-            else
+            catch (Exception ex)
             {
-                var parent = new Parent
-                {
-                    ApplicationUserId = _userManager.FindByEmailAsync(model.Email).Result.Id
-                };
-                try
-                {
-                    await _unitOfWork.Parent.AddAsync(parent);
-                    await _unitOfWork.CompleteAsync();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                return BadRequest(ex.Message);
             }
-            return Ok(new { token = result.Token, expiresOn = result.ExpiresOn });
+           
         }
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)

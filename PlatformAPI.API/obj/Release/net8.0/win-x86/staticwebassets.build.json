@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "sxONLzFXgSbh6nFCNHfYqumWa6VUHm2xj0mVHirp8v4=",
+  "Hash": "6wVi6kewkIjwLHy9I05pkGdqShP/A43WZIfK43VbT5I=",
   "Source": "PlatformAPI.API",
   "BasePath": "_content/PlatformAPI.API",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "PlatformAPI.API\\wwwroot",
       "Source": "PlatformAPI.API",
-      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "ContentRoot": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\",
       "BasePath": "_content/PlatformAPI.API",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
+      "Identity": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\EmailTemplate.html",
       "SourceId": "PlatformAPI.API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "ContentRoot": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\",
       "BasePath": "_content/PlatformAPI.API",
       "RelativePath": "EmailTemplate.html",
       "AssetKind": "All",
@@ -36,10 +36,10 @@
       "OriginalItemSpec": "wwwroot\\EmailTemplate.html"
     },
     {
-      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
+      "Identity": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\Imgs\\Logo.png",
       "SourceId": "PlatformAPI.API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "ContentRoot": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\",
       "BasePath": "_content/PlatformAPI.API",
       "RelativePath": "Imgs/Logo.png",
       "AssetKind": "All",
@@ -55,10 +55,10 @@
       "OriginalItemSpec": "wwwroot\\Imgs\\Logo.png"
     },
     {
-      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
+      "Identity": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\ParentVerificationCodeTemplate.html",
       "SourceId": "PlatformAPI.API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "ContentRoot": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\",
       "BasePath": "_content/PlatformAPI.API",
       "RelativePath": "ParentVerificationCodeTemplate.html",
       "AssetKind": "All",
@@ -74,10 +74,10 @@
       "OriginalItemSpec": "wwwroot\\ParentVerificationCodeTemplate.html"
     },
     {
-      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
+      "Identity": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\ResetPassword.html",
       "SourceId": "PlatformAPI.API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "ContentRoot": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\wwwroot\\",
       "BasePath": "_content/PlatformAPI.API",
       "RelativePath": "ResetPassword.html",
       "AssetKind": "All",

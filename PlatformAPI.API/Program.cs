@@ -64,6 +64,7 @@ namespace PlatformAPI.API
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
             });
 
             // Add SignalR for real-time notifications

@@ -487,6 +487,16 @@ namespace PlatformAPI.API.Controllers
         {
             if (await _unitOfWork.Student.GetByIdAsync(studentId) == null)
                 return BadRequest($"No student with id {studentId}");
+
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+
+            if (string.IsNullOrEmpty(loggedInId))
+            {
+                return Unauthorized("User not found");
+            }
+            if (studentId != int.Parse(loggedInId))
+                return BadRequest("You Do Not Have Permission");
+
             var studentMonths = await _unitOfWork.StudentMonth.FindAllAsync(sm => sm.StudentId == studentId);
 
             var studentMonthsDto = new List<StudentMonthParentDTO>();

@@ -271,81 +271,40 @@ namespace PlatformAPI.API.Controllers
                     return BadRequest("You Do not Have Permission");
                 try
                 {
+
                     // Map the quiz DTO to the quiz entity
                     var quiz = _mapper.Map<Quiz>(model);
 
-                    try
-                    {
-                        // Assign StartDate and Duration
-                        quiz.StartDate = QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
-                        quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
 
-                        // Add the quiz to the repository
-                        await _unitOfWork.Quiz.AddAsync(quiz);
-                        await _unitOfWork.CompleteAsync(); // Commit after adding quiz
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
-                    }
+                    // Assign StartDate and Duration
+                    quiz.StartDate =QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
+                    quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
+                    await _unitOfWork.Quiz.AddAsync(quiz);
+                    await _unitOfWork.CompleteAsync(); // Commit after adding quiz
+
 
                     // Create GroupQuiz entries
                     var shq = _mapper.Map<ShowQuiz>(quiz);
                     shq.GroupsIds = new List<int>();
 
-                    try
+
+                    foreach (var group in model.GroupsIds)
                     {
-                        foreach (var group in model.GroupsIds)
+                        var groupQuiz = new GroupQuiz
                         {
-                            var groupQuiz = new GroupQuiz
-                            {
-                                GroupId = group,
-                                QuizId = quiz.Id,
-                            };
-                            await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
-                            shq.GroupsIds.Add(groupQuiz.GroupId);
-                        }
-
-                        await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
+                            GroupId = group,
+                            QuizId = quiz.Id,
+                        };
+                        await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
+                        shq.GroupsIds.Add(groupQuiz.GroupId);
                     }
 
-                    // Add questions and choices
-                    try
-                    {
-                        foreach (var q in model.Questions)
-                        {
-                            q.QuizId = quiz.Id;
-                            var lcho = new List<ChooseDTO>();
-                     
-                                foreach (var c in q.Choices)
-                                {
-                                    var choice = new ChooseDTO 
-                                    {
-                                        Content=c.Content,
-                                        IsCorrect=c.IsCorrect,
-                                        IsDeleted=c.IsDeleted,
-                                    };
-                                    lcho.Add(choice);
+                    await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
 
-                                }
-                            
-                             await questionService.CreateQuestion(q,lcho); // Add question
 
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
-                    }
 
                     // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id,true));
-
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
                     return Ok(shq);
                 }
                 catch (Exception ex)
@@ -487,6 +446,11 @@ namespace PlatformAPI.API.Controllers
                     if (quiz.StartDate <= datenow)
                         return BadRequest("The Quiz Is Started");
                    await QuizService.deleteQuiz(quiz.Id);
+
+
+                    // Assign StartDate and Duration
+                    quiz.StartDate = QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
+                    quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
                     quiz.Id = 0;
                     foreach (var q in quiz.Questions)
                     {
@@ -496,10 +460,33 @@ namespace PlatformAPI.API.Controllers
                             ch.Id = 0;
                         }
                     }
-                   await _unitOfWork.Quiz.AddAsync(quiz);
-                    await _unitOfWork.CompleteAsync();
-                    return Ok(quiz.Id);
+                    await _unitOfWork.Quiz.AddAsync(quiz);
+                    await _unitOfWork.CompleteAsync(); // Commit after adding quiz
 
+
+                    // Create GroupQuiz entries
+                    var shq = _mapper.Map<ShowQuiz>(quiz);
+                    shq.GroupsIds = new List<int>();
+
+
+                    foreach (var group in model.GroupsIds)
+                    {
+                        var groupQuiz = new GroupQuiz
+                        {
+                            GroupId = group,
+                            QuizId = quiz.Id,
+                        };
+                        await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
+                        shq.GroupsIds.Add(groupQuiz.GroupId);
+                    }
+
+                    await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
+
+
+
+                    // Retrieve and map all questions
+                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
+                    return Ok(shq);
                 }
                 catch (Exception ex)
                 {

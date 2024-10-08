@@ -104,6 +104,7 @@ namespace PlatformAPI.Core.Services
                 var quiz = await _unitOfWork.Quiz.GetByIdAsync(quizId);
             var questionsCount = await _unitOfWork.Question.GetNumbersOfQuestionInQuizId(quizId);
             var studentsNotEntered = await _unitOfWork.Student.GetStudentNotEnter(quizId);
+            var qustionsDes= (await _unitOfWork.Question.GetAllAsync()).Where(q=>q.QuizId==quizId).Select(q=>new QuestionsDes {id=q.Id,Type= q.Type,Mark=q.Mark }).ToList();
 
             var results = new ShowQuizDescreptionDTO
             {
@@ -114,6 +115,7 @@ namespace PlatformAPI.Core.Services
                 NumQuestions = questionsCount,
                 NumStuedntsSolveQuiz = await _unitOfWork.Student.GetAllStudentsSolveQuiz(quizId),
                 NumStuedntsNotSolveQuiz = studentsNotEntered.Count(),
+                QuestionsDes= qustionsDes
             };
           
             return results;

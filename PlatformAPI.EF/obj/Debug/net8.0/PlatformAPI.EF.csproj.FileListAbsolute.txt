@@ -68,3 +68,21 @@ D:\CODE N CORE\Test\ta3leemcom-api-main\ta3leemcom-api-main\PlatformAPI.EF\obj\D
 D:\CODE N CORE\Test\ta3leemcom-api-main\ta3leemcom-api-main\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.pdb
 D:\CODE N CORE\Test\ta3leemcom-api-main\ta3leemcom-api-main\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.genruntimeconfig.cache
 D:\CODE N CORE\Test\ta3leemcom-api-main\ta3leemcom-api-main\PlatformAPI.EF\obj\Debug\net8.0\ref\PlatformAPI.EF.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\refint\PlatformAPI.EF.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.pdb
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.deps.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.runtimeconfig.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.EF.pdb
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.Core.dll
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\bin\Debug\net8.0\PlatformAPI.Core.pdb
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.csproj.AssemblyReference.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.AssemblyInfoInputs.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.AssemblyInfo.cs
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.csproj.CoreCompileInputs.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.sourcelink.json
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\Platform.B6D67A16.Up2Date
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\PlatformAPI.EF.genruntimeconfig.cache
+C:\Users\Mostafa\Desktop\projects\ta3leemcom\ta3leemcom-api-main\ta3leemcom-api-main\ta3leemcom-api\PlatformAPI.EF\obj\Debug\net8.0\ref\PlatformAPI.EF.dll

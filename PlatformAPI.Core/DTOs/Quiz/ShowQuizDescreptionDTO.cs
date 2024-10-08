@@ -15,6 +15,13 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int NumQuestions { get; set; }
         public int NumStuedntsSolveQuiz { get; set; }
         public int NumStuedntsNotSolveQuiz { get; set; }
+        public List<QuestionsDes> QuestionsDes { get; set; }
+    }
 
+    public class QuestionsDes
+    {
+        public int id { get; set; }
+        public string Type { get; set; }
+        public int Mark { get; set; }
     }
 }

@@ -45,7 +45,6 @@ namespace PlatformAPI.Core.Services
             var s = new StudentMapDTO()
             {
                 Id = student.Id,
-                Code = student.Code,
                
                 Name = _userManager.FindByEmailAsync(student.Code + StudentConst.EmailComplete).Result.Name,
                

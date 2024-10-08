@@ -156,36 +156,52 @@ namespace PlatformAPI.API.Controllers
             return Ok(res);
         }
 
-        [Authorize(Roles="Student")]
+        [Authorize(Roles="Student,Teacher")]
         [HttpGet("GetStudentSolutionByStudentQuizId")]
         public async Task<IActionResult> GetResultOfStudentQuizId(int studentQuizId)
         {
-            var studentQuizzes = await _unitOfWork.StudentQuiz
-                .FindAllWithIncludes<StudentQuiz>(q => q.Id == studentQuizId,
-                    Sq => Sq.Quiz);
+            var studentQuiz = await _unitOfWork.StudentQuiz.FindTWithIncludes<StudentQuiz>(studentQuizId,
+                sq=>sq.Quiz,
+                sq=>sq.StudentAnswers);
 
-            var studentId = studentQuizzes.Select(sq => sq.StudentId).FirstOrDefault();
+            var studentId = studentQuiz.StudentId;
 
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            if (string.IsNullOrEmpty(loggedInId))
-            {
-                return Unauthorized("User not found");
-            }
-            if (studentId != int.Parse(loggedInId))
-                return BadRequest("You Do Not Have Premission");
-
-            var res =( await QuizService.GetAllStudentQuizResults(studentQuizzes)).FirstOrDefault();
+           
+            var lsq=new List<StudentQuiz>();
+            lsq.Add(studentQuiz);
+            var res = (await QuizService.GetAllStudentQuizResults(lsq)).FirstOrDefault();
             if (res == null) return BadRequest();
 
-            var quizs = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(res.QuizId, q => q.GroupsQuizzes);
-            if (quizs == null) return NotFound($"There is No Quizs With Id {res.QuizId}");
-            var sq = _mapper.Map<ShowQuiz>(quizs);
-            sq.GroupsIds = new List<int>();
-            foreach (var gq in quizs.GroupsQuizzes)
+
+            var quiz = await _unitOfWork.Quiz.GetByIdAsync(studentQuiz.QuizId);
+            if (quiz == null) return NotFound($"There is No Quizs With Id {quiz.Id}");
+
+            var loggedInId = User.FindFirst("LoggedId")?.Value;
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+            if (userRoles.Contains(Roles.Teacher.ToString()))
             {
-                sq.GroupsIds.Add(gq.GroupId);
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }               
+
+                if (quiz.TeacherId != int.Parse(loggedInId))
+                {
+                    return BadRequest("You do not have permission to get this Quiz");
+                }
+               
             }
-            sq.questionsOfQuizzes = await questionService.GetAllQuestionsOfQuiz(quizs.Id, true);
+            else if (userRoles.Contains(Roles.Student.ToString()))
+            {
+                if(studentId!=int.Parse(loggedInId))
+                    return BadRequest("You do not have permission to get this Quiz");
+
+
+            }
+
+            var sq = _mapper.Map<ShowQuiz>(quiz);
+            
+            sq.questionsOfQuizzes = await questionService.GetAllQuestionsOfQuiz(quiz.Id, true);
             return Ok(new
             {
                 Quiz=sq,

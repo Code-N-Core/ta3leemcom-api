@@ -252,15 +252,11 @@ namespace PlatformAPI.API.Controllers
                 return BadRequest($"there is no child with id {model.ChildId}");
             if (await _unitOfWork.Parent.GetByIdAsync(model.ParentId) == null)
                 return BadRequest($"there is no parent with id {model.ParentId}");
-            var child = new Child
-            {
-                Id=model.ChildId,
-                Name=model.Name,
-                ParentId=model.ParentId
-            };
             try
             {
-                var childUpdated= _unitOfWork.Child.Update(child);
+                var child = await _unitOfWork.Child.FindTWithExpression<Child>(ch => ch.Id == model.ChildId && ch.ParentId == model.ParentId);
+                child.Name = model.Name;
+                _unitOfWork.Child.Update(child);
                 await _unitOfWork.CompleteAsync();
                 return Ok("تم التعديل بنجاح");
             }

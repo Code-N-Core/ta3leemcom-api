@@ -20732,11 +20732,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\PlatformAPI.API.csproj",
+      "projectUniqueName": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
       "projectName": "PlatformAPI.API",
-      "projectPath": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\PlatformAPI.API.csproj",
+      "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
       "packagesPath": "C:\\Users\\sheri\\.nuget\\packages\\",
-      "outputPath": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.API\\obj\\publish\\win-x86\\",
+      "outputPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\obj\\publish\\win-x86\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sheri\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -20753,11 +20753,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.Core\\PlatformAPI.Core.csproj": {
-              "projectPath": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.Core\\PlatformAPI.Core.csproj"
+            "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj": {
+              "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj"
             },
-            "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.EF\\PlatformAPI.EF.csproj": {
-              "projectPath": "D:\\CODE N CORE\\Test\\ta3leemcom-api-main\\ta3leemcom-api-main\\PlatformAPI.EF\\PlatformAPI.EF.csproj"
+            "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj": {
+              "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj"
             }
           }
         }

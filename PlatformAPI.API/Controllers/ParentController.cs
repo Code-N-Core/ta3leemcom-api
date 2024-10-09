@@ -6,6 +6,7 @@ using PlatformAPI.Core.DTOs.Student;
 using Microsoft.AspNetCore.Authorization;
 using PlatformAPI.Core.DTOs.Child;
 using System.Security.Claims;
+using PlatformAPI.Core.Models;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -264,6 +265,47 @@ namespace PlatformAPI.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpDelete("DeleteCodeAsync")]
+        public async Task<IActionResult> DeleteCodeAsync(int studentId)
+        {
+            if (await _unitOfWork.Student.GetByIdAsync(studentId) == null)
+                return BadRequest($"No student with id {studentId}");
+            var studentOfParent = await _unitOfWork.Student.GetByIdAsync(studentId);
+            studentOfParent.ParentId = null;
+            studentOfParent.ChildId = null;
+            try
+            {
+                _unitOfWork.Student.Update(studentOfParent);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            return Ok("تم حذف الدرس بنجاح");
+        }
+        [HttpDelete("DeleteChildAsync")]
+        public async Task<IActionResult> DeleteChildAsync(int childId)
+        {
+            if (await _unitOfWork.Child.GetByIdAsync(childId) == null)
+                return BadRequest($"No child with id {childId}");
+            var studnets=await _unitOfWork.Student.FindAllAsync(s=>s.ChildId== childId);
+            foreach(var student in studnets)
+            {
+                student.ParentId = null;
+                student.ChildId = null;
+                try
+                {
+                    _unitOfWork.Student.Update(student);
+                }
+                catch (Exception ex) 
+                {
+                    return BadRequest(ex);
+                }
+            }
+            await _unitOfWork.CompleteAsync();
+            return Ok("تم حذف الإبن بنجاح");
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlatformAPI.Core.DTOs.StudentMonth;
 using PlatformAPI.Core.Interfaces;
@@ -11,6 +12,7 @@ namespace PlatformAPI.Core.Services
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
         public async Task AddAsync(int monthId)
         {
             var groupId = _unitOfWork.Month.GetByIdAsync(monthId).Result.GroupId;
@@ -22,10 +24,12 @@ namespace PlatformAPI.Core.Services
             }
             await _unitOfWork.CompleteAsync();
         }
-        public StudentMonthService(IUnitOfWork unitOfWork,IMapper mapper)
+        public StudentMonthService(IUnitOfWork unitOfWork,IMapper mapper,UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
+
         }
 
         public async Task<IEnumerable<StudentMonthDto>> GetAllAsync(int monthId)
@@ -34,7 +38,9 @@ namespace PlatformAPI.Core.Services
             List<StudentMonthDto> studentsMonths = new List<StudentMonthDto>();
             foreach (var studentMonth in model)
             {
-                studentsMonths.Add(_mapper.Map<StudentMonthDto>(studentMonth));
+                var studentMonthDto = _mapper.Map<StudentMonthDto>(studentMonth);
+                studentMonthDto.StudentName= _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(studentMonth.StudentId).Result.ApplicationUserId).Result.Name;
+                studentsMonths.Add(studentMonthDto);
             }
             return studentsMonths;
         }

@@ -5,6 +5,7 @@ namespace PlatformAPI.Core.DTOs.StudentAbsence
     public class StudentAbsenceDTO
     {
         public int StudentId { get; set; }
+        public string StudentName { get; set; }
         public int DayId { get; set; }
         public bool Attended { get; set; }
     }

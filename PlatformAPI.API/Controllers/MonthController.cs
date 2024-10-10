@@ -124,7 +124,13 @@ namespace PlatformAPI.API.Controllers
                 if (months is null || !months.Any())
                     return NotFound($"No groups found for the provided IDs.");
 
-                return Ok(months);
+                var monthsDto = new List<MonthDTO>();
+                foreach (var month in months)
+                {
+                    var monthDto = new MonthDTO { MonthId = month.Id, MonthName = month.Name, GroupId = month.GroupId, Year = month.Year };
+                    monthsDto.Add(monthDto);
+                }
+                return Ok(monthsDto);
             }
             catch (Exception ex) 
             {

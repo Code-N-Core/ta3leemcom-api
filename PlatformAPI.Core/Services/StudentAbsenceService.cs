@@ -9,10 +9,12 @@ namespace PlatformAPI.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public StudentAbsenceService(IUnitOfWork unitOfWork,IMapper mapper) 
+        private readonly UserManager<ApplicationUser> _userManager;
+        public StudentAbsenceService(IUnitOfWork unitOfWork,IMapper mapper, UserManager<ApplicationUser>userManager) 
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
         public async Task AddAsync(int dayId)
         {
@@ -35,6 +37,7 @@ namespace PlatformAPI.Core.Services
             foreach (var absence in absenceStudents)
             {
                 var model = _mapper.Map<StudentAbsenceDTO>(absence);
+                model.StudentName = _userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(absence.StudentId).Result.ApplicationUserId).Result.Name;
                 absenceStudentsDTO.Add(model);
             }
             return absenceStudentsDTO;

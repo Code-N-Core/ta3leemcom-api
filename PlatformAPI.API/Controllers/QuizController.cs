@@ -148,7 +148,7 @@ namespace PlatformAPI.API.Controllers
 
             if (quizId == 0) return BadRequest($"There is no Quiz With ID: {quizId}");
             var studentQuizzes = await _unitOfWork.StudentQuiz
-                .FindAllWithIncludes<StudentQuiz>(q => q.QuizId == quizId && !q.IsAttend,
+                .FindAllWithIncludes<StudentQuiz>(q => q.QuizId == quizId ,
                     Sq => Sq.Quiz);
             var res=await QuizService.GetAllStudentQuizResults(studentQuizzes);
             if (res == null) return BadRequest();

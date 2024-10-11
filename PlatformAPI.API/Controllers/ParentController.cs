@@ -290,16 +290,18 @@ namespace PlatformAPI.API.Controllers
         {
             if (await _unitOfWork.Child.GetByIdAsync(childId) == null)
                 return BadRequest($"No child with id {childId}");
-            var studnets=await _unitOfWork.Student.FindAllAsync(s=>s.ChildId== childId);
-            foreach(var student in studnets)
+            var studnets = await _unitOfWork.Student.FindAllAsync(s => s.ChildId == childId);
+            foreach (var student in studnets)
             {
                 student.ParentId = null;
+                var ch = await _unitOfWork.Child.GetByIdAsync((int)student.ChildId);
                 student.ChildId = null;
                 try
                 {
+                    await _unitOfWork.Child.DeleteAsync(ch);
                     _unitOfWork.Student.Update(student);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     return BadRequest(ex);
                 }

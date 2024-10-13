@@ -42,6 +42,7 @@ namespace PlatformAPI.EF.Repositories
                 select new QuizStatusDto
                 {
                     QuizId = q.Id,
+                    Title = q.Title,
                     StudentQuizId=sq.Id,
                     StartDate = q.StartDate,
                     EndDate = q.StartDate.Add(q.Duration), // Use Duration directly

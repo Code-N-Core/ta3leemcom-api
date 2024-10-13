@@ -5,6 +5,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     public class QuizStatusDto
     {
         public int QuizId { get; set; }                     // Unique identifier for the quiz
+        public string Title {  get; set; }
         public int? StudentQuizId { get; set; }                     // Unique identifier for the studentquiz
         public DateTime StartDate { get; set; }              // Start date and time of the quiz
         public DateTime EndDate { get; set; }                // End date and time of the quiz

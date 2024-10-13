@@ -19,6 +19,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public timeStart timeStart { get; set; }
         public timeDuration timeDuration { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool? isAttending {  get; set; }
        
 
         public string? QuestionForm { get; set; }

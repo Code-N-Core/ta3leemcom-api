@@ -1,11 +1,13 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PlatformAPI.Core.DTOs.Parent;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.Models;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace PlatformAPI.API.Controllers
 {
@@ -373,113 +375,94 @@ namespace PlatformAPI.API.Controllers
         [HttpPut("Edit")]
         public async Task<IActionResult> Update([FromForm] UpdateStudentDTO student)
         {
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-
-            if (string.IsNullOrEmpty(loggedInId))
+            try
             {
-                return Unauthorized("User not found");
+                // Validate the group existence
+                var group = await _unitOfWork.Group.GetByIdAsync(student.GroupId);
+                if (group == null)
+                    return BadRequest($"No Group with id {student.GroupId}");
+
+                // Get the logged-in user's ID
+                var loggedInId = User.FindFirst("LoggedId")?.Value;
+                if (string.IsNullOrEmpty(loggedInId))
+                {
+                    return Unauthorized("User not found");
+                }
+
+                // Check if the logged-in teacher has permission to update the student
+                if (group.TeacherId != int.Parse(loggedInId))
+                    return Forbid("You do not have permission to edit this student.");
+
+                // Validate the student's data
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                // Fetch the student and related application user
+                var studentEntity = await _unitOfWork.Student.GetByIdAsync(student.Id);
+                if (studentEntity == null)
+                    return NotFound($"No student was found with ID {student.Id}");
+
+                var user = await _userManager.FindByEmailAsync(studentEntity.Code + StudentConst.EmailComplete);
+                if (user == null)
+                    return NotFound("No application user found for the student.");
+
+                // Check if the group has changed
+                bool hasGroupChanged = student.GroupId != studentEntity.GroupId;
+
+                if (hasGroupChanged)
+                {
+                    await _studentService.HandleGroupChangeAsync(studentEntity.Id, studentEntity.GroupId);
+                }
+
+                // Update the student and user information
+                studentEntity.GroupId = student.GroupId;
+                user.Name = student.Name;
+
+                var updateUserResult = await _userManager.UpdateAsync(user);
+                if (!updateUserResult.Succeeded)
+                    return BadRequest("Failed to update user information.");
+
+                _unitOfWork.Student.Update(studentEntity);
+                await _unitOfWork.CompleteAsync();
+
+                if (hasGroupChanged)
+                {
+                    await _studentService.HandleNewGroupAdditionAsync(studentEntity.Id, student.GroupId);
+                }
+
+                // Fetch parent's information if available
+                var parentData = await _studentService.GetParentDataAsync(studentEntity.ParentId);
+
+                // Return the updated student details
+                return Ok(new
+                {
+                    id = studentEntity.Id,
+                    name = user.Name,
+                    code = studentEntity.Code,
+                    groupId = studentEntity.GroupId,
+                    groupName = group.Name,
+                    levelYearId = group.LevelYearId,
+                    levelYearName = (await _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId)).Name,
+                    levelId = (await _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId)).LevelId,
+                    levelName = (await _unitOfWork.Level.GetByIdAsync((await _unitOfWork.LevelYear.GetByIdAsync(group.LevelYearId)).LevelId)).Name,
+                    studentParentId = studentEntity.ParentId,
+                    studentParentName = parentData.Name,
+                    studentParentPhone = parentData.PhoneNumber
+                });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Log the detailed database update error with the inner exception if available
+                var detailedError = dbEx.InnerException != null ? dbEx.InnerException.Message : dbEx.Message;
+                return BadRequest($"Database update error: {detailedError}");
+            }
+            catch (Exception ex)
+            {
+                // Handle other types of general exceptions
+                var generalError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest($"An error occurred while processing your request: {generalError}");
             }
 
-            var TeacherOfStudent = (await _unitOfWork.Group.GetByIdAsync(student.GroupId)).TeacherId;
-            if (TeacherOfStudent != int.Parse(loggedInId))
-                return BadRequest("You Do Not Have Permission");
-
-
-            if (ModelState.IsValid)
-            {
-                var s = await _unitOfWork.Student.GetByIdAsync(student.Id);
-                var User =await _userManager.FindByEmailAsync(s.Code + StudentConst.EmailComplete);
-                if (s == null|| User==null)
-                    return NotFound($"No Group was found with ID {student.Id} OR There Is No Application User of This Student");
-                try
-                {
-                    bool flag = false;
-                    if (student.GroupId != s.GroupId)
-                    {
-                        flag = true;
-                        // delete from last studentMonth and studentAbsences
-                        var months = await _unitOfWork.Month.FindAllAsync(m => m.GroupId == s.GroupId);
-                        foreach(var m in months)
-                        {
-                            var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == student.Id && sm.MonthId == m.Id);
-                            await _unitOfWork.StudentMonth.DeleteAsync(studentMonth);
-                            
-                            var days=await _unitOfWork.Day.FindAllAsync(d=>d.MonthId==m.Id);
-                            foreach(var d in days)
-                            {
-                                var studentAbsenc = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.StudentId == student.Id && sa.DayId == d.Id);
-                                await _unitOfWork.StudentAbsence.DeleteAsync(studentAbsenc);
-                            }
-                        }
-
-                    }
-                    // update
-                    try
-                    {
-                        s.GroupId = student.GroupId;
-                        User.Name = student.Name;
-                        var result = await _userManager.UpdateAsync(User);
-
-                        s = _unitOfWork.Student.Update(s);
-
-                    }
-                    catch(Exception ex) 
-                    {
-                        return BadRequest(ex);
-                    }
-                    await _unitOfWork.CompleteAsync();
-
-                    if (flag)
-                    {
-                        // Add to studentMonth for all months
-                        var months = await _unitOfWork.Month.FindAllAsync(m => m.GroupId == s.GroupId);
-                        foreach (var month in months)
-                        {
-                            var studentMonth = new StudentMonth { MonthId = month.Id, Pay = false, StudentId = student.Id };
-                            await _unitOfWork.StudentMonth.AddAsync(studentMonth);
-                            // Add to studentAbsence for all days
-                            var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == month.Id);
-                            foreach (var day in days)
-                            {
-                                var studentAbsenc = new StudentAbsence { DayId = day.Id, Attended = false, StudentId = student.Id };
-                                await _unitOfWork.StudentAbsence.AddAsync(studentAbsenc);
-                            }
-                        }
-                    }
-                    await _unitOfWork.CompleteAsync();
-                    string parentName = null;
-                    string parentPhone = null;
-                    if (s.ParentId != null)
-                    {
-                        int id = s.ParentId ?? 0;
-                        parentName = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(id).Result.ApplicationUserId).Result.Name;
-                        parentPhone = _userManager.FindByIdAsync(_unitOfWork.Parent.GetByIdAsync(id).Result.ApplicationUserId).Result.PhoneNumber;
-                    }
-                    return Ok(new
-                    {
-                        id=s.Id,
-                        name=_userManager.FindByIdAsync(_unitOfWork.Student.GetByIdAsync(s.Id).Result.ApplicationUserId).Result.Name,
-                        code=s.Code,
-                        groupId = s.GroupId,
-                        groupName=_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.Name,
-                        levelYearId= _unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId,
-                        levelYearName= _unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.Name,
-                        levelId =_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId,
-                        levelName=_unitOfWork.Level.GetByIdAsync(_unitOfWork.LevelYear.GetByIdAsync(_unitOfWork.Group.GetByIdAsync(s.GroupId).Result.LevelYearId).Result.LevelId).Result.Name,
-                        studentParentId=s.ParentId,
-                        studentParentName=parentName,
-                        studentParentPhone=parentPhone
-                    });
-                }
-                catch (Exception ex)
-                {
-
-                    return BadRequest(ex.Message);
-                }
-               
-            }
-            else
-                return BadRequest(ModelState);
         }
         [Authorize(Roles ="Student")]
         [HttpGet("GetMonthDataForStudent")]

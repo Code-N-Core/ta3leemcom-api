@@ -51,5 +51,67 @@ namespace PlatformAPI.Core.Services
             };
             return s;
         }
+        public async Task HandleGroupChangeAsync(int studentId, int oldGroupId)
+        {
+            var lastMonthInOldGroup = (await _unitOfWork.Month
+                .FindAllAsync(m => m.GroupId == oldGroupId))
+                .OrderByDescending(m => m.Id)
+                .FirstOrDefault();
+
+            if (lastMonthInOldGroup != null)
+            {
+                var studentMonth = await _unitOfWork.StudentMonth.FindTWithExpression<StudentMonth>(sm => sm.StudentId == studentId && sm.MonthId == lastMonthInOldGroup.Id);
+                if (studentMonth != null)
+                {
+                    await _unitOfWork.StudentMonth.DeleteAsync(studentMonth);
+                }
+
+                var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == lastMonthInOldGroup.Id);
+                foreach (var day in days)
+                {
+                    var studentAbsence = await _unitOfWork.StudentAbsence.FindTWithExpression<StudentAbsence>(sa => sa.StudentId == studentId && sa.DayId == day.Id);
+                    if (studentAbsence != null)
+                    {
+                        await _unitOfWork.StudentAbsence.DeleteAsync(studentAbsence);
+                    }
+                }
+            }
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task HandleNewGroupAdditionAsync(int studentId, int newGroupId)
+        {
+            var lastMonthInNewGroup = (await _unitOfWork.Month
+                .FindAllAsync(m => m.GroupId == newGroupId))
+                .OrderByDescending(m => m.Id)
+                .FirstOrDefault();
+
+            if (lastMonthInNewGroup != null)
+            {
+                var newStudentMonth = new StudentMonth { MonthId = lastMonthInNewGroup.Id, Pay = false, StudentId = studentId };
+                await _unitOfWork.StudentMonth.AddAsync(newStudentMonth);
+
+                var days = await _unitOfWork.Day.FindAllAsync(d => d.MonthId == lastMonthInNewGroup.Id);
+                foreach (var day in days)
+                {
+                    var studentAbsence = new StudentAbsence { DayId = day.Id, Attended = false, StudentId = studentId };
+                    await _unitOfWork.StudentAbsence.AddAsync(studentAbsence);
+                }
+            }
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task<(string Name, string PhoneNumber)> GetParentDataAsync(int? parentId)
+        {
+            if (parentId == null)
+                return (null, null);
+
+            var parent = await _unitOfWork.Parent.GetByIdAsync(parentId.Value);
+            if (parent == null)
+                return (null, null);
+
+            var parentUser = await _userManager.FindByIdAsync(parent.ApplicationUserId);
+            return parentUser != null ? (parentUser.Name, parentUser.PhoneNumber) : (null, null);
+        }
     }
 }

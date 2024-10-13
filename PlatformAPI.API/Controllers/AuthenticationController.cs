@@ -290,7 +290,6 @@ namespace PlatformAPI.API.Controllers
 
             return Ok("تم إرسال رمز التأكيد الي ايميلك");
         }
-        [Authorize(Roles = "Parent,Teacher")]
         [HttpPost("check-reset-code")]
         public async Task<IActionResult> CheckResetCode(CheckResetCodeDTO model)
         {

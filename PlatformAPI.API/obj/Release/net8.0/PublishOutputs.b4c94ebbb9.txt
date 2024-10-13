@@ -15,8 +15,6 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Humanizer.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\MailKit.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Razor.Language.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
@@ -42,9 +40,6 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Extensions.DependencyModel.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Extensions.Identity.Core.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Extensions.Identity.Stores.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Extensions.Options.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Identity.Client.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.Identity.Client.Extensions.Msal.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Abstractions.dll
@@ -94,7 +89,6 @@ D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\System.Runtime.Caching.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\System.Security.Permissions.dll
-D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\System.Text.Json.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\System.Windows.Extensions.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\af\Humanizer.resources.dll
 D:\CODE N CORE\Projects\ta3leemcom-api\PlatformAPI.API\obj\Release\net8.0\PubTmp\Out\ar\Humanizer.resources.dll

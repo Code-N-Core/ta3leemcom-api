@@ -288,27 +288,46 @@ namespace PlatformAPI.API.Controllers
         [HttpDelete("DeleteChildAsync")]
         public async Task<IActionResult> DeleteChildAsync(int childId)
         {
-            if (await _unitOfWork.Child.GetByIdAsync(childId) == null)
+            // Check if the child exists
+            var child = await _unitOfWork.Child.GetByIdAsync(childId);
+            if (child == null)
                 return BadRequest($"No child with id {childId}");
-            var studnets = await _unitOfWork.Student.FindAllAsync(s => s.ChildId == childId);
-            foreach (var student in studnets)
+
+            // Get all students associated with this child
+            var students = await _unitOfWork.Student.FindAllAsync(s => s.ChildId == childId);
+
+            // Update each student to remove the association with the child
+            foreach (var student in students)
             {
                 student.ParentId = null;
-                var ch = await _unitOfWork.Child.GetByIdAsync((int)student.ChildId);
                 student.ChildId = null;
                 try
                 {
-                    await _unitOfWork.Child.DeleteAsync(ch);
                     _unitOfWork.Student.Update(student);
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(ex);
+                    return BadRequest($"Error updating student: {ex.Message}");
                 }
             }
+
+            // Save changes for all students
             await _unitOfWork.CompleteAsync();
+
+            // Now delete the child entity after updating all students
+            try
+            {
+                await _unitOfWork.Child.DeleteAsync(child);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error deleting child: {ex.Message}");
+            }
+
             return Ok("تم حذف الإبن بنجاح");
         }
+
 
     }
 }

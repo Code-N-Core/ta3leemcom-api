@@ -124,6 +124,11 @@ namespace PlatformAPI.API.Controllers
                 sq.GroupsIds.Add(gq.GroupId);
             }
             sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,f);
+            var IsHeSolveQuiz =await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.StudentId == int.Parse(loggedInId) && sq.QuizId == QuizId);
+            if (f == false && IsHeSolveQuiz != null)
+            {
+                sq.isAttending = true;   
+            }
             return Ok(sq);
         }
         [Authorize(Roles ="Teacher")]
@@ -352,6 +357,18 @@ namespace PlatformAPI.API.Controllers
                     int bouncemark = 0;
                     var quiz = await _unitOfWork.Quiz.GetByIdAsync(model.QuizId);
                     var datenow=DateTime.Now;
+                    //Before Quiz Start
+                    if (quiz.StartDate > datenow)
+                    {
+                        return BadRequest("The Quiz Has Not Started Yet");
+                    }
+                    var IsHeSolveQuiz = await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.StudentId == int.Parse(loggedInId) && sq.QuizId == quiz.Id);
+
+                    //in The Duration Of The Quiz
+                    if (quiz.StartDate <= datenow && quiz.EndDate > datenow&&IsHeSolveQuiz!=null)
+                    {
+                        return BadRequest("You Have Submited a Solution For That Quiz Already .. wait Until The Quiz Ended and you can Test Your Self");
+                    }
                     var f=false;
                     if (quiz.StartDate <= datenow && quiz.EndDate >= datenow)
                     {
@@ -399,7 +416,7 @@ namespace PlatformAPI.API.Controllers
                         await _unitOfWork.CompleteAsync();
                     }
                    
-                    return Ok(totalmark+bouncemark);
+                    return Ok(!f?totalmark+bouncemark:"Your Answer Submited SuccessFully!!");
                 }
                 catch (Exception ex)
                 {

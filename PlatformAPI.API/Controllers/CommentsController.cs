@@ -20,6 +20,10 @@ namespace PlatformAPI.API.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        [HttpGet("GetAllFeedBacks")]
+        public async Task<IActionResult> GetAllAsync()=> Ok(await _unitOfWork.Feedback.GetAllAsync());
+
         [HttpPost("Contact")]
         public async Task<IActionResult> Contact(ContactDTO model)
         {

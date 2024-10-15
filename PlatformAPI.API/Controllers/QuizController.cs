@@ -123,6 +123,8 @@ namespace PlatformAPI.API.Controllers
             {
                 sq.GroupsIds.Add(gq.GroupId);
             }
+            if(quizs.EndDate<DateTime.Now)
+                f=true;
             sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,f);
             var IsHeSolveQuiz =await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.StudentId == int.Parse(loggedInId) && sq.QuizId == QuizId);
             if (f == false && IsHeSolveQuiz != null)

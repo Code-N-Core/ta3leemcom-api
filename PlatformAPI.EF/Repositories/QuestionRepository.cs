@@ -49,7 +49,7 @@ namespace PlatformAPI.EF.Repositories
                                                // Count only non-null student answers, otherwise it's 0 (for unchosen options)
                                                ChoiceSelectionCount = gg.Count(sa => sa != null)
                                            })
-                                           .OrderByDescending(c => c.IsCorrect)
+                                           .OrderBy(c => c.Id)
                                            .ToListAsync();
 
                 res.Choices = choiceResults;

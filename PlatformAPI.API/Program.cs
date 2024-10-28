@@ -10,8 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlatformAPI.API.MiddleWares;
 using PlatformAPI.Core.Helpers;
-using PlatformAPI.Core.Hubs; // Add this for the NotificationHub
 using PlatformAPI.EF.Data;
+using PlatformAPI.EF.Hubs;
 using System.Text;
 
 namespace PlatformAPI.API
@@ -23,6 +23,7 @@ namespace PlatformAPI.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             // Register Hangfire services
             builder.Services.AddHangfire(configuration =>
                 configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -48,7 +49,7 @@ namespace PlatformAPI.API
                 client.BaseAddress = new Uri(apiBaseUrl);
             });
 
-            // Configure the password constraints
+            // Configure the password constraints for Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -61,10 +62,10 @@ namespace PlatformAPI.API
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            // Configure DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
             });
 
             // Add SignalR for real-time notifications
@@ -89,11 +90,8 @@ namespace PlatformAPI.API
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddTransient<IMailingService, MailingService>();
 
-            // Add Quiz Notification Background Service
-
             // Swagger/OpenAPI setup
             builder.Services.AddEndpointsApiExplorer();
-
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -134,12 +132,12 @@ namespace PlatformAPI.API
                 {
                     OnMessageReceived = context =>
                     {
-                        // Check if the token is available in cookies
-                        var token = context.Request.Cookies["token"]; // Assuming 'token' is the cookie name
+                        // Check if the token is available in cookies or query string (for SignalR WebSocket)
+                        var token = context.Request.Cookies["token"] ?? context.Request.Query["access_token"];
 
                         if (!string.IsNullOrEmpty(token))
                         {
-                            context.Token = token; // Assign the token from the cookie
+                            context.Token = token; // Assign the token
                         }
 
                         return Task.CompletedTask;
@@ -147,7 +145,10 @@ namespace PlatformAPI.API
                 };
             });
 
+            // Enable CORS
             builder.Services.AddCors();
+
+            // AutoMapper configuration
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(PlatformAPI.Core.Helpers.MappingProfile));
             builder.Services.AddAutoMapper(typeof(PlatformAPI.API.Helpers.MappingProfile));
@@ -164,33 +165,41 @@ namespace PlatformAPI.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
+
+            // Enable Swagger for API documentation
             app.UseSwagger();
             app.UseSwaggerUI();
 
+            // Enable HTTPS redirection
             app.UseHttpsRedirection();
 
-            app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            // CORS configuration
+            app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowCredentials().SetIsOriginAllowed(origin => true));
 
+            // Enable authentication and authorization
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Middleware (commented out for now)
             //app.UseMiddleware<TeacherIsSubsMiddleware>();
 
             // Add routing for SignalR
             app.MapHub<NotificationHub>("/notificationHub");
 
-
-            // Configure Hangfire dashboard
+            // Configure Hangfire dashboard for monitoring background jobs
             app.UseHangfireDashboard("/dashboard");
-
 
             // Schedule the recurring Hangfire job for the vacation escalation process
             RecurringJob.AddOrUpdate<QuizNotificationService>(
                 "escalate-vacation-requests",
                 job => job.CheckEndedQuizzesAsync(),
-                Cron.HourInterval(3) // This schedules the job to run every 6 hours
-                ); 
+                Cron.MinuteInterval(5) // This schedules the job to run every 6 hours
+                );
+
+            // Map controllers
             app.MapControllers();
 
+            // Run the app
             app.Run();
         }
     }

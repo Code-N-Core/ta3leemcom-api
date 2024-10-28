@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+865b3fcff97d589443b4cb2e3e2daa2f330cb6cd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7719ec9a707840cb2c230e01df8730149b7b14ee")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlatformAPI.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

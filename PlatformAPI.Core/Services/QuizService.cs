@@ -36,10 +36,11 @@ namespace PlatformAPI.Core.Services
             var endedQuizzes = await _unitOfWork.Quiz.GetEndedQuiz(datenow);
      
             // Now manually filter in memory to debug and inspect
-            var d = endedQuizzes.Last().EndDate;
             var filteredQuizzes = endedQuizzes
             .Where(q => q.EndDate <= datenow)  // Client-side evaluation of the date logic
                 .ToList();
+            if (!filteredQuizzes.Any())
+                return null;
             return filteredQuizzes;
         }
 

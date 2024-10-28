@@ -358,7 +358,12 @@ namespace PlatformAPI.API.Controllers
                     int totalmark = 0;
                     int bouncemark = 0;
                     var quiz = await _unitOfWork.Quiz.GetByIdAsync(model.QuizId);
-                    var datenow=DateTime.Now;
+                    // Define Egypt's time zone
+                    TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+                    // Get the current time in Egypt
+                    DateTime datenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
+
                     //Before Quiz Start
                     if (quiz.StartDate > datenow)
                     {

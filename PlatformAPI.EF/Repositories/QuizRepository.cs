@@ -30,7 +30,11 @@ namespace PlatformAPI.EF.Repositories
 
         public async Task<List<QuizStatusDto>> GetQuizzesStatusByStudentId(int studentId)
         {
-            DateTime currentDate = DateTime.Now;
+            // Define Egypt's time zone
+            TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+            // Get the current time in Egypt
+            DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
 
             var quizzes = await (
                 from q in _context.Quizzes
@@ -43,22 +47,20 @@ namespace PlatformAPI.EF.Repositories
                 {
                     QuizId = q.Id,
                     Title = q.Title,
-                    StudentQuizId=sq.Id,
+                    StudentQuizId = sq.Id,
                     StartDate = q.StartDate,
                     EndDate = q.StartDate.Add(q.Duration), // Use Duration directly
                     Duration = q.Duration,
                     IsAttend = sq.IsAttend,
                     SubmitAnswerDate = sq.SubmitAnswerDate,
                     QuizStatus = q.StartDate > currentDate
-                        ? "Not Started "
-                        :   currentDate < q.EndDate&&currentDate >= q.StartDate
+                        ? "Not Started"
+                        : currentDate < q.EndDate && currentDate >= q.StartDate
                         ? (sq != null && sq.IsAttend ? "Solved" : "Started")
                         : "Ended",
-                        
-                    SolveStatus =sq.IsAttend
-                            ? "Solved In Time"
-                            :(sq.Id>0? "Solved Late"
-                        : "Not Solved"),
+                    SolveStatus = sq.IsAttend
+                        ? "Solved In Time"
+                        : (sq.Id > 0 ? "Solved Late" : "Not Solved"),
                     MandatoryQuestionCount = (from qq in _context.Questions
                                               where qq.QuizId == q.Id && qq.Type == QuestionType.Mandatory
                                               select qq).Count(),
@@ -66,9 +68,9 @@ namespace PlatformAPI.EF.Repositories
                                              where qq.QuizId == q.Id && qq.Type == QuestionType.Optional
                                              select qq).Count(),
                     TotalMark = q.Mark,
-                    StudentMark = sq.Id >0 ? sq.StudentMark : (int?)null, // StudentMark is not nullable
-                    Bounce=q.Bounce,
-                    StudentBounce=sq.StudentBounce,
+                    StudentMark = sq.Id > 0 ? sq.StudentMark : (int?)null, // StudentMark is not nullable
+                    Bounce = q.Bounce,
+                    StudentBounce = sq.StudentBounce,
                 }
             ).ToListAsync();
 
@@ -78,14 +80,31 @@ namespace PlatformAPI.EF.Repositories
         {
             // Fetch non-notified quizzes first
             // Get them all in memory first
-            var endedQuizzes =await _context.Quizzes
-                    .Where(q => q.EndDate <= datenow && !q.IsNotfy)
-                    .Include(q => q.GroupsQuizzes)
-                    .ThenInclude(gq => gq.Group)
-                    .ThenInclude(g => g.Teacher)
-                    .ToListAsync();
+            try
+            {
+                var allQuizzes = await _context.Quizzes
+    .Include(q => q.GroupsQuizzes)
+        .ThenInclude(gq => gq.Group)
+            .ThenInclude(g => g.Teacher)
+    .ToListAsync();
 
-            return endedQuizzes;
+                var endedQuizzes = allQuizzes
+                    .Where(q => q.EndDate <= datenow && !q.IsNotfy)
+                    .ToList();
+
+                return endedQuizzes;
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
+
         }
 
     }

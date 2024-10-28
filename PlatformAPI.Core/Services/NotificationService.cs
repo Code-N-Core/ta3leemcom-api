@@ -17,10 +17,16 @@ namespace PlatformAPI.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task SaveN(string message,int teacherId,int quizId)
+        public async Task<Notification> SaveN(string message,int teacherId,int quizId)
         {
             try
             {
+                // Define Egypt's time zone
+                TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+                // Get the current time in Egypt
+                DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
+
                 var notification = new Notification
                 {
                     Message = message,
@@ -31,12 +37,14 @@ namespace PlatformAPI.Core.Services
                                     new TeacherNotification
                                     {
                                         TeacherId = teacherId,
-                                        Date = DateTime.UtcNow,
+                                        Date = currentDate,
                                         quizId = quizId,
                                     }
                                 }
                 };
                 await _unitOfWork.Notification.AddAsync(notification);
+                await _unitOfWork.CompleteAsync();
+                return notification;
 
             }
             catch (Exception)
@@ -44,7 +52,7 @@ namespace PlatformAPI.Core.Services
 
                 throw;
             }
-            await _unitOfWork.CompleteAsync();
+           
 
         }
     }

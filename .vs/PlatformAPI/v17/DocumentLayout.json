@@ -3,52 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\repositories\\questionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\questionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\quizservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\quizservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\controllers\\quizcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\quizcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\quizservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\quizservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\repositories\\quizrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\quizrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\dtos\\quiz\\showquiz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\dtos\\quiz\\showquiz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\dtos\\quiz\\quizstatusdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\dtos\\quiz\\quizstatusdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\controllers\\parentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\parentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\repositories\\studentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\studentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\controllers\\qeustionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\qeustionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\questionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\questionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\quiznotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\quiznotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\studentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\studentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\dtos\\quiz\\showquizdescreptiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\dtos\\quiz\\showquizdescreptiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\repositories\\quizrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\repositories\\quizrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38F8A712-CE68-425C-BB8B-98AA265A3BC2}|PlatformAPI.API\\PlatformAPI.API.csproj|solutionrelative:platformapi.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.ef\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D67F0DB4-9286-4BFC-885F-6525383B3FF8}|PlatformAPI.EF\\PlatformAPI.EF.csproj|solutionrelative:platformapi.ef\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|c:\\users\\mostafa\\desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\platformapi.core\\models\\userconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81206D06-389A-4C1E-A93E-68664D4D0660}|PlatformAPI.Core\\PlatformAPI.Core.csproj|solutionrelative:platformapi.core\\models\\userconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,136 +78,103 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ShowQuiz.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\ShowQuiz.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.Core\\DTOs\\Quiz\\ShowQuiz.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\ShowQuiz.cs",
-              "RelativeToolTip": "PlatformAPI.Core\\DTOs\\Quiz\\ShowQuiz.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAABUAAAAUAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T21:33:50.357Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "QuizStatusDto.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\QuizStatusDto.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.Core\\DTOs\\Quiz\\QuizStatusDto.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\QuizStatusDto.cs",
-              "RelativeToolTip": "PlatformAPI.Core\\DTOs\\Quiz\\QuizStatusDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T21:24:42.223Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "QuizRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuizRepository.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.EF\\Repositories\\QuizRepository.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuizRepository.cs",
-              "RelativeToolTip": "PlatformAPI.EF\\Repositories\\QuizRepository.cs",
-              "ViewState": "AQIAADIAAAAAAAAAAAAgwEYAAAAzAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T21:20:02.834Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ParentController.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\ParentController.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\ParentController.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\ParentController.cs",
-              "RelativeToolTip": "PlatformAPI.API\\Controllers\\ParentController.cs",
-              "ViewState": "AQIAABsBAAAAAAAAAADwvzYBAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T04:46:11.708Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "QuestionRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuestionRepository.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.EF\\Repositories\\QuestionRepository.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuestionRepository.cs",
-              "RelativeToolTip": "PlatformAPI.EF\\Repositories\\QuestionRepository.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAAwwDgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T17:34:39.054Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "StudentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\StudentRepository.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.EF\\Repositories\\StudentRepository.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\StudentRepository.cs",
-              "RelativeToolTip": "PlatformAPI.EF\\Repositories\\StudentRepository.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAAwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T13:08:41.609Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "StudentService.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\StudentService.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\StudentService.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\StudentService.cs",
-              "RelativeToolTip": "PlatformAPI.Core\\Services\\StudentService.cs",
-              "ViewState": "AQIAABoAAAAAAAAAAAAWwCgAAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T15:50:08.825Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "StudentController.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\StudentController.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\StudentController.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\StudentController.cs",
-              "RelativeToolTip": "PlatformAPI.API\\Controllers\\StudentController.cs",
-              "ViewState": "AQIAAK4AAAAAAAAAAIAywMEAAABHAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T15:48:15.832Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ShowQuizDescreptionDTO.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\ShowQuizDescreptionDTO.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.Core\\DTOs\\Quiz\\ShowQuizDescreptionDTO.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\DTOs\\Quiz\\ShowQuizDescreptionDTO.cs",
-              "RelativeToolTip": "PlatformAPI.Core\\DTOs\\Quiz\\ShowQuizDescreptionDTO.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAxwBEAAAAOAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T15:24:35.473Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "QuizService.cs",
-              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuizService.cs",
-              "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\QuizService.cs",
-              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuizService.cs",
-              "RelativeToolTip": "PlatformAPI.Core\\Services\\QuizService.cs",
-              "ViewState": "AQIAACsAAAAAAAAAAAAewC0AAAAnAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T15:23:02.554Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
               "Title": "QuestionService.cs",
               "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuestionService.cs",
               "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\QuestionService.cs",
               "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuestionService.cs",
               "RelativeToolTip": "PlatformAPI.Core\\Services\\QuestionService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAHIAAAAyAAAA",
+              "ViewState": "AQIAAH4AAAAAAAAAAAAmwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-07T13:20:40.385Z"
+              "WhenOpened": "2024-10-24T21:51:38.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "QeustionsController.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\QeustionsController.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\QeustionsController.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\QeustionsController.cs",
+              "RelativeToolTip": "PlatformAPI.API\\Controllers\\QeustionsController.cs",
+              "ViewState": "AQIAAIYAAAAAAAAAAAAowAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-24T21:51:13.053Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "QuizService.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuizService.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\QuizService.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\QuizService.cs",
+              "RelativeToolTip": "PlatformAPI.Core\\Services\\QuizService.cs",
+              "ViewState": "AQIAAHkAAAAAAAAAAADwv3sAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T19:52:04.674Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "NotificationHub.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Hubs\\NotificationHub.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.EF\\Hubs\\NotificationHub.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Hubs\\NotificationHub.cs",
+              "RelativeToolTip": "PlatformAPI.EF\\Hubs\\NotificationHub.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAB0AAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T19:30:50.138Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.EF\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "PlatformAPI.EF\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAcAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T19:11:50.923Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "UserConnection.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Models\\UserConnection.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.Core\\Models\\UserConnection.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Models\\UserConnection.cs",
+              "RelativeToolTip": "PlatformAPI.Core\\Models\\UserConnection.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T19:09:12.112Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\AuthService.cs",
+              "RelativeToolTip": "PlatformAPI.Core\\Services\\AuthService.cs",
+              "ViewState": "AQIAAKQAAAAAAAAAAAAuwLMAAABhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T18:49:11.269Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "QuizNotificationService.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\QuizNotificationService.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.EF\\QuizNotificationService.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\QuizNotificationService.cs",
+              "RelativeToolTip": "PlatformAPI.EF\\QuizNotificationService.cs",
+              "ViewState": "AQIAACMAAAAAAAAAAAAYwBAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T17:18:18.053Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -209,9 +184,74 @@
               "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\QuizController.cs",
               "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\QuizController.cs",
               "RelativeToolTip": "PlatformAPI.API\\Controllers\\QuizController.cs",
-              "ViewState": "AQIAAO8AAAAAAAAAAAAMwPcAAAAMAAAA",
+              "ViewState": "AQIAABoBAAAAAAAAAAAWwC4BAABIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-07T13:03:06.128Z",
+              "WhenOpened": "2024-10-21T17:10:34.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "QuizRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuizRepository.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.EF\\Repositories\\QuizRepository.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\QuizRepository.cs",
+              "RelativeToolTip": "PlatformAPI.EF\\Repositories\\QuizRepository.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAAuwCUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T17:10:12.797Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Program.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.API\\Program.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Program.cs",
+              "RelativeToolTip": "PlatformAPI.API\\Program.cs",
+              "ViewState": "AQIAADgAAAAAAAAAAAArwEIAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T17:09:04.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "NotificationService.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\NotificationService.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.Core\\Services\\NotificationService.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\Services\\NotificationService.cs",
+              "RelativeToolTip": "PlatformAPI.Core\\Services\\NotificationService.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAAAIwBMAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T17:07:05.896Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "NotificationRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\NotificationRepository.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.EF\\Repositories\\NotificationRepository.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\Repositories\\NotificationRepository.cs",
+              "RelativeToolTip": "PlatformAPI.EF\\Repositories\\NotificationRepository.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAAwC0AAABkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T19:04:58.502Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "NotificationController.cs",
+              "DocumentMoniker": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\NotificationController.cs",
+              "RelativeDocumentMoniker": "PlatformAPI.API\\Controllers\\NotificationController.cs",
+              "ToolTip": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\Controllers\\NotificationController.cs",
+              "RelativeToolTip": "PlatformAPI.API\\Controllers\\NotificationController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAACUAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-21T17:04:55.094Z",
               "EditorCaption": ""
             }
           ]

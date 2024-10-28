@@ -32,8 +32,10 @@ namespace PlatformAPI.API.Controllers
             foreach (var notification in notifications)
             {
                 notification.IsReaded = true;
+                _unitOfWork.Notification.Update(notification);
             }
-            return Ok(notifications);
+           await _unitOfWork.CompleteAsync();
+            return Ok();
         }
     }
 }

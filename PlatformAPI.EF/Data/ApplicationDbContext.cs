@@ -47,5 +47,6 @@ namespace PlatformAPI.EF.Data
         public DbSet<TeacherNotification> TeachersNotifications { get; set;}
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Child> Children { get; set; }
+        public DbSet<UserConnection> UserConnections { get; set; }
     }
 }

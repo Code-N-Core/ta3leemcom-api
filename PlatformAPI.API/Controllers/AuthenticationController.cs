@@ -317,7 +317,8 @@ namespace PlatformAPI.API.Controllers
             if (user == null)
                 return BadRequest("لم يتم العثور علي الإيميل");
 
-
+            if (user.ResetPasswordCode != model.ResetCode || user.ResetCodeExpiry < DateTime.UtcNow)
+                return BadRequest("The reset code is invalid or has expired.");
             // Reset the password
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);

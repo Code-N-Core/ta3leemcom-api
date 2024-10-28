@@ -6,6 +6,8 @@ namespace PlatformAPI.Core.DTOs.Auth
     {
         [Required,EmailAddress]
         public string Email { get; set; }
+        [Required]
+        public string ResetCode {  get; set; }
         [Required,PasswordComplexity]
         public string NewPassword { get; set; }
     }

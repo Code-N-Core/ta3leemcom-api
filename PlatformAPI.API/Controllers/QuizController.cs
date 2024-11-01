@@ -302,6 +302,17 @@ namespace PlatformAPI.API.Controllers
                     // Assign StartDate and Duration
                     quiz.StartDate =QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
                     quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
+                    foreach (var question in quiz.Questions)
+                    {
+                        bool f = true;
+                        foreach (var choice in question.Chooses)
+                        {
+                            if(choice.IsCorrect==true)
+                                f= false;   
+                        }
+                        if (f == true)
+                            return BadRequest("يجب عليك اختيار الاجابه الصحيحه");
+                    }
                     await _unitOfWork.Quiz.AddAsync(quiz);
                     await _unitOfWork.CompleteAsync(); // Commit after adding quiz
 

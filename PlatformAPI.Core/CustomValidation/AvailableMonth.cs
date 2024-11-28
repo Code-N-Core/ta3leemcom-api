@@ -9,10 +9,10 @@
                 return new ValidationResult("null value");
             }
             if (value.ToString() == "يناير" || value.ToString() == "فبراير" 
-                || value.ToString() == "مارس"|| value.ToString() == "ابريل"
+                || value.ToString() == "مارس"|| value.ToString() == "أبريل"
                 || value.ToString() == "مايو"|| value.ToString() == "يونيو"
-                || value.ToString() == "يوليو" || value.ToString() == "اغسطس"
-                || value.ToString() == "سبتمبر" || value.ToString() == "اكتوبر"
+                || value.ToString() == "يوليو" || value.ToString() == "أغسطس"
+                || value.ToString() == "سبتمبر" || value.ToString() == "أكتوبر"
                 || value.ToString() == "نوفمبر" || value.ToString() == "ديسمبر")
                 return ValidationResult.Success;
             return new ValidationResult("Invalid Name!");

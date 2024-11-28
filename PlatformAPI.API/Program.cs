@@ -97,7 +97,7 @@ namespace PlatformAPI.API
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Ta3leem Com",
+                    Title = "Ta3lem Com For Testing",
                     Description = "Platform API",
                     Contact = new OpenApiContact
                     {

@@ -25,43 +25,44 @@ namespace PlatformAPI.API.Controllers
             _studentMonthService = studentMonthService;
             _studentAbsenceService = studentAbsenceService;
         }
-        [Authorize(Roles = "Teacher")]
-        [HttpGet("GetLastMonthAdded")]
-        public async Task<IActionResult> GetAsync(int groupId)
-        {
-            if (await _unitOfWork.Group.GetByIdAsync(groupId) == null)
-                return NotFound($"No group with id: {groupId}");
+        //[Authorize(Roles = "Teacher")]
+        //[HttpGet("GetLastMonthAdded")]
+        //public async Task<IActionResult> GetAsync(int groupId)
+        //{
+        //    if (await _unitOfWork.Group.GetByIdAsync(groupId) == null)
+        //        return NotFound($"No group with id: {groupId}");
 
-            var loggedInId = User.FindFirst("LoggedId")?.Value;
-            var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupId).Select(g => g.TeacherId).FirstOrDefault();
-            if (teacherOfGroup != int.Parse(loggedInId))
-                return BadRequest("You Do Not Have The Premission");
+        //    var loggedInId = User.FindFirst("LoggedId")?.Value;
+        //    var teacherOfGroup = (await _unitOfWork.Group.GetAllAsync()).Where(g => g.Id == groupId).Select(g => g.TeacherId).FirstOrDefault();
+        //    if (teacherOfGroup != int.Parse(loggedInId))
+        //        return BadRequest("You Do Not Have The Premission");
 
 
-            int lastMonthId = _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Id;
-            var viewDaysDto = await _dayServices.GetAllAsync(lastMonthId);
-            foreach(var day in viewDaysDto)
-            {
-                day.studentAbsences = await _studentAbsenceService.GetAllAsync(day.Id);
-            }
-            var monthStudents=await _studentMonthService.GetAllAsync(lastMonthId);
-            var monthData = new ViewMonthDTO
-            {
-                Id = lastMonthId,
-                GroupId = groupId,
-                Name = _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Name,
-                Year= _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Year,
-                Days=viewDaysDto,
-                MonthStudents=monthStudents
-            };
-            return Ok(monthData);
-        }
+        //    int lastMonthId = _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Id;
+        //    var viewDaysDto = await _dayServices.GetAllAsync(lastMonthId);
+        //    foreach(var day in viewDaysDto)
+        //    {
+        //        day.studentAbsences = await _studentAbsenceService.GetAllAsync(day.Id);
+        //    }
+        //    var monthStudents=await _studentMonthService.GetAllAsync(lastMonthId);
+        //    var monthData = new ViewMonthDTO
+        //    {
+        //        Id = lastMonthId,
+        //        GroupId = groupId,
+        //        Name = _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Name,
+        //        Year= _unitOfWork.Month.FindAllAsync(m => m.GroupId == groupId).Result.OrderByDescending(m => m.Id).FirstOrDefault().Year,
+        //        Days=viewDaysDto,
+        //        MonthStudents=monthStudents
+        //    };
+        //    return Ok(monthData);
+        //}
         [Authorize(Roles = "Teacher,Student")]
         [HttpGet("GetMonthData")]
         public async Task<IActionResult> GetMonthDataAsync(int monthId)
         {
            
-
+            // تواريخ للحصص وال id 
+            // تاني حاجه يكون كل طالب والحصص بتاعنه
             if (await _unitOfWork.Month.GetByIdAsync(monthId) == null) return NotFound($"No month with id: {monthId}");
 
             var loggedInId = User.FindFirst("LoggedId")?.Value;
@@ -81,20 +82,30 @@ namespace PlatformAPI.API.Controllers
                     return BadRequest("You Do Not Have The Premission");
             }
 
-            var viewDaysDto = await _dayServices.GetAllAsync(monthId);
+            /*var viewDaysDto = await _dayServices.GetAllAsync(monthId);
             foreach (var day in viewDaysDto)
             {
                 day.studentAbsences = await _studentAbsenceService.GetAllAsync(day.Id);
             }
             var monthStudents = await _studentMonthService.GetAllAsync(monthId);
-
+            */
+            var days=await _unitOfWork.Day.FindAllAsync(d=>d.MonthId==monthId);
+            var daysDto = new List<MonthDayDTO>();
+            foreach(var day in days)
+            {
+                var dayDto= new MonthDayDTO();
+                dayDto.DayId=day.Id;
+                dayDto.Date=day.Date;
+                daysDto.Add(dayDto);
+            }
+            var monthStudents = await _studentMonthService.GetAllAsync(monthId);
             var monthData = new ViewMonthDTO
             {
                 Id = monthId,
                 GroupId = _unitOfWork.Month.GetByIdAsync(monthId).Result.GroupId,
                 Name= _unitOfWork.Month.GetByIdAsync(monthId).Result.Name,
                 Year= _unitOfWork.Month.GetByIdAsync(monthId).Result.Year,
-                Days = viewDaysDto,
+                Days = daysDto,
                 MonthStudents = monthStudents
             };
             return Ok(monthData);

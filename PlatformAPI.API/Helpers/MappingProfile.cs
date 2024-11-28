@@ -42,6 +42,8 @@ namespace PlatformAPI.API.Helpers
             CreateMap<StudentMonthDto, StudentMonth>().ForMember(dest=>dest.Student,opt=>opt.Ignore())
                 .ForMember(dest=>dest.Month,opt=>opt.Ignore()).ReverseMap();
             CreateMap<StudentAbsenceDTO, StudentAbsence>().ReverseMap();
+            CreateMap<StudentMonthDTO, StudentMonth>().ForMember(dest => dest.Student, opt => opt.Ignore())
+                .ForMember(dest => dest.Month, opt => opt.Ignore()).ReverseMap();
         }
     }
 }

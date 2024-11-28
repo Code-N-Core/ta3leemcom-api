@@ -20727,19 +20727,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mostafa\\.nuget\\packages\\": {}
+    "C:\\Users\\sheri\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
+      "projectUniqueName": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
       "projectName": "PlatformAPI.API",
-      "projectPath": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
-      "packagesPath": "C:\\Users\\Mostafa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\obj\\publish\\win-x86\\",
+      "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\PlatformAPI.API.csproj",
+      "packagesPath": "C:\\Users\\sheri\\.nuget\\packages\\",
+      "outputPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.API\\obj\\publish\\win-x86\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Mostafa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\sheri\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -20747,18 +20747,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj": {
-              "projectPath": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj"
+            "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj": {
+              "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.Core\\PlatformAPI.Core.csproj"
             },
-            "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj": {
-              "projectPath": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj"
+            "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj": {
+              "projectPath": "D:\\CODE N CORE\\Projects\\ta3leemcom-api\\PlatformAPI.EF\\PlatformAPI.EF.csproj"
             }
           }
         }
@@ -20767,11 +20766,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -20844,7 +20838,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

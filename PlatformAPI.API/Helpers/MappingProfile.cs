@@ -25,12 +25,12 @@ namespace PlatformAPI.API.Helpers
             CreateMap<UpdateOnlineQuizDto, Quiz>();
             CreateMap<UpdateOfflineQuizDto, Quiz>();
             CreateMap<Quiz, ShowQuiz>()
-                .ForMember(dest => dest.timeStart, opt => opt.MapFrom(src => new timeStart
+               /* .ForMember(dest => dest.timeStart, opt => opt.MapFrom(src => new timeStart
                 {
                     Hours = src.StartDate.Hour>12? src.StartDate.Hour-12: src.StartDate.Hour,
                     Minute = src.StartDate.Minute,
                     Mode = src.StartDate.Hour >= 12 ? "PM" : "AM"
-                }))
+                }))*/
                 .ForMember(dest => dest.timeDuration, opt => opt.MapFrom(src => new timeDuration
                 {
                     Hours = src.Duration.Hours,
@@ -42,6 +42,8 @@ namespace PlatformAPI.API.Helpers
             CreateMap<StudentMonthDto, StudentMonth>().ForMember(dest=>dest.Student,opt=>opt.Ignore())
                 .ForMember(dest=>dest.Month,opt=>opt.Ignore()).ReverseMap();
             CreateMap<StudentAbsenceDTO, StudentAbsence>().ReverseMap();
+            CreateMap<StudentMonthDTO, StudentMonth>().ForMember(dest => dest.Student, opt => opt.Ignore())
+                .ForMember(dest => dest.Month, opt => opt.Ignore()).ReverseMap();
         }
     }
 }

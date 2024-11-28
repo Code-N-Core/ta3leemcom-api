@@ -8,8 +8,8 @@ namespace PlatformAPI.Core.Const
 {
     public static class QuestionType
     {
-        public const string Mandatory = "اجباري";
-        public const string Optional = "اختياري";
+        public const string Mandatory = "Mandatory";
+        public const string Optional = "Optional";
 
     }
 }

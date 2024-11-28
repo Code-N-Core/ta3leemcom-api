@@ -300,7 +300,6 @@ namespace PlatformAPI.API.Controllers
 
 
                     // Assign StartDate and Duration
-                    quiz.StartDate =QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
                     quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
                     foreach (var question in quiz.Questions)
                     {
@@ -500,7 +499,6 @@ namespace PlatformAPI.API.Controllers
 
 
                     // Assign StartDate and Duration
-                    quiz.StartDate = QuizService.GetDateTimeFromTimeStart(model.timeStart, model.StartDate);
                     quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
                     quiz.Id = 0;
                     foreach (var q in quiz.Questions)

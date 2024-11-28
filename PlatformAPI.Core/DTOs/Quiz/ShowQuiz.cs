@@ -16,7 +16,6 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int Mark { get; set; }
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
-        public timeStart timeStart { get; set; }
         public timeDuration timeDuration { get; set; }
         public DateTime? EndDate { get; set; }
         public bool? isAttending {  get; set; }

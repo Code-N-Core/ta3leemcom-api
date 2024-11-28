@@ -1,4 +1,5 @@
 ﻿using PlatformAPI.Core.DTOs.Day;
+using PlatformAPI.Core.DTOs.Student;
 using PlatformAPI.Core.DTOs.StudentMonth;
 
 namespace PlatformAPI.Core.DTOs.Month
@@ -10,7 +11,7 @@ namespace PlatformAPI.Core.DTOs.Month
         public string Name { get; set; }
         public int GroupId { get; set; }
         public int Year { get; set; }
-        public IEnumerable<ViewDayDTO>? Days { get; set; }
-        public IEnumerable<StudentMonthDto>? MonthStudents { get; set; }
+        public IEnumerable<MonthDayDTO>? Days { get; set; }
+        public IEnumerable<StudentMonthDTO>? MonthStudents { get; set; }
     }
 }

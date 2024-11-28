@@ -8,7 +8,7 @@ namespace PlatformAPI.Core.Const
 {
     public static class QuizType
     {
-        public const string OnLine = "اونلاين";
-        public const string OffLine = "اوفلاين";
+        public const string OnLine = "OnLine";
+        public const string OffLine = "OffLine";
     }
 }

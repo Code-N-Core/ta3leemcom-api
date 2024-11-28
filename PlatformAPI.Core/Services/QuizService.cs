@@ -121,7 +121,7 @@ namespace PlatformAPI.Core.Services
           
             return results;
         }
-        public DateTime GetDateTimeFromTimeStart(timeStart time,DateTime date)
+/*        public DateTime GetDateTimeFromTimeStart(timeStart time,DateTime date)
         {
             // Convert the 12-hour format to 24-hour format based on AM/PM mode
             int hoursIn24Format = time.Hours;
@@ -147,7 +147,7 @@ namespace PlatformAPI.Core.Services
 
             return result;
         }
-
+*/
         public async Task deleteQuiz(int quizId)
         {
             var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(quizId,

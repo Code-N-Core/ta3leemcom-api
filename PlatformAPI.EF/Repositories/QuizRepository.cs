@@ -56,11 +56,11 @@ namespace PlatformAPI.EF.Repositories
                     QuizStatus = q.StartDate > currentDate
                         ? "Not Started"
                         : currentDate < q.EndDate && currentDate >= q.StartDate
-                        ? (sq != null && sq.IsAttend ? "Solved" : "Started")
+                        ?  "Started"
                         : "Ended",
                     SolveStatus = sq.IsAttend
-                        ? "Solved In Time"
-                        : (sq.Id > 0 ? "Solved Late" : "Not Solved"),
+                        ? "Solved"
+                        :  "Not Solved",
                     MandatoryQuestionCount = (from qq in _context.Questions
                                               where qq.QuizId == q.Id && qq.Type == QuestionType.Mandatory
                                               select qq).Count(),

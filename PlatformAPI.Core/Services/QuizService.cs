@@ -50,9 +50,9 @@ namespace PlatformAPI.Core.Services
             {
                 QuizId = model.QuizId,
                 StudentId = model.StudentId,
-                IsAttend = model.SubmitAnswersDate <= quiz.EndDate ? true : false,
+                IsAttend = model.submitAnswersDateTime <= quiz.EndDate ? true : false,
                 StudentMark = totalmark,
-                SubmitAnswerDate=model.SubmitAnswersDate,
+                SubmitAnswerDate=model.submitAnswersDateTime,
                 StudentBounce=bouncemark
             };
             await _unitOfWork.StudentQuiz.AddAsync(sq);
@@ -150,26 +150,35 @@ namespace PlatformAPI.Core.Services
 */
         public async Task deleteQuiz(int quizId)
         {
-            var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(quizId,
-                  q => q.Questions,
-                  q => q.GroupsQuizzes,
-                  q => q.StudentsQuizzes
-                  );
-            foreach (var question in quiz.Questions)
+            try
             {
-                await questionService.DeleteQuestionsWithChoises(question.Id);
+                var quiz = await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(quizId,
+               q => q.Questions,
+               q => q.GroupsQuizzes,
+               q => q.StudentsQuizzes
+               );
+                foreach (var question in quiz.Questions)
+                {
+                    await questionService.DeleteQuestionsWithChoises(question.Id);
+                }
+                var tecnot = await _unitOfWork.Notification.GetAllNots(quiz.TeacherId);
+                foreach (var not in tecnot)
+                {
+                    if (not.quizId == quizId)
+                    {
+                        var noti = await _unitOfWork.Notification.GetByIdAsync(not.NotificationId);
+                        await _unitOfWork.Notification.DeleteAsync(noti);
+                    }
+                }
+                await _unitOfWork.Quiz.DeleteAsync(quiz);
+                await _unitOfWork.CompleteAsync();
             }
-            foreach (var gq in quiz.GroupsQuizzes)
+            catch (Exception ex)
             {
-                await _unitOfWork.GroupQuiz.DeleteAsync(gq);
+
+                throw ex;
             }
-            foreach (var sq in quiz.StudentsQuizzes)
-            {
-                await _unitOfWork.StudentQuiz.DeleteAsync(sq);
-            }
-            await _unitOfWork.CompleteAsync();
-            await _unitOfWork.Quiz.DeleteAsync(quiz);
-            await _unitOfWork.CompleteAsync();
+         
         }
         public async Task<ShowQuiz> CreateGroupsOfQuiz(Quiz quiz,CreateOnlineQuizDTO model)
         {

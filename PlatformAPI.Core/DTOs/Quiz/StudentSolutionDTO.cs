@@ -8,7 +8,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int StudentId { get; set; }
 
        public List<QuestionForm> questionForms {  get; set; }
-        public DateTime SubmitAnswersDate {  get; set; }
+        public DateTime submitAnswersDateTime {  get; set; }
 
     }
 }

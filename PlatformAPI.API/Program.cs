@@ -29,14 +29,14 @@ namespace PlatformAPI.API
                 configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                              .UseSimpleAssemblyNameTypeSerializer()
                              .UseRecommendedSerializerSettings()
-                             .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
-                             {
-                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                                 QueuePollInterval = TimeSpan.Zero,
-                                 UseRecommendedIsolationLevel = true,
-                                 DisableGlobalLocks = true
-                             }));
+                            .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+                            {
+                                QueuePollInterval = TimeSpan.FromSeconds(15), // Default is 15 seconds
+                                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                UseRecommendedIsolationLevel = true,
+                                DisableGlobalLocks = true
+                            }));
 
             // Add the Hangfire server
             builder.Services.AddHangfireServer();
@@ -187,7 +187,10 @@ namespace PlatformAPI.API
             app.MapHub<NotificationHub>("/notificationHub");
 
             // Configure Hangfire dashboard for monitoring background jobs
-            app.UseHangfireDashboard("/dashboard");
+            app.UseStaticFiles();
+            app.UseHangfireDashboard("/Hangfire");
+
+
 
             // Schedule the recurring Hangfire job for the vacation escalation process
             RecurringJob.AddOrUpdate<QuizNotificationService>(

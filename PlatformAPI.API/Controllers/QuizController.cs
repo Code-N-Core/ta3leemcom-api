@@ -114,6 +114,12 @@ namespace PlatformAPI.API.Controllers
             }
 
             //////////////////////////
+            ///
+            /// // Define Egypt's time zone
+            TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+            // Get the current time in Egypt
+            DateTime datenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
 
             var quizs =await _unitOfWork.Quiz.FindTWithIncludes<Quiz>(QuizId,q=>q.GroupsQuizzes);
             if (quizs == null) return NotFound($"There is No Quizs With Id {QuizId}");
@@ -123,7 +129,7 @@ namespace PlatformAPI.API.Controllers
             {
                 sq.GroupsIds.Add(gq.GroupId);
             }
-            if(quizs.EndDate<DateTime.Now)
+            if(quizs.EndDate< datenow)
                 f=true;
             sq.questionsOfQuizzes =await questionService.GetAllQuestionsOfQuiz(QuizId,f);
             var IsHeSolveQuiz =await _unitOfWork.StudentQuiz.FindTWithExpression<StudentQuiz>(sq => sq.StudentId == int.Parse(loggedInId) && sq.QuizId == QuizId);

@@ -56,28 +56,36 @@ namespace PlatformAPI.API.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
-            if (userId == null || code == null)
+            // Validate input parameters
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
             {
                 return BadRequest("UserId and token must be supplied for email confirmation.");
             }
 
+            // Attempt to find the user by their ID
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return BadRequest($"Unable to load user with ID '{userId}'.");
             }
 
+            // Check if the email is already confirmed
             if (await _userManager.IsEmailConfirmedAsync(user))
-                return BadRequest("Email is already confirmed");
+            {
+                return Redirect("https://www.ta3lemcom.com/home");
+            }
 
+            // Attempt to confirm the email
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
             {
-                return Ok("Email confirmed successfully.");
+                return Redirect("https://www.ta3lemcom.com/home");
             }
 
+            // Handle failure to confirm email
             return BadRequest("Error confirming email.");
         }
+
         [HttpPost("login")]// Login for teacher or parent or admin
         public async Task<IActionResult> LoginAsync(LoginDTO model)
         {

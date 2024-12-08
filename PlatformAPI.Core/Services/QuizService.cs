@@ -162,12 +162,15 @@ namespace PlatformAPI.Core.Services
                     await questionService.DeleteQuestionsWithChoises(question.Id);
                 }
                 var tecnot = await _unitOfWork.Notification.GetAllNots(quiz.TeacherId);
-                foreach (var not in tecnot)
+                if (tecnot != null)
                 {
-                    if (not.quizId == quizId)
+                    foreach (var not in tecnot)
                     {
-                        var noti = await _unitOfWork.Notification.GetByIdAsync(not.NotificationId);
-                        await _unitOfWork.Notification.DeleteAsync(noti);
+                        if (not.quizId == quizId)
+                        {
+                            var noti = await _unitOfWork.Notification.GetByIdAsync(not.NotificationId);
+                            await _unitOfWork.Notification.DeleteAsync(noti);
+                        }
                     }
                 }
                 await _unitOfWork.Quiz.DeleteAsync(quiz);

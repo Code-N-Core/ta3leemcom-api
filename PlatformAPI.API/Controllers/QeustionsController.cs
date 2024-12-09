@@ -165,14 +165,22 @@ namespace PlatformAPI.API.Controllers
 
                     foreach (var ch in model.Choices)
                     {
-                        if (ch.IsDeleted && ch.Id != 0)
+                        if (ch.IsDeleted)
                         {
                             var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
                             await _unitOfWork.Choose.DeleteAsync(choice);
                         }
+                        else if ( ch.Id != 0)
+                        {
+                            var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
+                           choice.Content=ch.Content;
+                           choice.IsCorrect=ch.IsCorrect is not null ?(bool)ch.IsCorrect:choice.IsCorrect;
+                            _unitOfWork.Choose.Update(choice);
+                        }
                         else if (ch.Id == 0)
                         {
                             var newChoice = _mapper.Map<Choose>(ch);
+                            newChoice.QuestionId = existingQuestion.Id;
                             await _unitOfWork.Choose.AddAsync(newChoice);
                         }
                     }

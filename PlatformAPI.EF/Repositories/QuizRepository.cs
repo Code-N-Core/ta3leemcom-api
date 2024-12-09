@@ -43,6 +43,11 @@ namespace PlatformAPI.EF.Repositories
                 join sq in _context.StudentsQuizzes on new { QuizId = q.Id, StudentId = s.Id } equals new { QuizId = sq.QuizId, StudentId = sq.StudentId } into studentQuizzes
                 from sq in studentQuizzes.DefaultIfEmpty() // Left join
                 where s.Id == studentId // Use the provided student ID
+
+                let rank = _context.StudentsQuizzes
+                   .Where(otherSq => otherSq.QuizId == q.Id)
+                   .Count(otherSq => (otherSq.StudentMark + otherSq.StudentBounce) > (sq.StudentMark + sq.StudentBounce)) + 1 // Compute rank
+
                 select new QuizStatusDto
                 {
                     QuizId = q.Id,
@@ -71,6 +76,7 @@ namespace PlatformAPI.EF.Repositories
                     StudentMark = sq.Id > 0 ? sq.StudentMark : (int?)null, // StudentMark is not nullable
                     Bounce = q.Bounce,
                     StudentBounce = sq.StudentBounce,
+                    OrderOfStudent = sq.Id > 0 ? rank : (int?)null
                 }
             ).ToListAsync();
 

@@ -20,5 +20,6 @@ namespace PlatformAPI.Core.DTOs.Quiz
         public int? StudentMark { get; set; }                // Nullable student mark (if applicable)
         public int? Bounce { get; set; }                     // Nullable property to hold a bounce value (if needed)
         public int? StudentBounce { get; set; }              // Nullable property for student-specific bounce value (if needed)
+        public int? OrderOfStudent { get; set; }              // Nullable property for student-specific bounce value (if needed)
     }
 }

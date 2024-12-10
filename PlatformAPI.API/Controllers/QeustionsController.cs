@@ -169,23 +169,28 @@ namespace PlatformAPI.API.Controllers
                         await _unitOfWork.Choose.DeleteAsync(deletedChoice);
 
                     }
+                    var x = (await _unitOfWork.Question.FindTWithIncludes<Question>(model.Id, q => q.Chooses))
+                        .Chooses.Select(c => c.Id);
+                    var addedChoices = model.Choices.Where(c => !x.Contains(c.Id)).Select(c=>c.Id);
 
                     foreach (var ch in model.Choices)
                     {
-       
-                        if ( ch.Id != 0)
+
+                        if (addedChoices.Contains(ch.Id))
+                        {
+                            var newChoice = _mapper.Map<Choose>(ch);
+                            newChoice.Id = 0;
+                            newChoice.QuestionId = existingQuestion.Id;
+                            await _unitOfWork.Choose.AddAsync(newChoice);
+                        }
+                        else if ( ch.Id != 0)
                         {
                             var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
                            choice.Content=ch.Content;
                            choice.IsCorrect=ch.IsCorrect is not null ?(bool)ch.IsCorrect:choice.IsCorrect;
                             _unitOfWork.Choose.Update(choice);
                         }
-                        else if (ch.Id == 0)
-                        {
-                            var newChoice = _mapper.Map<Choose>(ch);
-                            newChoice.QuestionId = existingQuestion.Id;
-                            await _unitOfWork.Choose.AddAsync(newChoice);
-                        }
+                        
                     }
 
                     // Handle file attachment if necessary (this is commented out for now in your example)

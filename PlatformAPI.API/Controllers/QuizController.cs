@@ -213,10 +213,14 @@ namespace PlatformAPI.API.Controllers
             }
 
             var sq = _mapper.Map<ShowQuiz>(quiz);
-            
+            var studentquizes =await _unitOfWork.StudentQuiz.FindAllWithIncludes<StudentQuiz>(sqq => sqq.QuizId == quiz.Id);
+            var rank = studentquizes
+                  .Count(otherSq => (otherSq.StudentMark + otherSq.StudentBounce) > (studentQuiz.StudentMark + studentQuiz.StudentBounce)) + 1; // Compute rank
+
             sq.questionsOfQuizzes = await questionService.GetAllQuestionsOfQuiz(quiz.Id, true);
             return Ok(new
             {
+                rank=rank,
                 Quiz=sq,
                 StudentSolve=res
             });

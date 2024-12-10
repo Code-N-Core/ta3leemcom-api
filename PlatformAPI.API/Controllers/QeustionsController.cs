@@ -162,15 +162,18 @@ namespace PlatformAPI.API.Controllers
                     _mapper.Map(model, existingQuestion); // Map the updated properties into the existing entity
 
                     existingQuestion.Chooses = null; // Ensure Choices are handled separately
+                    var deletedchoicess =(await _unitOfWork.Question.FindTWithIncludes<Question>(model.Id,q=>q.Chooses))
+                        .Chooses.Where(c=>!(model.Choices.Select(mc=>mc.Id).Contains(c.Id)));
+                    foreach (var deletedChoice in deletedchoicess)
+                    {
+                        await _unitOfWork.Choose.DeleteAsync(deletedChoice);
+
+                    }
 
                     foreach (var ch in model.Choices)
                     {
-                        if (ch.IsDeleted)
-                        {
-                            var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
-                            await _unitOfWork.Choose.DeleteAsync(choice);
-                        }
-                        else if ( ch.Id != 0)
+       
+                        if ( ch.Id != 0)
                         {
                             var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
                            choice.Content=ch.Content;

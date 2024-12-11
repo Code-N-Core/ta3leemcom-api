@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlatformAPI.EF")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aaf514db172fdb1eece441adb44cc100169c0124")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05296c4138ef19def6dcc0e6569f106ad762d422")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlatformAPI.EF")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlatformAPI.EF")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

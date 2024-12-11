@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using PlatformAPI.API.MiddleWares;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.EF.Data;
 using PlatformAPI.EF.Hubs;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace PlatformAPI.API
@@ -29,14 +31,14 @@ namespace PlatformAPI.API
                 configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                              .UseSimpleAssemblyNameTypeSerializer()
                              .UseRecommendedSerializerSettings()
-                            .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
-                            {
-                                QueuePollInterval = TimeSpan.FromSeconds(15), // Default is 15 seconds
-                                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                                UseRecommendedIsolationLevel = true,
-                                DisableGlobalLocks = true
-                            }));
+                             .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+                             {
+                                 QueuePollInterval = TimeSpan.FromSeconds(15),
+                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                 UseRecommendedIsolationLevel = true,
+                                 DisableGlobalLocks = true
+                             }));
 
             // Add the Hangfire server
             builder.Services.AddHangfireServer();
@@ -132,14 +134,11 @@ namespace PlatformAPI.API
                 {
                     OnMessageReceived = context =>
                     {
-                        // Check if the token is available in cookies or query string (for SignalR WebSocket)
                         var token = context.Request.Cookies["token"] ?? context.Request.Query["access_token"];
-
                         if (!string.IsNullOrEmpty(token))
                         {
-                            context.Token = token; // Assign the token
+                            context.Token = token;
                         }
-
                         return Task.CompletedTask;
                     }
                 };
@@ -186,24 +185,33 @@ namespace PlatformAPI.API
             // Add routing for SignalR
             app.MapHub<NotificationHub>("/notificationHub");
 
-            // Configure Hangfire dashboard for monitoring background jobs
+            // Configure Hangfire dashboard with authorization
             app.UseStaticFiles();
-            app.UseHangfireDashboard("/Hangfire");
-
-
+            app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new JwtAuthorizationFilter() }
+            });
 
             // Schedule the recurring Hangfire job for the vacation escalation process
             RecurringJob.AddOrUpdate<QuizNotificationService>(
                 "escalate-vacation-requests",
                 job => job.CheckEndedQuizzesAsync(),
-                Cron.MinuteInterval(5) // This schedules the job to run every 6 hours
-                );
+                Cron.MinuteInterval(5)
+            );
 
             // Map controllers
             app.MapControllers();
 
             // Run the app
             app.Run();
+        }
+    }
+
+    public class JwtAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            return true;
         }
     }
 }

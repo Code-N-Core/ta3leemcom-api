@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using PlatformAPI.Core.Const;
 using PlatformAPI.Core.DTOs;
 using PlatformAPI.Core.DTOs.Choose;
@@ -18,26 +19,31 @@ namespace PlatformAPI.Core.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly AttachmentService _attachmentService;
+        private readonly IImageService _imageService;
+        private const string ImagesFolderForQuestions = "uploads/Questions";
+        private const string ImagesFolderForChioces = "uploads/Chioces";
 
 
-        public QuestionService(IUnitOfWork unitOfWork, IMapper mapper, AttachmentService attachmentService)
+        public QuestionService(IUnitOfWork unitOfWork, IMapper mapper, AttachmentService attachmentService, IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _attachmentService = attachmentService;
+            _imageService = imageService;
         }
 
         public static ShowQuestionsOfQuiz GetQuestionMap(Question q,bool IsTeacher)
         {
-            List<ChooseDTO> answer = new List<ChooseDTO>();
+            List<ShowChiocessOfQuestion> answer = new List<ShowChiocessOfQuestion>();
             foreach (var c in q.Chooses)
             {
-                var a = new ChooseDTO
+                var a = new ShowChiocessOfQuestion
                 {
                     Id = c.Id,
                     Content = c.Content,
                     IsCorrect =IsTeacher==true? c.IsCorrect:null,
                     QuestionId = c.QuestionId,
+                    attachmentPath=c.attachmentPath
                 };
                 answer.Add(a);
             }
@@ -145,7 +151,13 @@ namespace PlatformAPI.Core.Services
             }
             return results;
         }
-
+        public async Task<bool> DeleteChoice(Choose choice)
+        {
+            if (choice.attachmentPath != null)
+                _imageService.DeleteImage(choice.attachmentPath);
+            await _unitOfWork.Choose.DeleteAsync(choice);
+            return true;
+        }
         public async Task<bool> DeleteQuestionsWithChoises(int id)
         {
            
@@ -153,9 +165,13 @@ namespace PlatformAPI.Core.Services
             if (q == null) return false;
                 try
                 {
+                if(q.attachmentPath != null)
+                    _imageService.DeleteImage(q.attachmentPath);
                     var choices = await _unitOfWork.Choose.FindAllAsync(c => c.QuestionId == id);
-                    foreach (var choice in choices)
-                        await _unitOfWork.Choose.DeleteAsync(choice);
+                foreach (var choice in choices)
+                {
+                   await DeleteChoice(choice);
+                }
                     await _unitOfWork.Question.DeleteAsync(q);
 
                 }

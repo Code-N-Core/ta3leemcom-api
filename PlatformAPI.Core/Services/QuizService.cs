@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using PlatformAPI.Core.Const;
+using PlatformAPI.Core.DTOs.Choose;
 using PlatformAPI.Core.DTOs.Questions;
 using PlatformAPI.Core.DTOs.Quiz;
 using PlatformAPI.Core.Helpers;
@@ -21,17 +22,96 @@ namespace PlatformAPI.Core.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly QuestionService questionService;
         private readonly IMapper _mapper;
-
-        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, QuestionService questionService, IMapper mapper)
+        private readonly IImageService _imageService;
+        private const string ImagesFolderForQuestions = "uploads/Questions";
+        private const string ImagesFolderForChioces = "uploads/Chioces";
+        public QuizService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, QuestionService questionService, IMapper mapper, IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             this.questionService = questionService;
             _mapper = mapper;
+            _imageService = imageService;
+        }
+        public async Task<ShowQuiz> CreateOnlineQuiz(CreateOnlineQuizDTO model)
+        {
+            try
+            {
+                // Map the quiz DTO to the quiz entity
+                var quiz = _mapper.Map<Quiz>(model);
+
+
+                // Assign StartDate and Duration
+                quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
+                quiz.Questions = new List<Question>();
+
+                foreach (var questionDto in model.Questions)
+                {
+                    var question = _mapper.Map<Question>(questionDto);
+                    question.Chooses = new List<Choose>();
+
+                    if (questionDto.AttachFile != null)
+                    {
+
+                        question.attachmentPath = _imageService.SaveImage(questionDto.AttachFile, ImagesFolderForQuestions);
+                    }
+                    foreach (var choicedto in questionDto.Choices)
+                    {
+                        var Choice = _mapper.Map<Choose>(choicedto);
+
+                        if (choicedto.AttachFile != null)
+                        {
+                            Choice.attachmentPath = _imageService.SaveImage(choicedto.AttachFile, ImagesFolderForChioces);
+                        }
+                        Choice.Question = question;
+                        question.Chooses.Add(Choice);
+                    }
+                    question.Quiz = quiz;
+                    quiz.Questions.Add(question);
+
+                }
+                await _unitOfWork.Quiz.AddAsync(quiz);
+                await _unitOfWork.CompleteAsync(); // Commit after adding quiz
+
+
+                // Create GroupQuiz entries
+                var shq = _mapper.Map<ShowQuiz>(quiz);
+                shq.GroupsIds = new List<int>();
+
+
+                foreach (var group in model.GroupsIds)
+                {
+                    var groupQuiz = new GroupQuiz
+                    {
+                        GroupId = group,
+                        QuizId = quiz.Id,
+                    };
+                    await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
+                    shq.GroupsIds.Add(groupQuiz.GroupId);
+                }
+
+                await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
+
+
+
+                // Retrieve and map all questions
+                shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
+                return shq;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+          
         }
         public async Task<List<Quiz>> GetEndedQuizez()
         {
-            var datenow = DateTime.Now;
+            // Define Egypt's time zone
+            TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+            // Get the current time in Egypt
+            DateTime datenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
 
             var endedQuizzes = await _unitOfWork.Quiz.GetEndedQuiz(datenow);
      

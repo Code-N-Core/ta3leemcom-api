@@ -13,7 +13,7 @@ namespace PlatformAPI.Core.DTOs.Quiz
     {
 
         public int Bounce { get; set; }
-        public List<UQDTO>? Questions { get; set; }
+        public List<QDTO>? Questions { get; set; }
         public timeDuration timeDuration { get; set; }
 
 

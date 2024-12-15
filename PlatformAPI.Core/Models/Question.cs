@@ -6,8 +6,8 @@
         public int Id { get; set; }
         [Required]
         public int Mark { get; set; }
-        [Required,MinLength(5),MaxLength(1000)]
-        public string Content { get; set; }
+        [MinLength(1),MaxLength(1000)]
+        public string? Content { get; set; }
 
         [Required, MinLength(1), MaxLength(1000)]
         public string? Explain { get; set; }

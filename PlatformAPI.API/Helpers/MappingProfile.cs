@@ -19,18 +19,17 @@ namespace PlatformAPI.API.Helpers
             CreateMap<Group,GroupDTO>();
             CreateMap<AddFeedbackDTO, Feedback>();
             CreateMap<ChooseDTO, Choose>().ReverseMap();
-            CreateMap<CreateOnlineQuizDTO, Quiz>();
+            CreateMap<CreateOnlineQuizDTO, Quiz>()
+                .ForMember(dst=>dst.Questions , opt=>opt.Ignore());
+
 
             CreateMap<CreateOffLineQuizDto, Quiz>();
+
+            CreateMap<QDTO, Question>()
+            .ForMember(dst => dst.Chooses, opt => opt.Ignore());
             CreateMap<UpdateOnlineQuizDto, Quiz>();
             CreateMap<UpdateOfflineQuizDto, Quiz>();
             CreateMap<Quiz, ShowQuiz>()
-               /* .ForMember(dest => dest.timeStart, opt => opt.MapFrom(src => new timeStart
-                {
-                    Hours = src.StartDate.Hour>12? src.StartDate.Hour-12: src.StartDate.Hour,
-                    Minute = src.StartDate.Minute,
-                    Mode = src.StartDate.Hour >= 12 ? "PM" : "AM"
-                }))*/
                 .ForMember(dest => dest.timeDuration, opt => opt.MapFrom(src => new timeDuration
                 {
                     Hours = src.Duration.Hours,

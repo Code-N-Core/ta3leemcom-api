@@ -8,7 +8,7 @@ namespace PlatformAPI.Core.DTOs.Questions
     public class QDTO
     {
         [MinLength(2),MaxLength(200)]
-        public string Content { get; set; }
+        public string? Content { get; set; }
         [Range(1,100)]
         public int Mark {  get; set; }
         public string? Explain { get; set; }

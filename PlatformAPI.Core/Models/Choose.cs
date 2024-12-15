@@ -10,9 +10,10 @@ namespace PlatformAPI.Core.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required,MinLength(1),MaxLength(1000)]
-        public string Content { get; set; }
+        [MinLength(1),MaxLength(1000)]
+        public string? Content { get; set; }
         public bool IsCorrect { get; set; }
+        public string? attachmentPath { get; set; }
 
         [Required]
         public int QuestionId { get; set; }

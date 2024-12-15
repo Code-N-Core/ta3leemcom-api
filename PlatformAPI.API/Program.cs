@@ -13,6 +13,7 @@ using PlatformAPI.API.MiddleWares;
 using PlatformAPI.Core.Helpers;
 using PlatformAPI.EF.Data;
 using PlatformAPI.EF.Hubs;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -91,24 +92,40 @@ namespace PlatformAPI.API
             builder.Services.Configure<AppSetteings>(builder.Configuration.GetSection("AppSetteings"));
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddTransient<IMailingService, MailingService>();
+            builder.Services.AddTransient<IImageService, ImageService>();
 
             // Swagger/OpenAPI setup
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(options =>
+            builder.Services.AddSwaggerGen(c =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Version = "v1",
-                    Title = "Ta3lem Com For Testing",
-                    Description = "Platform API",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Sherif Ibrahim",
-                        Email = "sherifebrahim2212@gmail.com",
-                    },
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter 'Bearer' [space] and then your token",
                 });
-            });
 
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+
+                // Support file uploads
+                c.OperationFilter<MultipartFormDataOperationFilter>();
+            });
             // JWT Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -189,12 +206,12 @@ namespace PlatformAPI.API
             app.UseStaticFiles();
             app.UseHangfireDashboard("/Hangfire", new DashboardOptions
             {
-                Authorization = new[] { new JwtAuthorizationFilter() }
+                Authorization = new[] { new AllowAllAuthorizationFilter() }
             });
 
             // Schedule the recurring Hangfire job for the vacation escalation process
             RecurringJob.AddOrUpdate<QuizNotificationService>(
-                "escalate-vacation-requests",
+                "check-ended-quizzes",
                 job => job.CheckEndedQuizzesAsync(),
                 Cron.MinuteInterval(5)
             );
@@ -206,12 +223,71 @@ namespace PlatformAPI.API
             app.Run();
         }
     }
-
     public class JwtAuthorizationFilter : IDashboardAuthorizationFilter
     {
         public bool Authorize(DashboardContext context)
         {
-            return true;
+            var httpContext = context.GetHttpContext();
+            var token = httpContext.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return false; // No token, unauthorized
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("3/FPNVEzE1vgKWNZB/nx+Sw+i994jElHCKT5U9kj4fM=")),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = "SecureApi",
+                ValidAudience = "SecureApiUser",
+                ValidateLifetime = true
+            };
+
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParameters, out _);
+                return true;
+            }
+            catch
+            {
+                return false; // Invalid token
+            }
+        }
+    }
+    public class AllowAllAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            return true; // Allow all access. Replace with your logic for restricted access.
+        }
+    }
+    // Custom Operation Filter to Handle Multipart/Form-Data Requests
+    public class MultipartFormDataOperationFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var formParameters = context.MethodInfo.GetParameters()
+                .Where(p => p.GetCustomAttributes(typeof(FromFormAttribute), false).Any());
+
+            if (formParameters.Any())
+            {
+                operation.RequestBody = new OpenApiRequestBody
+                {
+                    Content = new Dictionary<string, OpenApiMediaType>
+                    {
+                        ["multipart/form-data"] = new OpenApiMediaType
+                        {
+                            Schema = context.SchemaGenerator.GenerateSchema(
+                                formParameters.First().ParameterType, context.SchemaRepository)
+                        }
+                    }
+                };
+            }
         }
     }
 }
+

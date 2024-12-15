@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -24,7 +25,7 @@ namespace PlatformAPI.API.Controllers
         private readonly QuestionService questionService;
         private readonly ChooseService chooseService;
         private readonly QuizService QuizService;
-
+       
 
 
 
@@ -292,7 +293,8 @@ namespace PlatformAPI.API.Controllers
         }
         [Authorize(Roles = "Teacher")]
         [HttpPost("AddOnlineQuiz")]
-        public async Task<IActionResult> CreateOn(CreateOnlineQuizDTO model)
+        [Consumes("multipart/form-data")] // Explicitly define content type
+        public async Task<IActionResult> CreateOn([FromForm] CreateOnlineQuizDTO model)
         {
 
             if (ModelState.IsValid)
@@ -304,51 +306,8 @@ namespace PlatformAPI.API.Controllers
                     return BadRequest("You Do not Have Permission");
                 try
                 {
-
-                    // Map the quiz DTO to the quiz entity
-                    var quiz = _mapper.Map<Quiz>(model);
-
-
-                    // Assign StartDate and Duration
-                    quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
-                    foreach (var question in quiz.Questions)
-                    {
-                        bool f = true;
-                        foreach (var choice in question.Chooses)
-                        {
-                            if(choice.IsCorrect==true)
-                                f= false;   
-                        }
-                        if (f == true)
-                            return BadRequest("يجب عليك اختيار الاجابه الصحيحه");
-                    }
-                    await _unitOfWork.Quiz.AddAsync(quiz);
-                    await _unitOfWork.CompleteAsync(); // Commit after adding quiz
-
-
-                    // Create GroupQuiz entries
-                    var shq = _mapper.Map<ShowQuiz>(quiz);
-                    shq.GroupsIds = new List<int>();
-
-
-                    foreach (var group in model.GroupsIds)
-                    {
-                        var groupQuiz = new GroupQuiz
-                        {
-                            GroupId = group,
-                            QuizId = quiz.Id,
-                        };
-                        await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
-                        shq.GroupsIds.Add(groupQuiz.GroupId);
-                    }
-
-                    await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
-
-
-
-                    // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
-                    return Ok(shq);
+                  var response= await QuizService.CreateOnlineQuiz(model);
+                   return Ok(response);
                 }
                 catch (Exception ex)
                 {
@@ -489,7 +448,8 @@ namespace PlatformAPI.API.Controllers
         #endregion
         [Authorize(Roles = "Teacher")]
         [HttpPut("UpdateOnlineQuizBeforeStart")]
-        public async Task<IActionResult> UpdateOn(UpdateOnlineQuizDto model)
+        [Consumes("multipart/form-data")] // Explicitly define content type
+        public async Task<IActionResult> UpdateOn([FromForm] UpdateOnlineQuizDto model)
         {
             if (ModelState.IsValid) 
             {
@@ -501,51 +461,21 @@ namespace PlatformAPI.API.Controllers
                 try
                 {
 
-                    var quiz = _mapper.Map<Quiz>(model);
-                    var datenow = DateTime.Now;
+                    var quizdto = _mapper.Map<Quiz>(model);
+                    var quiz = await _unitOfWork.Quiz.GetByIdAsync(quizdto.Id);
+                    // Define Egypt's time zone
+                    TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+                    // Get the current time in Egypt
+                    DateTime datenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
                     if (quiz.StartDate <= datenow)
                         return BadRequest("The Quiz Is Started");
-                   await QuizService.deleteQuiz(quiz.Id);
+                   await QuizService.deleteQuiz(quizdto.Id);
+                    model.Id = 0;
+                    var response = await QuizService.CreateOnlineQuiz(model);
+                    return Ok(response);
 
-
-                    // Assign StartDate and Duration
-                    quiz.Duration = new TimeSpan(model.timeDuration.Days, model.timeDuration.Hours, model.timeDuration.Minute, 0);
-                    quiz.Id = 0;
-                    foreach (var q in quiz.Questions)
-                    {
-                        q.Id = 0;
-                        foreach (var ch in q.Chooses)
-                        {
-                            ch.Id = 0;
-                        }
-                    }
-                    await _unitOfWork.Quiz.AddAsync(quiz);
-                    await _unitOfWork.CompleteAsync(); // Commit after adding quiz
-
-
-                    // Create GroupQuiz entries
-                    var shq = _mapper.Map<ShowQuiz>(quiz);
-                    shq.GroupsIds = new List<int>();
-
-
-                    foreach (var group in model.GroupsIds)
-                    {
-                        var groupQuiz = new GroupQuiz
-                        {
-                            GroupId = group,
-                            QuizId = quiz.Id,
-                        };
-                        await _unitOfWork.GroupQuiz.AddAsync(groupQuiz);
-                        shq.GroupsIds.Add(groupQuiz.GroupId);
-                    }
-
-                    await _unitOfWork.CompleteAsync(); // Commit after adding group quiz
-
-
-
-                    // Retrieve and map all questions
-                    shq.questionsOfQuizzes = new List<ShowQuestionsOfQuiz>(await questionService.GetAllQuestionsOfQuiz(quiz.Id, true));
-                    return Ok(shq);
+                   
                 }
                 catch (Exception ex)
                 {

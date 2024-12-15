@@ -1,4 +1,5 @@
-﻿using PlatformAPI.Core.DTOs.Choose;
+﻿using Microsoft.AspNetCore.Http;
+using PlatformAPI.Core.DTOs.Choose;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,18 @@ namespace PlatformAPI.Core.DTOs.Questions
         public string QuizTitle { get; set; }
         public string? attachmentType { get; set; }
         public string? attachmentPath { get; set; }
-        public List<ChooseDTO> Choices { get; set; }
+        public List<ShowChiocessOfQuestion> Choices { get; set; }
 
+
+    }
+    public class ShowChiocessOfQuestion
+    {
+        public int Id { get; set; }
+        public string Content { get; set; }
+        public bool? IsCorrect { get; set; }
+        public int? QuestionId { get; set; }
+        public bool IsDeleted { get; set; }
+        public string? attachmentPath { get; set; }
 
     }
 }

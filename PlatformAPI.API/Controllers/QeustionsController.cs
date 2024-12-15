@@ -12,14 +12,18 @@ namespace PlatformAPI.API.Controllers
         private readonly IMapper _mapper;
         private readonly AttachmentService _attachmentService;
         private readonly QuestionService _questionService;
+        private readonly IImageService _imageService;
+        private const string ImagesFolderForQuestions = "uploads/Questions";
+        private const string ImagesFolderForChioces = "uploads/Chioces";
 
         public QeustionsController(IUnitOfWork unitOfWork, IMapper mapper,
-            AttachmentService attachmentService, QuestionService questionService)
+            AttachmentService attachmentService, QuestionService questionService, IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _attachmentService = attachmentService;
             _questionService = questionService;
+            _imageService = imageService;
         }
         #region all questions of quizid
         /*  [HttpGet("GetAllQuestionOfQuizID")]
@@ -107,10 +111,7 @@ namespace PlatformAPI.API.Controllers
                 {
                     await _questionService.ModifiyQuiz(q,true);
 
-                    var choices = await _unitOfWork.Choose.FindAllAsync(c => c.QuestionId == id);
-                    foreach (var choice in choices)
-                        await _unitOfWork.Choose.DeleteAsync(choice);
-                    await _unitOfWork.Question.DeleteAsync(q);
+                   await _questionService.DeleteQuestionsWithChoises(id);
 
                 }
                 catch (Exception ex)
@@ -152,7 +153,13 @@ namespace PlatformAPI.API.Controllers
                 bool isUpdated = existingQuestion.IsUpdated;
 
                 var quiz = await _unitOfWork.Quiz.GetByIdAsync(existingQuestion.QuizId);
-                var dateNow = DateTime.Now;
+                // Define Egypt's time zone
+                TimeZoneInfo egyptTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+                // Get the current time in Egypt
+                DateTime dateNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, egyptTimeZone);
+
+
                 if (!(quiz.StartDate <= dateNow))
                     return BadRequest("The Quiz Is Not Started");
 
@@ -160,14 +167,17 @@ namespace PlatformAPI.API.Controllers
                 {
                     // Map only updated properties
                     _mapper.Map(model, existingQuestion); // Map the updated properties into the existing entity
-
+                    _imageService.DeleteImage(existingQuestion.attachmentPath);
+                    if(model.AttachFile != null)
+                    {
+                       existingQuestion.attachmentPath= _imageService.SaveImage(model.AttachFile, ImagesFolderForQuestions);
+                    }
                     existingQuestion.Chooses = null; // Ensure Choices are handled separately
                     var deletedchoicess =(await _unitOfWork.Question.FindTWithIncludes<Question>(model.Id,q=>q.Chooses))
                         .Chooses.Where(c=>!(model.Choices.Select(mc=>mc.Id).Contains(c.Id)));
                     foreach (var deletedChoice in deletedchoicess)
                     {
-                        await _unitOfWork.Choose.DeleteAsync(deletedChoice);
-
+                      await _questionService.DeleteChoice(deletedChoice);
                     }
                     var x = (await _unitOfWork.Question.FindTWithIncludes<Question>(model.Id, q => q.Chooses))
                         .Chooses.Select(c => c.Id);
@@ -181,6 +191,8 @@ namespace PlatformAPI.API.Controllers
                             var newChoice = _mapper.Map<Choose>(ch);
                             newChoice.Id = 0;
                             newChoice.QuestionId = existingQuestion.Id;
+                            if (ch.AttachFile != null)
+                                newChoice.attachmentPath = _imageService.SaveImage(ch.AttachFile, ImagesFolderForChioces);
                             await _unitOfWork.Choose.AddAsync(newChoice);
                         }
                         else if ( ch.Id != 0)
@@ -188,6 +200,11 @@ namespace PlatformAPI.API.Controllers
                             var choice = await _unitOfWork.Choose.GetByIdAsync(ch.Id);
                            choice.Content=ch.Content;
                            choice.IsCorrect=ch.IsCorrect is not null ?(bool)ch.IsCorrect:choice.IsCorrect;
+                            _imageService.DeleteImage(choice.attachmentPath);
+                            if (ch.AttachFile != null)
+                            {
+                                choice.attachmentPath = _imageService.SaveImage(ch.AttachFile, ImagesFolderForChioces);
+                            }
                             _unitOfWork.Choose.Update(choice);
                         }
                         

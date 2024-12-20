@@ -103,6 +103,10 @@ namespace PlatformAPI.API.Controllers
             if(await _userManager.IsInRoleAsync(user, Roles.Teacher.ToString()))
             {
                 var teacher = await _unitOfWork.Teacher.GetByAppUserIdAsync(user.Id);
+                if (teacher != null && !teacher.IsActive)
+                {
+                    return Forbid("هذا الحساب غير نشط.");
+                }
                 return Ok(new
                 {
                     token = result.Token,

@@ -198,7 +198,7 @@ namespace PlatformAPI.API
 
             // Middleware (commented out for now)
             //app.UseMiddleware<TeacherIsSubsMiddleware>();
-
+            app.UseMiddleware<TeacherActiveMiddleware>();
             // Add routing for SignalR
             app.MapHub<NotificationHub>("/notificationHub");
 

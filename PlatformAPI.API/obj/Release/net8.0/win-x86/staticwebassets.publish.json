@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LXWNjN975UTihy6Ri0xf9LxOiIwfga6Mm2FDZYe7M5o=",
+  "Hash": "5Y8GJMPISmiPSBW/q4Ka602kysWsK7+t8mJuc1+Mtog=",
   "Source": "PlatformAPI.API",
   "BasePath": "_content/PlatformAPI.API",
   "Mode": "Default",
@@ -91,6 +91,44 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ResetPassword.html"
+    },
+    {
+      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\uploads\\Chioces\\2c8e7a78-2285-48f1-b2ea-b1151f2a60f1_a.png",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "uploads/Chioces/2c8e7a78-2285-48f1-b2ea-b1151f2a60f1_a.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\Chioces\\2c8e7a78-2285-48f1-b2ea-b1151f2a60f1_a.png"
+    },
+    {
+      "Identity": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\uploads\\Questions\\3270480b-f2ac-4df8-b681-033e1ed1dcaf_download.jpeg",
+      "SourceId": "PlatformAPI.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\",
+      "BasePath": "_content/PlatformAPI.API",
+      "RelativePath": "uploads/Questions/3270480b-f2ac-4df8-b681-033e1ed1dcaf_download.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\Questions\\3270480b-f2ac-4df8-b681-033e1ed1dcaf_download.jpeg"
     }
   ]
 }

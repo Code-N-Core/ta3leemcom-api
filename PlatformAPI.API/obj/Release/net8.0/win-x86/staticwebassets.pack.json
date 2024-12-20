@@ -17,6 +17,14 @@
       "PackagePath": "staticwebassets\\ResetPassword.html"
     },
     {
+      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\uploads\\Chioces\\2c8e7a78-2285-48f1-b2ea-b1151f2a60f1_a.png",
+      "PackagePath": "staticwebassets\\uploads\\Chioces\\2c8e7a78-2285-48f1-b2ea-b1151f2a60f1_a.png"
+    },
+    {
+      "Id": "C:\\Users\\Mostafa\\Desktop\\projects\\ta3leemcom\\ta3leemcom-api-main\\ta3leemcom-api-main\\ta3leemcom-api\\PlatformAPI.API\\wwwroot\\uploads\\Questions\\3270480b-f2ac-4df8-b681-033e1ed1dcaf_download.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\Questions\\3270480b-f2ac-4df8-b681-033e1ed1dcaf_download.jpeg"
+    },
+    {
       "Id": "obj\\Release\\net8.0\\win-x86\\staticwebassets\\msbuild.PlatformAPI.API.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

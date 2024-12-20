@@ -38,17 +38,26 @@ namespace PlatformAPI.API.MiddleWares
                             await _next(context);
                             return;
                         }
+                        else
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/json";
+                            await context.Response.WriteAsJsonAsync(new
+                            {
+                                error = "Access Denied",
+                                message = "Your account is inactive or unauthorized to access this resource."
+                            });
+                        }
+                    }
+                    else
+                    {
+                        await _next(context);
+                        return;
                     }
                 }
             }
 
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(new
-            {
-                error = "Access Denied",
-                message = "Your account is inactive or unauthorized to access this resource."
-            });
+
         }
     }
 }
